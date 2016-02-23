@@ -1,0 +1,617 @@
+<HTML>
+<HEAD>
+<TITLE>Learning (Subsystem of AIMA Code)</TITLE> 
+<!-- Changed by: Peter Norvig, 30-Oct-1996 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<h1>Learning (Subsystem of AIMA Code)</h1>
+
+We provide a good variety of learning algorithms and agents.
+Unfortunately, right now the code is going through some changes,
+and not all the learning code has been updated, so it may not work.
+
+<P><HR size=3></UL><A HREF="../learning/"><B>learning/</B></A>:
+<UL> <LI><A HREF="#learning/test-learning.lisp"><B>test-learning.lisp</B></A> </UL><A HREF="../learning/algorithms/"><B>learning/algorithms/</B></A>:
+<UL> <LI><A HREF="#learning/algorithms/inductive-learning.lisp"><B>inductive-learning.lisp</B></A> <LI><A HREF="#learning/algorithms/learning-curves.lisp"><B>learning-curves.lisp</B></A> <LI><A HREF="#learning/algorithms/dtl.lisp"><B>dtl.lisp</B></A> <LI><A HREF="#learning/algorithms/dll.lisp"><B>dll.lisp</B></A> <LI><A HREF="#learning/algorithms/nn.lisp"><B>nn.lisp</B></A> <LI><A HREF="#learning/algorithms/perceptron.lisp"><B>perceptron.lisp</B></A> <LI><A HREF="#learning/algorithms/multilayer.lisp"><B>multilayer.lisp</B></A> <LI><A HREF="#learning/algorithms/q-iteration.lisp"><B>q-iteration.lisp</B></A> </UL><A HREF="../learning/domains/"><B>learning/domains/</B></A>:
+<UL> <LI><A HREF="#learning/domains/restaurant-multivalued.lisp"><B>restaurant-multivalued.lisp</B></A> <LI><A HREF="#learning/domains/restaurant-real.lisp"><B>restaurant-real.lisp</B></A> <LI><A HREF="#learning/domains/restaurant-boolean.lisp"><B>restaurant-boolean.lisp</B></A> <LI><A HREF="#learning/domains/majority-boolean.lisp"><B>majority-boolean.lisp</B></A> <LI><A HREF="#learning/domains/ex-19-4-boolean.lisp"><B>ex-19-4-boolean.lisp</B></A> <LI><A HREF="#learning/domains/and-boolean.lisp"><B>and-boolean.lisp</B></A> <LI><A HREF="#learning/domains/xor-boolean.lisp"><B>xor-boolean.lisp</B></A> <LI><A HREF="#learning/domains/4x3-passive-mdp.lisp"><B>4x3-passive-mdp.lisp</B></A> </UL><A HREF="../learning/agents/"><B>learning/agents/</B></A>:
+<UL> <LI><A HREF="#learning/agents/passive-lms-learner.lisp"><B>passive-lms-learner.lisp</B></A> <LI><A HREF="#learning/agents/passive-adp-learner.lisp"><B>passive-adp-learner.lisp</B></A> <LI><A HREF="#learning/agents/passive-td-learner.lisp"><B>passive-td-learner.lisp</B></A> <LI><A HREF="#learning/agents/active-adp-learner.lisp"><B>active-adp-learner.lisp</B></A> <LI><A HREF="#learning/agents/active-qi-learner.lisp"><B>active-qi-learner.lisp</B></A> <LI><A HREF="#learning/agents/exploring-adp-learner.lisp"><B>exploring-adp-learner.lisp</B></A> <LI><A HREF="#learning/agents/exploring-tdq-learner.lisp"><B>exploring-tdq-learner.lisp</B></A> </UL>
+
+<A NAME="learning/test-learning.lisp"><HR>
+<H2>File <A HREF="../learning/test-learning.lisp">learning/test-learning.lisp</A></H2></A>
+<A NAME="learning/algorithms/inductive-learning.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/inductive-learning.lisp">learning/algorithms/inductive-learning.lisp</A></H2></A>
+<I> learning:inductive-learning.lisp</I>
+<I> Definition for learning problems and</I>
+<I> utilities for generating and manipulating example data.</I>
+<I> Examples are list of (attribute . value) pairs.</I>
+<I> Some of these may be goal values -- no explicit separation in data</I>
+<A NAME="learning-problem"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>learning-problem</B></A></A> <I>type</I> (examples
+                                                                                                                                    attributes
+                                                                                                                                    goals)
+  <P>
+<A NAME="attribute-name"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>attribute-name</B></A></A> <I>function</I> (attribute)
+  <P>
+<A NAME="attribute-values"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>attribute-values</B></A></A> <I>function</I> (attribute)
+  <P>
+<A NAME="attribute-value"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>attribute-value</B></A></A> <I>function</I> (attribute
+                                                                                                                                      example)
+  <P>
+<A NAME="random-examples"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>random-examples</B></A></A> <I>function</I> (n
+                                                                                                                                      attributes)
+  <P>
+<A NAME="classify"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>classify</B></A></A> <I>function</I> (unclassified-examples
+                                                                                                                        goals
+                                                                                                                        h
+                                                                                                                        performance-element)
+  <P>
+<A NAME="consistent"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>consistent</B></A></A> <I>function</I> (examples
+                                                                                                                            goals
+                                                                                                                            h
+                                                                                                                            performance-element)
+  <P>
+<I> Coded examples have goal values (in a single list)</I>
+<I> followed by attribute values, both in fixed order</I>
+<A NAME="code-examples"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>code-examples</B></A></A> <I>function</I> (examples
+                                                                                                                                  attributes
+                                                                                                                                  goals)
+  <P>
+<A NAME="code-example"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>code-example</B></A></A> <I>function</I> (example
+                                                                                                                                attributes
+                                                                                                                                goals)
+  <P>
+<A NAME="code-unclassified-example"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>code-unclassified-example</B></A></A> <I>function</I> (example
+                                                                                                                                                          attributes
+                                                                                                                                                          goals)
+  <P>
+<A NAME="print-learning-problem"><P><A HREF="../learning/algorithms/inductive-learning.lisp"><B>print-learning-problem</B></A></A> <I>function</I> (problem
+                                                                                                                                                    &optional
+                                                                                                                                                    stream
+                                                                                                                                                    depth)
+  <P>
+<A NAME="learning/algorithms/learning-curves.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/learning-curves.lisp">learning/algorithms/learning-curves.lisp</A></H2></A>
+<I> Functions for testing induction algorithms</I>
+<I> Tries to be as generic as possible</I>
+<I> Mainly for NN purposes, allows multiple goal attributes</I>
+<I> A prediction is correct if it agrees on ALL goal attributes</I>
+<A NAME="learning-curve"><P><A HREF="../learning/algorithms/learning-curves.lisp"><B>learning-curve</B></A></A> <I>function</I> (induction-algorithm
+                                                                                                                                 <i> examples -> hypothesis</i>
+
+                                                                                                                                 performance-element
+                                                                                                                                 <i> hypothesis + example -> prediction</i>
+
+                                                                                                                                 examples
+                                                                                                                                 attributes
+                                                                                                                                 goals
+                                                                                                                                 trials
+                                                                                                                                 training-size-increment
+                                                                                                                                 &optional
+                                                                                                                                 error-fn)
+  <P>
+<I> this version uses incremental data sets rather than a new batch each time</I>
+<A NAME="incremental-learning-curve"><P><A HREF="../learning/algorithms/learning-curves.lisp"><B>incremental-learning-curve</B></A></A> <I>function</I> (induction-algorithm
+                                                                                                                                                         <i> examples -> hypothesis</i>
+
+                                                                                                                                                         performance-element
+                                                                                                                                                         <i> hypothesis + example -> prediction</i>
+
+                                                                                                                                                         examples
+                                                                                                                                                         attributes
+                                                                                                                                                         goals
+                                                                                                                                                         trials
+                                                                                                                                                         training-size-increment
+                                                                                                                                                         &optional
+                                                                                                                                                         error-fn)
+  <P>
+<A NAME="accuracy"><P><A HREF="../learning/algorithms/learning-curves.lisp"><B>accuracy</B></A></A> <I>function</I> (h
+                                                                                                                     performance-element
+                                                                                                                     test-set
+                                                                                                                     goals
+                                                                                                                     &optional
+                                                                                                                     error-fn)
+  <P>
+<A NAME="learning/algorithms/dtl.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/dtl.lisp">learning/algorithms/dtl.lisp</A></H2></A>
+<I> decision tree learning algorithm - the standard "induction algorithm"</I>
+<I> returns a tree in the format</I>
+<I>   (a1 (v11 . <tree>) (v12 . <tree>)), bottoming out with goal values.</I>
+<I> currently handles only a single goal attribute</I>
+<A NAME="decision-tree-learning"><P><A HREF="../learning/algorithms/dtl.lisp"><B>decision-tree-learning</B></A></A> <I>function</I> (problem)
+  <P>
+<A NAME="dtl"><P><A HREF="../learning/algorithms/dtl.lisp"><B>dtl</B></A></A> <I>function</I> (examples
+                                                                                               attributes
+                                                                                               goal
+                                                                                               &optional
+                                                                                               prior)
+  <P>
+<A NAME="distribution"><P><A HREF="../learning/algorithms/dtl.lisp"><B>distribution</B></A></A> <I>function</I> (examples
+                                                                                                                 goal)
+  <P>
+<A NAME="majority"><P><A HREF="../learning/algorithms/dtl.lisp"><B>majority</B></A></A> <I>function</I> (examples
+                                                                                                         goal)
+  <P>
+<A NAME="select-attribute"><P><A HREF="../learning/algorithms/dtl.lisp"><B>select-attribute</B></A></A> <I>function</I> (examples
+                                                                                                                         attributes
+                                                                                                                         goal)
+  <P>
+<A NAME="information-value"><P><A HREF="../learning/algorithms/dtl.lisp"><B>information-value</B></A></A> <I>function</I> (a
+                                                                                                                           examples
+                                                                                                                           goal)
+  <P>
+<A NAME="bits-required"><P><A HREF="../learning/algorithms/dtl.lisp"><B>bits-required</B></A></A> <I>function</I> (d)
+  <P>
+<I> dtpredict is the standard "performance element" that </I>
+<I> interfaces with the example-generation and learning-curve functions</I>
+<A NAME="dtpredict"><P><A HREF="../learning/algorithms/dtl.lisp"><B>dtpredict</B></A></A> <I>function</I> (dt
+                                                                                                           example)
+  <P>
+<A NAME="learning/algorithms/dll.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/dll.lisp">learning/algorithms/dll.lisp</A></H2></A>
+<I> decision list learning algorithm (Rivest)</I>
+<I> returns a decision list, each element of which is </I>
+<I> a test of the form (x .term), where each term is</I>
+<I> of the form ((a1 . v1) (a2 . v2) ... (an . vn)).</I>
+<I> The last element is the test (0).</I>
+<I> only works for purely boolean attributes.</I>
+<A NAME="decision-list-learning"><P><A HREF="../learning/algorithms/dll.lisp"><B>decision-list-learning</B></A></A> <I>function</I> (k
+                                                                                                                                     problem)
+  <P>
+<A NAME="dll"><P><A HREF="../learning/algorithms/dll.lisp"><B>dll</B></A></A> <I>function</I> (k
+                                                                                               examples
+                                                                                               attributes
+                                                                                               goal)
+  <P>
+<I> select-test finds a test of size at most k that picks out a set of</I>
+<I> examples with uniform classification. Returns test and subset.</I>
+<A NAME="select-test"><P><A HREF="../learning/algorithms/dll.lisp"><B>select-test</B></A></A> <I>function</I> (k
+                                                                                                               examples
+                                                                                                               attributes
+                                                                                                               goal)
+  <P>
+<A NAME="select-k-test"><P><A HREF="../learning/algorithms/dll.lisp"><B>select-k-test</B></A></A> <I>function</I> (k
+                                                                                                                   examples
+                                                                                                                   attributes
+                                                                                                                   goal
+                                                                                                                   test-attributes)
+  <P>
+<A NAME="generate-terms"><P><A HREF="../learning/algorithms/dll.lisp"><B>generate-terms</B></A></A> <I>function</I> (attributes)
+  <P>
+<A NAME="uniform-classification"><P><A HREF="../learning/algorithms/dll.lisp"><B>uniform-classification</B></A></A> <I>function</I> (examples
+                                                                                                                                     goal)
+  <P>
+<A NAME="passes"><P><A HREF="../learning/algorithms/dll.lisp"><B>passes</B></A></A> <I>function</I> (example
+                                                                                                     test)
+  <P>
+<I> dlpredict is the standard "performance element" that </I>
+<I> interfaces with the example-generation and learning-curve functions</I>
+<A NAME="dlpredict"><P><A HREF="../learning/algorithms/dll.lisp"><B>dlpredict</B></A></A> <I>function</I> (dl
+                                                                                                           example)
+  <P>
+<A NAME="learning/algorithms/nn.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/nn.lisp">learning/algorithms/nn.lisp</A></H2></A>
+<I> Code for layered feed-forward networks</I>
+<I> Network is represented as a list of lists of units.</I>
+<I> Inputs assumed to be the ordered attribute values in examples</I>
+<I> Every unit gets input 0 set to -1</I>
+<A NAME="unit"><P><A HREF="../learning/algorithms/nn.lisp"><B>unit</B></A></A> <I>type</I> (parents
+                                                                                            <i> sequence of indices of units in previous layer</i>
+
+                                                                                            children
+                                                                                            <i> sequence of indices of units in subsequent layer</i>
+
+                                                                                            weights
+                                                                                            <i> weights on links from parents</i>
+
+                                                                                            g
+                                                                                            <i> activation function</i>
+
+                                                                                            dg
+                                                                                            <i> activation gradient function g' (if it exists)</i>
+
+                                                                                            a
+                                                                                            <i> activation level</i>
+
+                                                                                            in
+                                                                                            <i> total weighted input</i>
+
+                                                                                            gradient
+                                                                                            <i> g'(in_i)</i>
+)
+  <P>
+<I> make-connected-nn returns a multi-layer network with layers given by sizes</I>
+<A NAME="make-connected-nn"><P><A HREF="../learning/algorithms/nn.lisp"><B>make-connected-nn</B></A></A> <I>function</I> (sizes
+                                                                                                                          &optional
+                                                                                                                          previous
+                                                                                                                          g
+                                                                                                                          dg)
+  <P>
+<A NAME="step-function"><P><A HREF="../learning/algorithms/nn.lisp"><B>step-function</B></A></A> <I>function</I> (threshold
+                                                                                                                  x)
+  <P>
+<A NAME="sign-function"><P><A HREF="../learning/algorithms/nn.lisp"><B>sign-function</B></A></A> <I>function</I> (threshold
+                                                                                                                  x)
+  <P>
+<A NAME="sigmoid"><P><A HREF="../learning/algorithms/nn.lisp"><B>sigmoid</B></A></A> <I>function</I> (x)
+  <P>
+<I> nn-learning establishes the basic epoch struture for updating,</I>
+<I> Calls the desired updating mechanism to improve network until </I>
+<I> either all correct or runs out of epochs</I>
+<A NAME="nn-learning"><P><A HREF="../learning/algorithms/nn.lisp"><B>nn-learning</B></A></A> <I>function</I> (problem
+                                                                                                              network
+                                                                                                              learning-method
+                                                                                                              &key
+                                                                                                              tolerance
+                                                                                                              limit)
+  <P>
+<A NAME="nn-error"><P><A HREF="../learning/algorithms/nn.lisp"><B>nn-error</B></A></A> <I>function</I> (examples
+                                                                                                        network)
+  <P>
+<A NAME="network-output"><P><A HREF="../learning/algorithms/nn.lisp"><B>network-output</B></A></A> <I>function</I> (inputs
+                                                                                                                    network)
+  <P>
+<I> nn-output is the standard "performance element" for neural networks</I>
+<I> and interfaces to example-generating and learning-curve functions.</I>
+<I> Since performance elements are required to take only two arguments</I>
+<I> (hypothesis and example), nn-output is used in an appropriate</I>
+<I> lambda-expression</I>
+<A NAME="nn-output"><P><A HREF="../learning/algorithms/nn.lisp"><B>nn-output</B></A></A> <I>function</I> (network
+                                                                                                          unclassified-example
+                                                                                                          attributes
+                                                                                                          goals)
+  <P>
+<I> unit-output computes the output of a unit given a set of inputs  </I>
+<I> it always adds a bias input of -1 as the zeroth input</I>
+<A NAME="unit-output"><P><A HREF="../learning/algorithms/nn.lisp"><B>unit-output</B></A></A> <I>function</I> (inputs
+                                                                                                              unit)
+  <P>
+<A NAME="get-unit-inputs"><P><A HREF="../learning/algorithms/nn.lisp"><B>get-unit-inputs</B></A></A> <I>function</I> (inputs
+                                                                                                                      parents)
+  <P>
+<A NAME="random-weights"><P><A HREF="../learning/algorithms/nn.lisp"><B>random-weights</B></A></A> <I>function</I> (n
+                                                                                                                    low
+                                                                                                                    high)
+  <P>
+<I> print-nn prints out the network relatively prettily</I>
+<A NAME="print-nn"><P><A HREF="../learning/algorithms/nn.lisp"><B>print-nn</B></A></A> <I>function</I> (network)
+  <P>
+<A NAME="learning/algorithms/perceptron.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/perceptron.lisp">learning/algorithms/perceptron.lisp</A></H2></A>
+<P>
+<I> perceptron learning - single-layer neural networks</I>
+<I> make-perceptron returns a one-layer network with m units, n inputs each</I>
+<A NAME="make-perceptron"><P><A HREF="../learning/algorithms/perceptron.lisp"><B>make-perceptron</B></A></A> <I>function</I> (n
+                                                                                                                              m
+                                                                                                                              &optional
+                                                                                                                              g)
+  <P>
+<A NAME="majority-perceptron"><P><A HREF="../learning/algorithms/perceptron.lisp"><B>majority-perceptron</B></A></A> <I>function</I> (n
+                                                                                                                                      &optional
+                                                                                                                                      g)
+  <P>
+<I> perceptron-learning is the standard "induction algorithm"</I>
+<I> and interfaces to the learning-curve functions</I>
+<A NAME="perceptron-learning"><P><A HREF="../learning/algorithms/perceptron.lisp"><B>perceptron-learning</B></A></A> <I>function</I> (problem)
+  <P>
+<I> Perceptron updating - simple version without lower bound on delta</I>
+<I> Hertz, Krogh, and Palmer, eq. 5.19 (p.97)</I>
+<A NAME="perceptron-update"><P><A HREF="../learning/algorithms/perceptron.lisp"><B>perceptron-update</B></A></A> <I>function</I> (perceptron
+                                                                                                                                  actual-inputs
+                                                                                                                                  predicted
+                                                                                                                                  target
+                                                                                                                                  &optional
+                                                                                                                                  learning-rate)
+  <P>
+<A NAME="learning/algorithms/multilayer.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/multilayer.lisp">learning/algorithms/multilayer.lisp</A></H2></A>
+<P>
+<I> back-propagation learning - multi-layer neural networks</I>
+<I> backprop-learning is the standard "induction algorithm"</I>
+<I> and interfaces to the learning-curve functions</I>
+<A NAME="backprop-learning"><P><A HREF="../learning/algorithms/multilayer.lisp"><B>backprop-learning</B></A></A> <I>function</I> (problem
+                                                                                                                                  &optional
+                                                                                                                                  hidden)
+  <P>
+<I> Backprop updating - Hertz, Krogh, and Palmer, p.117</I>
+<A NAME="backprop-update"><P><A HREF="../learning/algorithms/multilayer.lisp"><B>backprop-update</B></A></A> <I>function</I> (network
+                                                                                                                              actual-inputs
+                                                                                                                              predicted
+                                                                                                                              target
+                                                                                                                              &optional
+                                                                                                                              learning-rate)
+  <P>
+<A NAME="backpropagate"><P><A HREF="../learning/algorithms/multilayer.lisp"><B>backpropagate</B></A></A> <I>function</I> (rnetwork
+                                                                                                                          <i> network in reverse order</i>
+
+                                                                                                                          inputs
+                                                                                                                          <i> the inputs to the network</i>
+
+                                                                                                                          deltas
+                                                                                                                          <i> the "errors" for current layer</i>
+
+                                                                                                                          learning-rate)
+  <P>
+<A NAME="backprop-update-layer"><P><A HREF="../learning/algorithms/multilayer.lisp"><B>backprop-update-layer</B></A></A> <I>function</I> (layer
+                                                                                                                                          all-inputs
+                                                                                                                                          deltas
+                                                                                                                                          learning-rate)
+  <P>
+<I> compute-deltas propagates the deltas back from layer i to layer j</I>
+<I> pretty ugly, partly because weights Wji are stored only at layer i</I>
+<A NAME="compute-deltas"><P><A HREF="../learning/algorithms/multilayer.lisp"><B>compute-deltas</B></A></A> <I>function</I> (jlayer
+                                                                                                                            ilayer
+                                                                                                                            ideltas)
+  <P>
+<A NAME="learning/algorithms/q-iteration.lisp"><HR>
+<H2>File <A HREF="../learning/algorithms/q-iteration.lisp">learning/algorithms/q-iteration.lisp</A></H2></A>
+<I> learning/algorithms/q-iteration.lisp</I>
+<I> Data structures and algorithms for calculating the Q-table for an</I>
+<I> MDP. Q(a,i) is the value of doing action a in state i.</I>
+<A NAME="q-entry"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-entry</B></A></A> <I>function</I> (q
+                                                                                                               a
+                                                                                                               i)
+  <P>
+<A NAME="all-q-entries"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>all-q-entries</B></A></A> <I>function</I> (i
+                                                                                                                           q)
+  <P>
+<A NAME="q-actions"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-actions</B></A></A> <I>function</I> (s
+                                                                                                                   q)
+  <P>
+<I> Given an MDP, determine the q-values of the states.</I>
+<I> Q-iteration iterates on the Q-values instead of the U-values.</I>
+<I> Basic equation is Q(a,i) <- R(i) + sum_j M(a,i,j) max_a' Q(a',j)</I>
+<I> where Q(a',j) MUST be the old value not the new.</I>
+<A NAME="q-iteration"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-iteration</B></A></A> <I>function</I> (mdp
+                                                                                                                       &optional
+                                                                                                                       qold
+                                                                                                                       &key
+                                                                                                                       epsilon)
+  <P>
+<A NAME="average-successor-q"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>average-successor-q</B></A></A> <I>function</I> (a
+                                                                                                                                       i
+                                                                                                                                       q
+                                                                                                                                       m)
+  <P>
+<I> Compute optimal policy from Q table</I>
+<A NAME="q-optimal-policy"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-optimal-policy</B></A></A> <I>function</I> (q)
+  <P>
+<I> Choice functions select an action under specific circumstances</I>
+<I> Pick a random action</I>
+<A NAME="q-random-choice"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-random-choice</B></A></A> <I>function</I> (s
+                                                                                                                               q)
+  <P>
+<I> Pick the currently best action</I>
+<A NAME="q-dmax-choice"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-dmax-choice</B></A></A> <I>function</I> (s
+                                                                                                                           q)
+  <P>
+<I> Pick the currently best action with tie-breaking</I>
+<A NAME="q-max-choice"><P><A HREF="../learning/algorithms/q-iteration.lisp"><B>q-max-choice</B></A></A> <I>function</I> (s
+                                                                                                                         q)
+  <P>
+<A NAME="learning/domains/restaurant-multivalued.lisp"><HR>
+<H2>File <A HREF="../learning/domains/restaurant-multivalued.lisp">learning/domains/restaurant-multivalued.lisp</A></H2></A>
+<I> learning/domains/restaurant-multivalued.lisp</I>
+<I> Restaurant example from chapter 18, encoded</I>
+<I> using multivalued input attributes suitable for</I>
+<I> decision-tree learning.</I>
+<A NAME="*restaurant-multivalued*"><P><A HREF="../learning/domains/restaurant-multivalued.lisp"><B>*restaurant-multivalued*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*restaurant-multivalued-problem*"><P><A HREF="../learning/domains/restaurant-multivalued.lisp"><B>*restaurant-multivalued-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/restaurant-real.lisp"><HR>
+<H2>File <A HREF="../learning/domains/restaurant-real.lisp">learning/domains/restaurant-real.lisp</A></H2></A>
+<I> learning/domains/restaurant-real.lisp</I>
+<I> Restaurant example from chapter 18, encoded</I>
+<I> using real-valued input attributes suitable for</I>
+<I> decision-tree learning or neural network learning.</I>
+<A NAME="*restaurant-real*"><P><A HREF="../learning/domains/restaurant-real.lisp"><B>*restaurant-real*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*restaurant-real12-problem*"><P><A HREF="../learning/domains/restaurant-real.lisp"><B>*restaurant-real12-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*restaurant-real100-problem*"><P><A HREF="../learning/domains/restaurant-real.lisp"><B>*restaurant-real100-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/restaurant-boolean.lisp"><HR>
+<H2>File <A HREF="../learning/domains/restaurant-boolean.lisp">learning/domains/restaurant-boolean.lisp</A></H2></A>
+<I> learning/domains/restaurant-boolean.lisp</I>
+<I> Restaurant learning problem encoded using boolean attributes only,</I>
+<I> as appropriate for decision-list learning.</I>
+<I> Target is encoded as a decision list.</I>
+<A NAME="*restaurant-boolean*"><P><A HREF="../learning/domains/restaurant-boolean.lisp"><B>*restaurant-boolean*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*restaurant-boolean-problem*"><P><A HREF="../learning/domains/restaurant-boolean.lisp"><B>*restaurant-boolean-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/majority-boolean.lisp"><HR>
+<H2>File <A HREF="../learning/domains/majority-boolean.lisp">learning/domains/majority-boolean.lisp</A></H2></A>
+<A NAME="*majority-boolean*"><P><A HREF="../learning/domains/majority-boolean.lisp"><B>*majority-boolean*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*majority-boolean-problem*"><P><A HREF="../learning/domains/majority-boolean.lisp"><B>*majority-boolean-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/ex-19-4-boolean.lisp"><HR>
+<H2>File <A HREF="../learning/domains/ex-19-4-boolean.lisp">learning/domains/ex-19-4-boolean.lisp</A></H2></A>
+<I> learning/domains/ex-19-4-boolean.lisp</I>
+<I> Inductive learning example from exercise 19.4</I>
+<A NAME="*ex-19-4-boolean-problem*"><P><A HREF="../learning/domains/ex-19-4-boolean.lisp"><B>*ex-19-4-boolean-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/and-boolean.lisp"><HR>
+<H2>File <A HREF="../learning/domains/and-boolean.lisp">learning/domains/and-boolean.lisp</A></H2></A>
+<I> learning/domains/and-boolean.lisp</I>
+<I> Data for Boolean AND function</I>
+<A NAME="*and-boolean-problem*"><P><A HREF="../learning/domains/and-boolean.lisp"><B>*and-boolean-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/xor-boolean.lisp"><HR>
+<H2>File <A HREF="../learning/domains/xor-boolean.lisp">learning/domains/xor-boolean.lisp</A></H2></A>
+<I> learning/domains/xor-boolean.lisp</I>
+<I> Data for Boolean XOR function</I>
+<A NAME="*xor-boolean-problem*"><P><A HREF="../learning/domains/xor-boolean.lisp"><B>*xor-boolean-problem*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/domains/4x3-passive-mdp.lisp"><HR>
+<H2>File <A HREF="../learning/domains/4x3-passive-mdp.lisp">learning/domains/4x3-passive-mdp.lisp</A></H2></A>
+<I> Passive, stochastic 4x3 environment for chapter 20.</I>
+<I> Just one possible action (no-op), uniformly arrives at neighbour square.</I>
+<A NAME="*4x3-passive-m-data*"><P><A HREF="../learning/domains/4x3-passive-mdp.lisp"><B>*4x3-passive-m-data*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*4x3-passive-r-data*"><P><A HREF="../learning/domains/4x3-passive-mdp.lisp"><B>*4x3-passive-r-data*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*4x3-passive-mdp*"><P><A HREF="../learning/domains/4x3-passive-mdp.lisp"><B>*4x3-passive-mdp*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="learning/agents/passive-lms-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/passive-lms-learner.lisp">learning/agents/passive-lms-learner.lisp</A></H2></A>
+<I> learning/agents/passive-lms-learner.lisp</I>
+<I> Passive LMS learning agent.</I>
+<I> When a given training sequence terminates,</I>
+<I> update the utility of each state visited in the sequence</I>
+<I> to reflect the rewards received from then on.</I>
+<A NAME="make-passive-lms-learner"><P><A HREF="../learning/agents/passive-lms-learner.lisp"><B>make-passive-lms-learner</B></A></A> <I>function</I> ()
+  <P>
+<A NAME="lms-update"><P><A HREF="../learning/agents/passive-lms-learner.lisp"><B>lms-update</B></A></A> <I>function</I> (u
+                                                                                                                         e
+                                                                                                                         percepts
+                                                                                                                         n)
+  <P>
+<A NAME="learning/agents/passive-adp-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/passive-adp-learner.lisp">learning/agents/passive-adp-learner.lisp</A></H2></A>
+<I> learning/agents/passive-adp-learner.lisp</I>
+<I> Reinforcement learning agent that uses dynamic</I>
+<I> programming to solve the Markov process</I>
+<I> that it learns from its experience. Thus, the</I>
+<I> main job is to update the model over time.</I>
+<I> Being a passive agent, it simply does no-op</I>
+<I> at each step, watching the world go by.</I>
+<A NAME="make-passive-adp-learner"><P><A HREF="../learning/agents/passive-adp-learner.lisp"><B>make-passive-adp-learner</B></A></A> <I>function</I> ()
+  <P>
+<I> Updating the transition model according to oberved transition i->j.</I>
+<I> Fairly tedious because of initializing new transition records.</I>
+<A NAME="update-passive-model"><P><A HREF="../learning/agents/passive-adp-learner.lisp"><B>update-passive-model</B></A></A> <I>function</I> (j
+                                                                                                                                             <i> current state (destination of transition)</i>
+
+                                                                                                                                             percepts
+                                                                                                                                             <i> in reverse chronological order</i>
+
+                                                                                                                                             m
+                                                                                                                                             <i> transition model, indexed by state</i>
+)
+  <P>
+<I> (passive-policy M) makes a policy of no-ops for use in value determination</I>
+<A NAME="passive-policy"><P><A HREF="../learning/agents/passive-adp-learner.lisp"><B>passive-policy</B></A></A> <I>function</I> (m)
+  <P>
+<A NAME="learning/agents/passive-td-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/passive-td-learner.lisp">learning/agents/passive-td-learner.lisp</A></H2></A>
+<I> learning/agents/passive-td-learner.lisp</I>
+<I> Passive temporal-difference learning agent.</I>
+<I> After each transition, update the utility of the</I>
+<I> source state i to make it agree more closely with that</I>
+<I> of the destination state j.</I>
+<A NAME="*alpha*"><P><A HREF="../learning/agents/passive-td-learner.lisp"><B>*alpha*</B></A></A> <I>variable</I> 
+  <P>
+<I> initial learning rate parameter</I>
+<A NAME="make-passive-td-learner"><P><A HREF="../learning/agents/passive-td-learner.lisp"><B>make-passive-td-learner</B></A></A> <I>function</I> ()
+  <P>
+<A NAME="td-update"><P><A HREF="../learning/agents/passive-td-learner.lisp"><B>td-update</B></A></A> <I>function</I> (u
+                                                                                                                      e
+                                                                                                                      percepts
+                                                                                                                      n)
+  <P>
+<A NAME="current-alpha"><P><A HREF="../learning/agents/passive-td-learner.lisp"><B>current-alpha</B></A></A> <I>function</I> (n)
+  <P>
+<A NAME="learning/agents/active-adp-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/active-adp-learner.lisp">learning/agents/active-adp-learner.lisp</A></H2></A>
+<I> learning/agents/active-adp-learner.lisp</I>
+<I> Reinforcement learning agent that uses dynamic</I>
+<I> programming to solve the Markov decision process</I>
+<I> that it learns from its experience. Thus, the</I>
+<I> main job is to update the model over time.</I>
+<A NAME="make-random-adp-learner"><P><A HREF="../learning/agents/active-adp-learner.lisp"><B>make-random-adp-learner</B></A></A> <I>function</I> (actions)
+  <P>
+<A NAME="make-maximizing-adp-learner"><P><A HREF="../learning/agents/active-adp-learner.lisp"><B>make-maximizing-adp-learner</B></A></A> <I>function</I> (actions)
+  <P>
+<A NAME="make-active-adp-learner"><P><A HREF="../learning/agents/active-adp-learner.lisp"><B>make-active-adp-learner</B></A></A> <I>function</I> (actions
+                                                                                                                                                  choice-function)
+  <P>
+<I> Update current model to reflect the evidence from the most recent action</I>
+<A NAME="update-active-model"><P><A HREF="../learning/agents/active-adp-learner.lisp"><B>update-active-model</B></A></A> <I>function</I> (mdp
+                                                                                                                                          <i> current description of envt.</i>
+
+                                                                                                                                          percepts
+                                                                                                                                          <i> in reverse chronological order</i>
+
+                                                                                                                                          action
+                                                                                                                                          <i> last action taken</i>
+)
+  <P>
+<A NAME="learning/agents/active-qi-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/active-qi-learner.lisp">learning/agents/active-qi-learner.lisp</A></H2></A>
+<I> learning/agents/active-adp-learner.lisp</I>
+<I> Reinforcement learning agent that uses dynamic</I>
+<I> programming to solve the Markov decision process</I>
+<I> that it learns from its experience. Thus, the</I>
+<I> main job is to update the model over time.</I>
+<A NAME="make-random-qi-learner"><P><A HREF="../learning/agents/active-qi-learner.lisp"><B>make-random-qi-learner</B></A></A> <I>function</I> (actions)
+  <P>
+<A NAME="make-maximizing-qi-learner"><P><A HREF="../learning/agents/active-qi-learner.lisp"><B>make-maximizing-qi-learner</B></A></A> <I>function</I> (actions)
+  <P>
+<A NAME="make-active-qi-learner"><P><A HREF="../learning/agents/active-qi-learner.lisp"><B>make-active-qi-learner</B></A></A> <I>function</I> (actions
+                                                                                                                                               choice-function)
+  <P>
+<A NAME="learning/agents/exploring-adp-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/exploring-adp-learner.lisp">learning/agents/exploring-adp-learner.lisp</A></H2></A>
+<I> learning/agents/exploring-adp-learner.lisp</I>
+<I> Reinforcement learning agent that uses dynamic</I>
+<I> programming to solve the Markov decision process</I>
+<I> that it learns from its experience. Thus, the</I>
+<I> main job is to update the model over time.</I>
+<I> Unlike the active-adp-learner, this agent uses</I>
+<I> an "intelligent" exploration policy to make sure it</I>
+<I> explores the state space reasonably quickly.</I>
+<A NAME="*r+*"><P><A HREF="../learning/agents/exploring-adp-learner.lisp"><B>*r+*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*ne*"><P><A HREF="../learning/agents/exploring-adp-learner.lisp"><B>*ne*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="exploration-function"><P><A HREF="../learning/agents/exploring-adp-learner.lisp"><B>exploration-function</B></A></A> <I>function</I> (u
+                                                                                                                                               n)
+  <P>
+<A NAME="make-exploring-adp-learner"><P><A HREF="../learning/agents/exploring-adp-learner.lisp"><B>make-exploring-adp-learner</B></A></A> <I>function</I> (actions)
+  <P>
+<I> Given an environment model M, determine the values of states U.</I>
+<I> Use value iteration, with initial values given by U itself.</I>
+<I> Basic equation is U(i) <- r(i) + max_a f(sum_j  M(a,i,j)U(j), N(a,i))</I>
+<I> where f is the exploration function. Does not applyt to terminal states.</I>
+<A NAME="exploratory-value-iteration"><P><A HREF="../learning/agents/exploring-adp-learner.lisp"><B>exploratory-value-iteration</B></A></A> <I>function</I> (mdp
+                                                                                                                                                             &optional
+                                                                                                                                                             uold
+                                                                                                                                                             &key
+                                                                                                                                                             epsilon)
+  <P>
+<A NAME="exploration-choice"><P><A HREF="../learning/agents/exploring-adp-learner.lisp"><B>exploration-choice</B></A></A> <I>function</I> (s
+                                                                                                                                           u
+                                                                                                                                           m
+                                                                                                                                           r)
+  <P>
+<A NAME="learning/agents/exploring-tdq-learner.lisp"><HR>
+<H2>File <A HREF="../learning/agents/exploring-tdq-learner.lisp">learning/agents/exploring-tdq-learner.lisp</A></H2></A>
+<I> learning/agents/exploring-tdq-learner.lisp</I>
+<I> Exploratory reinforcement learning agent using temporal differences.</I>
+<I> Works without a model by using the stochastic sampling to</I>
+<I> mirror the effect of averaging using the model.</I>
+<A NAME="make-exploring-tdq-learner"><P><A HREF="../learning/agents/exploring-tdq-learner.lisp"><B>make-exploring-tdq-learner</B></A></A> <I>function</I> (actions)
+  <P>
+<A NAME="update-exploratory-q"><P><A HREF="../learning/agents/exploring-tdq-learner.lisp"><B>update-exploratory-q</B></A></A> <I>function</I> (q
+                                                                                                                                               a
+                                                                                                                                               i
+                                                                                                                                               j
+                                                                                                                                               n
+                                                                                                                                               ri)
+  <P>
+<A NAME="exploration-q-choice"><P><A HREF="../learning/agents/exploring-tdq-learner.lisp"><B>exploration-q-choice</B></A></A> <I>function</I> (s
+                                                                                                                                               q
+                                                                                                                                               n)
+  <P>
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="../../aima.html">AIMA Home</A>
+<td> <A HREF="../../contact.html">Authors</A>
+<td> <A HREF="overview.html">Lisp Code</A>
+<td> <A HREF="../../prog.html">AI Programming</A>
+<td> <A HREF="../../instructors.html">Instructors Pages</A>
+</TABLE>
+</BODY> 
+</HTML>

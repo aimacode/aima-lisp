@@ -1,0 +1,730 @@
+<HTML><TITLE>Index of AIMA Code</TITLE>
+ <BODY bgcolor="#ffffff">
+ <H1>Index of AIMA Code</H1>
+There are 734 definitions (580 functions, 10 macros, 46 global variables and 19 types) defined in 79 files in the <I>AIMA</I> code.  They are listed below in the left column, with links
+  to the overview of each definition (documentation string, and parameter
+  list for functions).  From the overview you can link to the source code.
+  The letters F, M, V, and T in the links stand for function, macro, variable 
+  and type, respectively; also given is the page number in the book where some
+  of these definitions occur.  <P> In the right
+  column are the 224 built-in Common Lisp symbols used in the code (along with
+  the number of times each is used).  You can
+  follow a link to the definition of each one in the 
+  <A HREF="http://www.harlequin.com/books/HyperSpec/FrontMatter/index.html">
+  Common Lisp Hyperspec</A> (based on the ANSI standard document).
+  You can also go directly to the <A HREF="overview.html">overview</A> 
+  or the <A HREF="../">code directory</A>.
+  <P><CENTER>
+  <A HREF="#*"> *</A>
+  <A HREF="#A"> A</A> <A HREF="#B"> B</A> <A HREF="#C"> C</A>
+  <A HREF="#D"> D</A> <A HREF="#E"> E</A> <A HREF="#F"> F</A>
+  <A HREF="#G"> G</A> <A HREF="#H"> H</A> <A HREF="#I"> I</A>
+  <A HREF="#J"> J</A> <A HREF="#K"> K</A> <A HREF="#L"> L</A>
+  <A HREF="#M"> M</A> <A HREF="#N"> N</A> <A HREF="#O"> O</A>
+  <A HREF="#P"> P</A> <A HREF="#Q"> Q</A> <A HREF="#R"> R</A>
+  <A HREF="#S"> S</A> <A HREF="#T"> T</A> <A HREF="#U"> U</A>
+  <A HREF="#V"> V</A> <A HREF="#W"> W</A> <A HREF="#X"> X</A>
+  <A HREF="#Y"> Y</A> <A HREF="#Z"> Z</A> </CENTER>
+<PRE>
+AIMA Symbols                                 Common Lisp Symbols
+============                                 ===================
+                                         <B><A NAME=*>*</A></B>
+*4x3-m-data* (1) <A HREF="overview-UNCERTAINTY.html#*4x3-m-data*">V</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sec_3-4-1.html#&aux">&aux</A> (55) 
+*4x3-mdp* (8) <A HREF="overview-UNCERTAINTY.html#*4x3-mdp*">V</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sec_3-4-4.html#&body">&body</A> (5) 
+*4x3-passive-m-data* (1) <A HREF="overview-LEARNING.html#*4x3-passive-m-data*">V</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sec_3-4-4.html#&environment">&environment</A> (1) 
+*4x3-passive-mdp* (4) <A HREF="overview-LEARNING.html#*4x3-passive-mdp*">V</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sec_3-4-1.html#&key">&key</A> (28) 
+*4x3-passive-r-data* (1) <A HREF="overview-LEARNING.html#*4x3-passive-r-data*">V</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sec_3-4-1.html#&optional">&optional</A> (71) 
+*4x3-r-data* (1) <A HREF="overview-UNCERTAINTY.html#*4x3-r-data*">V</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sec_3-4-1.html#&rest">&rest</A> (30) 
+*8-puzzle-goal* (4) <A HREF="overview-SEARCH.html#*8-puzzle-goal*">V</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_st.html#*">*</A> (123) 
+*8-puzzle-goal-locations* (2) <A HREF="overview-SEARCH.html#*8-puzzle-goal-locations*">V</A>              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/var_stdebug-i_ace-outputst.html#*debug-io*">*debug-io*</A> (3) 
+*alpha* (1) <A HREF="overview-LEARNING.html#*alpha*">V</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/var_stprint-prettyst.html#*print-pretty*">*print-pretty*</A> (1) 
+*and-boolean-problem* (0) <A HREF="overview-LEARNING.html#*and-boolean-problem*">V</A>                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/var_strandom-statest.html#*random-state*">*random-state*</A> (2) 
+*arithmetic-grammar* (4) <A HREF="overview-LANGUAGE.html#*arithmetic-grammar*">V</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/var_stdebug-i_ace-outputst.html#*standard-output*">*standard-output*</A> (2) 
+*correct-m* (1) <A HREF="overview-UNCERTAINTY.html#*correct-m*">V</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_pl.html#+">+</A> (80) 
+*correct-r* (2) <A HREF="overview-UNCERTAINTY.html#*correct-r*">V</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_-.html#-">-</A> (129) 
+*correct-u* (1) <A HREF="overview-UNCERTAINTY.html#*correct-u*">V</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_sl.html#/">/</A> (26) 
+*debugging* (2) <A HREF="overview-UTILITIES.html#*debugging*">V</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eqcm_sleq__lteqcm_gteq.html#/=">/=</A> (5) 
+*e0* (4) <A HREF="overview-LANGUAGE.html#*e0*">V</A>                                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_1plcm_1-.html#1+">1+</A> (10) 
+*e1* (3) <A HREF="overview-LANGUAGE.html#*e1*">V</A>                                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eqcm_sleq__lteqcm_gteq.html#<"><</A> (32) 
+*e2* (2) <A HREF="overview-LANGUAGE.html#*e2*">V</A>                                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eqcm_sleq__lteqcm_gteq.html#<="><=</A> (14) 
+*ex-19-4-boolean-problem* (0) <A HREF="overview-LEARNING.html#*ex-19-4-boolean-problem*">V</A>              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eqcm_sleq__lteqcm_gteq.html#=">=</A> (72) 
+*figure23.4* (0) <A HREF="overview-LANGUAGE.html#*figure23.4*">V</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eqcm_sleq__lteqcm_gteq.html#>">></A> (23) 
+*grammar* (19) <A HREF="overview-LANGUAGE.html#*grammar*">V</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eqcm_sleq__lteqcm_gteq.html#>=">>=</A> (17) 
+*infix-ops* (1) <A HREF="overview-LOGIC.html#*infix-ops*">V</A>                            
+*majority-boolean* (0) <A HREF="overview-LEARNING.html#*majority-boolean*">V</A>                     
+*majority-boolean-problem* (1) <A HREF="overview-LEARNING.html#*majority-boolean-problem*">V</A>             
+*ne* (1) <A HREF="overview-LEARNING.html#*ne*">V</A>                                   
+*new-variable-counter* (2) <A HREF="overview-LOGIC.html#*new-variable-counter*">V</A>                 
+*page250-supermarket* (1) <A HREF="overview-LOGIC.html#*page250-supermarket*">V</A>                  
+*policy-fn* (1) <A HREF="overview-UNCERTAINTY.html#*policy-fn*">V</A>                            
+*r+* (1) <A HREF="overview-LEARNING.html#*r+*">V</A>                                   
+*restaurant-boolean* (0) <A HREF="overview-LEARNING.html#*restaurant-boolean*">V</A>                   
+*restaurant-boolean-problem* (1) <A HREF="overview-LEARNING.html#*restaurant-boolean-problem*">V</A>           
+*restaurant-multivalued* (0) <A HREF="overview-LEARNING.html#*restaurant-multivalued*">V</A>               
+*restaurant-multivalued-problem* (1) <A HREF="overview-LEARNING.html#*restaurant-multivalued-problem*">V</A>       
+*restaurant-real* (0) <A HREF="overview-LEARNING.html#*restaurant-real*">V</A>                      
+*restaurant-real100-problem* (0) <A HREF="overview-LEARNING.html#*restaurant-real100-problem*">V</A>           
+*restaurant-real12-problem* (1) <A HREF="overview-LEARNING.html#*restaurant-real12-problem*">V</A>            
+*romania-map* (1) <A HREF="overview-SEARCH.html#*romania-map*">V</A>                          
+*scene-4.17* (1) <A HREF="overview-SEARCH.html#*scene-4.17*">V</A>                           
+*vacuum-home* (2) <A HREF="overview-SEARCH.html#*vacuum-home*">V</A>                          
+*xor-boolean-problem* (0) <A HREF="overview-LEARNING.html#*xor-boolean-problem*">V</A>                  
++fail+ (14) <A HREF="overview-LOGIC.html#+fail+">V</A>                                
++logical-connectives+ (1) <A HREF="overview-LOGIC.html#+logical-connectives+">V</A>                  
++logical-quantifiers+ (1) <A HREF="overview-LOGIC.html#+logical-quantifiers+">V</A>                  
++no-bindings+ (9) <A HREF="overview-LOGIC.html#+no-bindings+">V</A>                          
+->cnf (5) <A HREF="overview-LOGIC.html#->cnf">F</A>                                  
+->horn (3) <A HREF="overview-LOGIC.html#->horn">F</A>                                 
+->inf (3) <A HREF="overview-LOGIC.html#->inf">F</A>                                  
+->minimal-cnf (3) <A HREF="overview-LOGIC.html#->minimal-cnf">F</A>                          
+->prefix (2) <A HREF="overview-LOGIC.html#->prefix">F</A>                               
+8-puzzle-display-fn (0) <A HREF="overview-SEARCH.html#8-puzzle-display-fn">F</A>                    
+8-puzzle-goal-location (1) <A HREF="overview-SEARCH.html#8-puzzle-goal-location">F</A>                 
+8-puzzle-legal-moves (1) <A HREF="overview-SEARCH.html#8-puzzle-legal-moves">F</A>                   
+8-puzzle-location (2) <A HREF="overview-SEARCH.html#8-puzzle-location">F</A>                      
+8-puzzle-print (1) <A HREF="overview-SEARCH.html#8-puzzle-print">F</A>                         
+8-puzzle-ref (7) <A HREF="overview-SEARCH.html#8-puzzle-ref">F</A>                           
+8-puzzle-state (0) <A HREF="overview-SEARCH.html#8-puzzle-state">F</A>                         
+9-power (3) <A HREF="overview-SEARCH.html#9-power">F</A>                                
+@ (40) <A HREF="overview-UTILITIES.html#@">F</A>                                     
+                                             
+                                         <B><A NAME=A>A</A></B>
+a*-search (11) [p. 97] <A HREF="overview-SEARCH.html#a*-search">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_abs.html#abs">abs</A> (14) 
+absolute-loc (1) <A HREF="overview-AGENTS.html#absolute-loc">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_alphanumericp.html#alphanumericp">alphanumericp</A> (2) 
+accuracy (6) <A HREF="overview-LEARNING.html#accuracy">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_and.html#and">and</A> (90) 
+action-model (17) <A HREF="overview-UNCERTAINTY.html#action-model">F</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_append.html#append">append</A> (13) 
+actions (29) <A HREF="overview-UNCERTAINTY.html#actions">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_apply.html#apply">apply</A> (19) 
+active-adp-agent (0) [p. 608]                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_aref.html#aref">aref</A> (23) 
+add-edge (4) [p. 702] <A HREF="overview-LANGUAGE.html#add-edge">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_array.html#array">array</A> (10) 
+add-locs (3) <A HREF="overview-AGENTS.html#add-locs">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_array-dimension.html#array-dimension">array-dimension</A> (5) 
+add-test (1) <A HREF="overview-UTILITIES.html#add-test">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_array-dimensions.html#array-dimensions">array-dimensions</A> (2) 
+agent-body (71) <A HREF="overview-AGENTS.html#agent-body">T</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_array-total-size.html#array-total-size">array-total-size</A> (1) 
+agent-trial (1) <A HREF="overview-AGENTS.html#agent-trial">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_assert.html#assert">assert</A> (10) 
+agent-trials (1) <A HREF="overview-AGENTS.html#agent-trials">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_assoccm_a_assoc-if-not.html#assoc">assoc</A> (20) 
+agent-with-name (2) <A HREF="overview-SEARCH.html#agent-with-name">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_atom.html#atom">atom</A> (15) 
+aimless-wumpus-agent (1) <A HREF="overview-AGENTS.html#aimless-wumpus-agent">T</A>                   
+align (0) [p. 754]                           
+all-q-entries (1) <A HREF="overview-LEARNING.html#all-q-entries">F</A>                          
+all-related-to? (0) [p. 322]                 
+all-truth-interpretations (1) <A HREF="overview-LOGIC.html#all-truth-interpretations">F</A>              
+alpha-beta-decision (1) <A HREF="overview-SEARCH.html#alpha-beta-decision">F</A>                    
+alpha-value (2) <A HREF="overview-SEARCH.html#alpha-value">F</A>                            
+appearance (2) <A HREF="overview-LOGIC.html#appearance">F</A>                             
+arg1 (28) <A HREF="overview-UTILITIES.html#arg1">F</A>                                  
+arg2 (18) <A HREF="overview-UTILITIES.html#arg2">F</A>                                  
+args (75) <A HREF="overview-UTILITIES.html#args">F</A>                                  
+array->vector (1) <A HREF="overview-UTILITIES.html#array->vector">F</A>                          
+ask (7) <A HREF="overview-LOGIC.html#ask">F</A>                                    
+ask-each (4) <A HREF="overview-LOGIC.html#ask-each:fol-kb">F</A> <A HREF="overview-LOGIC.html#ask-each:horn-kb">F</A> <A HREF="overview-LOGIC.html#ask-each:prop-kb">F</A> <A HREF="overview-LOGIC.html#ask-each:literal-kb">F</A>                         
+ask-game-user (1) <A HREF="overview-SEARCH.html#ask-game-user">F</A>                          
+ask-pattern (2) <A HREF="overview-LOGIC.html#ask-pattern">F</A>                            
+ask-patterns (3) <A HREF="overview-LOGIC.html#ask-patterns">F</A>                           
+ask-user (1) <A HREF="overview-AGENTS.html#ask-user">F</A>                               
+assign-agent-scores (2) <A HREF="overview-SEARCH.html#assign-agent-scores">F</A>                    
+atomic-clause? (4) <A HREF="overview-LOGIC.html#atomic-clause?">F</A>                         
+attribute-name (3) <A HREF="overview-LEARNING.html#attribute-name">F</A>                         
+attribute-value (17) <A HREF="overview-LEARNING.html#attribute-value">F</A>                       
+attribute-values (1) <A HREF="overview-LEARNING.html#attribute-values">F</A>                       
+average (1) <A HREF="overview-UTILITIES.html#average">F</A>                                
+average-successor-q (1) <A HREF="overview-LEARNING.html#average-successor-q">F</A>                    
+                                             
+                                         <B><A NAME=B>B</A></B>
+back-chain (0) [p. 275]                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/typ_bignum.html#bignum">bignum</A> (2) 
+back-chain-each (1) <A HREF="overview-LOGIC.html#back-chain-each">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_bit-vector.html#bit-vector">bit-vector</A> (2) 
+back-chain-list (0) [p. 275]                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_boundp.html#boundp">boundp</A> (1) 
+back-prop-update (0) [p. 581]                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_butlastcm_nbutlast.html#butlast">butlast</A> (2) 
+backprop-learning (0) <A HREF="overview-LEARNING.html#backprop-learning">F</A>                      
+backprop-update (2) <A HREF="overview-LEARNING.html#backprop-update">F</A>                        
+backprop-update-layer (2) <A HREF="overview-LEARNING.html#backprop-update-layer">F</A>                  
+backpropagate (1) <A HREF="overview-LEARNING.html#backpropagate">F</A>                          
+belief-net-ask (0) [p. 452]                  
+best-first-search (3) [p. 93] <A HREF="overview-SEARCH.html#best-first-search">F</A>              
+beta-value (1) <A HREF="overview-SEARCH.html#beta-value">F</A>                             
+between (2) <A HREF="overview-UTILITIES.html#between">F</A>                                
+binding-val (1) <A HREF="overview-LOGIC.html#binding-val">F</A>                            
+binding-var (0) <A HREF="overview-LOGIC.html#binding-var">F</A>                            
+bits-required (2) <A HREF="overview-LEARNING.html#bits-required">F</A>                          
+blank-square (2) <A HREF="overview-SEARCH.html#blank-square">F</A>                           
+boolean-error (3) <A HREF="overview-UTILITIES.html#boolean-error">F</A>                          
+bottom-up-parse (0) [p. 666]                 
+breadth-first-search (1) [p. 74] <A HREF="overview-SEARCH.html#breadth-first-search">F</A>           
+build-road (1) <A HREF="overview-SEARCH.html#build-road">F</A>                             
+build-truth-table (2) <A HREF="overview-LOGIC.html#build-truth-table">F</A>                      
+                                             
+                                         <B><A NAME=C>C</A></B>
+call-method-for (6) <A HREF="overview-UTILITIES.html#call-method-for">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_carcm_cdr_darcm_cddddr.html#caar">caar</A> (4) 
+cannibal-state (0) <A HREF="overview-SEARCH.html#cannibal-state">T</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_carcm_cdr_darcm_cddddr.html#cadr">cadr</A> (5) 
+cannibals-can-eat? (1) <A HREF="overview-SEARCH.html#cannibals-can-eat?">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/locfun_call-next-method.html#call-next-method">call-next-method</A> (7) 
+categories-for (2) <A HREF="overview-LANGUAGE.html#categories-for">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_carcm_cdr_darcm_cddddr.html#car">car</A> (42) 
+chart-parse (2) [p. 702] <A HREF="overview-LANGUAGE.html#chart-parse">F</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_casecm_ccasecm_ecase.html#case">case</A> (14) 
+chart-parses (9) <A HREF="overview-LANGUAGE.html#chart-parses">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_carcm_cdr_darcm_cddddr.html#cdar">cdar</A> (4) 
+check-k-in-a-row (4) <A HREF="overview-SEARCH.html#check-k-in-a-row">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_carcm_cdr_darcm_cddddr.html#cdr">cdr</A> (54) 
+check-tsp-map? (1) <A HREF="overview-SEARCH.html#check-tsp-map?">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_floorcm_f_undcm_fround.html#ceiling">ceiling</A> (1) 
+choose-operator (0) [p. 385]                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_charcm_schar.html#char">char</A> (4) 
+city (15) <A HREF="overview-SEARCH.html#city">T</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_class.html#class">class</A> (4) 
+classify (0) <A HREF="overview-LEARNING.html#classify">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_complex.html#complex">complex</A> (2) 
+climb (3) <A HREF="overview-AGENTS.html#climb:wumpus-world">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_cond.html#cond">cond</A> (69) 
+cnf1->inf1 (1) <A HREF="overview-LOGIC.html#cnf1->inf1">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/contyp_condition.html#condition">condition</A> (2) 
+code-example (1) <A HREF="overview-LEARNING.html#code-example">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_cons.html#cons">cons</A> (83) 
+code-examples (1) <A HREF="overview-LEARNING.html#code-examples">F</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_consp.html#consp">consp</A> (9) 
+code-unclassified-example (1) <A HREF="overview-LEARNING.html#code-unclassified-example">F</A>              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_constantp.html#constantp">constantp</A> (1) 
+compare-search-algorithms (8) <A HREF="overview-SEARCH.html#compare-search-algorithms">F</A>              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_copy-list.html#copy-list">copy-list</A> (2) 
+complete? (5) <A HREF="overview-LANGUAGE.html#complete?">F</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_countcm_c_count-if-not.html#count">count</A> (1) 
+completer (1) [p. 702] <A HREF="overview-LANGUAGE.html#completer">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_countcm_c_count-if-not.html#count-if">count-if</A> (1) 
+complex-sentences-in (1) <A HREF="overview-LOGIC.html#complex-sentences-in">F</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_countcm_c_count-if-not.html#count-if-not">count-if-not</A> (1) 
+compose (4) <A HREF="overview-UTILITIES.html#compose">F</A>                                
+compute-deltas (1) <A HREF="overview-LEARNING.html#compute-deltas">F</A>                         
+compute-truth-entries (1) <A HREF="overview-LOGIC.html#compute-truth-entries">F</A>                  
+concat-symbol (4) <A HREF="overview-UTILITIES.html#concat-symbol">F</A>                          
+conditional-planning-agent (0) [p. 395]      
+conjunction (12) <A HREF="overview-LOGIC.html#conjunction">F</A>                           
+conjuncts (12) <A HREF="overview-LOGIC.html#conjuncts">F</A>                             
+consistent (0) <A HREF="overview-LEARNING.html#consistent">F</A>                             
+consistent-det? (0) [p. 635]                 
+copy-array (1) <A HREF="overview-UTILITIES.html#copy-array">F</A>                             
+copy-hash-table (9) <A HREF="overview-UTILITIES.html#copy-hash-table">F</A>                        
+copy-subarray (1) <A HREF="overview-UTILITIES.html#copy-subarray">F</A>                          
+count-pieces-in-direction (2) <A HREF="overview-SEARCH.html#count-pieces-in-direction">F</A>              
+cpop (0) [p. 395]                            
+create-polygon (1) <A HREF="overview-SEARCH.html#create-polygon">F</A>                         
+create-scene (1) <A HREF="overview-SEARCH.html#create-scene">F</A>                           
+create-sorted-tree (0) <A HREF="overview-UTILITIES.html#create-sorted-tree">F</A>                     
+create-start-node (6) <A HREF="overview-SEARCH.html#create-start-node">F</A>                      
+csp-backtracking-search (2) <A HREF="overview-SEARCH.html#csp-backtracking-search">F</A>                
+csp-conflicts (1) <A HREF="overview-SEARCH.html#csp-conflicts">F</A>                          
+csp-empty-domainp (1) <A HREF="overview-SEARCH.html#csp-empty-domainp">F</A>                      
+csp-explicit-check (1) <A HREF="overview-SEARCH.html#csp-explicit-check">F</A>                     
+csp-forward-checking-search (1) <A HREF="overview-SEARCH.html#csp-forward-checking-search">F</A>            
+csp-legal-assignmentp (1) <A HREF="overview-SEARCH.html#csp-legal-assignmentp">F</A>                  
+csp-legal-statep (3) <A HREF="overview-SEARCH.html#csp-legal-statep">F</A>                       
+csp-legal-values (1) <A HREF="overview-SEARCH.html#csp-legal-values">F</A>                       
+csp-modifications (0) <A HREF="overview-SEARCH.html#csp-modifications">F</A>                      
+csp-random-completion (1) <A HREF="overview-SEARCH.html#csp-random-completion">F</A>                  
+csp-termination (0) <A HREF="overview-SEARCH.html#csp-termination">F</A>                        
+csp-var (0) <A HREF="overview-SEARCH.html#csp-var">T</A>                                
+current-agent (2) <A HREF="overview-SEARCH.html#current-agent">F</A>                          
+current-alpha (2) <A HREF="overview-LEARNING.html#current-alpha">F</A>                          
+current-best-learning (0) [p. 547]           
+current-player (5) <A HREF="overview-SEARCH.html#current-player">F</A>                         
+                                             
+                                         <B><A NAME=D>D</A></B>
+deadly? (1) <A HREF="overview-AGENTS.html#deadly?">F</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_incfcm_decf.html#decf">decf</A> (15) 
+decision-list-learning (1) [p. 556] <A HREF="overview-LEARNING.html#decision-list-learning">F</A>        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/sym_declare.html#declare">declare</A> (34) 
+decision-theoretic-agent (0) [p. 511]        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defconstant.html#defconstant">defconstant</A> (6) 
+decision-tree-learning (1) [p. 537] <A HREF="overview-LEARNING.html#decision-tree-learning">F</A>        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defmacro.html#defmacro">defmacro</A> (11) 
+declare-ignore (15) <A HREF="overview-UTILITIES.html#declare-ignore">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defmethod.html#defmethod">defmethod</A> (106) 
+deepest-least-leaf (1) <A HREF="overview-SEARCH.html#deepest-least-leaf">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defparametercm_defvar.html#defparameter">defparameter</A> (12) 
+define-if-undefined (1) <A HREF="overview-UTILITIES.html#define-if-undefined">M</A>                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defsetf.html#defsetf">defsetf</A> (2) 
+defmethod (0) <A HREF="overview-UTILITIES.html#defmethod">M</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defstruct.html#defstruct">defstruct</A> (20) 
+defstructure (69) <A HREF="overview-UTILITIES.html#defstructure">M</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defun.html#defun">defun</A> (484) 
+deftest (7) <A HREF="overview-UTILITIES.html#deftest">M</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_defparametercm_defvar.html#defvar">defvar</A> (28) 
+delete-element (3) <A HREF="overview-UTILITIES.html#delete-element">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_removecm__elete-if-not.html#delete">delete</A> (4) 
+deletef (8) <A HREF="overview-UTILITIES.html#deletef">M</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_remove-du_e-duplicates.html#delete-duplicates">delete-duplicates</A> (3) 
+depth-first-search (0) [p. 78] <A HREF="overview-SEARCH.html#depth-first-search">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_destructuring-bind.html#destructuring-bind">destructuring-bind</A> (10) 
+depth-limited-search (1) <A HREF="overview-SEARCH.html#depth-limited-search">F</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_docm_dost.html#do">do</A> (99) 
+destructuring-bind (0) <A HREF="overview-UTILITIES.html#destructuring-bind">M</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_dolist.html#dolist">dolist</A> (46) 
+dfs-contour (1) [p. 107] <A HREF="overview-SEARCH.html#dfs-contour">F</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_dotimes.html#dotimes">dotimes</A> (29) 
+disjunction (3) <A HREF="overview-LOGIC.html#disjunction">F</A>                            
+disjuncts (11) <A HREF="overview-LOGIC.html#disjuncts">F</A>                             
+display-environment (2) <A HREF="overview-SEARCH.html#display-environment:game-environment">F</A> <A HREF="overview-AGENTS.html#display-environment:environment">F</A>                  
+display-environment-snapshot (1) <A HREF="overview-AGENTS.html#display-environment-snapshot:grid-environment">F</A> <A HREF="overview-AGENTS.html#display-environment-snapshot:environment">F</A>         
+display-expand (1) <A HREF="overview-SEARCH.html#display-expand:problem">F</A>                         
+distribution (2) <A HREF="overview-LEARNING.html#distribution">F</A>                           
+dll (1) <A HREF="overview-LEARNING.html#dll">F</A>                                    
+dlpredict (1) <A HREF="overview-LEARNING.html#dlpredict">F</A>                              
+dmax-choice (1) <A HREF="overview-UNCERTAINTY.html#dmax-choice">F</A>                            
+dot-product (2) <A HREF="overview-UTILITIES.html#dot-product">F</A>                            
+dprint (5) <A HREF="overview-UTILITIES.html#dprint">F</A>                                 
+dt-agent (0) [p. 419]                        
+dtl (1) <A HREF="overview-LEARNING.html#dtl">F</A>                                    
+dtpredict (1) <A HREF="overview-LEARNING.html#dtpredict">F</A>                              
+                                             
+                                         <B><A NAME=E>E</A></B>
+edge (54) <A HREF="overview-LANGUAGE.html#edge">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_elt.html#elt">elt</A> (17) 
+edge->tree (1) <A HREF="overview-LANGUAGE.html#edge->tree">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_ensure-ge_ric-function.html#ensure-generic-function">ensure-generic-function</A> (3) 
+edge-cost (1) <A HREF="overview-SEARCH.html#edge-cost:tsp-problem">F</A> <A HREF="overview-SEARCH.html#edge-cost:route-finding-problem">F</A> <A HREF="overview-SEARCH.html#edge-cost:path-planning-problem">F</A> <A HREF="overview-SEARCH.html#edge-cost:problem">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eq.html#eq">eq</A> (105) 
+edge-equal (1) <A HREF="overview-LANGUAGE.html#edge-equal">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_eql.html#eql">eql</A> (13) 
+edge-expects (3) <A HREF="overview-LANGUAGE.html#edge-expects">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_equal.html#equal">equal</A> (89) 
+eliminate-all-duplicates (1) <A HREF="overview-SEARCH.html#eliminate-all-duplicates">F</A>               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_equalp.html#equalp">equalp</A> (2) 
+eliminate-cycles (1) <A HREF="overview-SEARCH.html#eliminate-cycles">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_error.html#error">error</A> (23) 
+eliminate-implications (1) <A HREF="overview-LOGIC.html#eliminate-implications">F</A>                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_eval.html#eval">eval</A> (2) 
+eliminate-returns (1) <A HREF="overview-SEARCH.html#eliminate-returns">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_everycm_s_erycm_notany.html#every">every</A> (16) 
+empty-queue? (3) <A HREF="overview-UTILITIES.html#empty-queue?">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_expcm_expt.html#exp">exp</A> (70) 
+empty-tree (1) <A HREF="overview-UTILITIES.html#empty-tree">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_expcm_expt.html#expt">expt</A> (1) 
+enqueue-at-end (3) <A HREF="overview-UTILITIES.html#enqueue-at-end">F</A>                         
+enqueue-at-front (4) <A HREF="overview-UTILITIES.html#enqueue-at-front">F</A>                       
+enqueue-by-priority (2) <A HREF="overview-UTILITIES.html#enqueue-by-priority">F</A>                    
+ensure-generic-function (0) <A HREF="overview-UTILITIES.html#ensure-generic-function">F</A>                
+eval-truth (1) <A HREF="overview-LOGIC.html#eval-truth">F</A>                             
+evidence-except (0) [p. 452]                 
+execute-agent-actions (2) <A HREF="overview-AGENTS.html#execute-agent-actions">F</A>                  
+expand (9) <A HREF="overview-SEARCH.html#expand">F</A>                                 
+exploration-choice (1) <A HREF="overview-LEARNING.html#exploration-choice">F</A>                     
+exploration-function (3) <A HREF="overview-LEARNING.html#exploration-function">F</A>                   
+exploration-q-choice (1) <A HREF="overview-LEARNING.html#exploration-q-choice">F</A>                   
+exploratory-value-iteration (1) <A HREF="overview-LEARNING.html#exploratory-value-iteration">F</A>            
+extend-bindings (2) <A HREF="overview-LOGIC.html#extend-bindings">F</A>                        
+extend-example (0) [p. 643]                  
+                                             
+                                         <B><A NAME=F>F</A></B>
+false (9) <A HREF="overview-UTILITIES.html#false">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_fboundp.html#fboundp">fboundp</A> (2) 
+feel (4) <A HREF="overview-LOGIC.html#feel">F</A>                                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_fill-pointer.html#fill-pointer">fill-pointer</A> (1) 
+filter-domains (1) <A HREF="overview-SEARCH.html#filter-domains">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_findcm_fi__find-if-not.html#find">find</A> (13) 
+find-and-infer (0) [p. 273]                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_findcm_fi__find-if-not.html#find-if">find-if</A> (2) 
+find-anywhere-if (0) <A HREF="overview-LOGIC.html#find-anywhere-if">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_find-package.html#find-package">find-package</A> (2) 
+find-city (7) <A HREF="overview-SEARCH.html#find-city">F</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_firstcm_s_inthcm_tenth.html#first">first</A> (79) 
+find-element (0) <A HREF="overview-UTILITIES.html#find-element">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/typ_fixnum.html#fixnum">fixnum</A> (8) 
+find-leaf (0) <A HREF="overview-SEARCH.html#find-leaf">F</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_float.html#float">float</A> (11) 
+find-neighbor-if (1) <A HREF="overview-AGENTS.html#find-neighbor-if">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_floorcm_f_undcm_fround.html#floor">floor</A> (5) 
+find-object-if (15) <A HREF="overview-AGENTS.html#find-object-if">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_format.html#format">format</A> (61) 
+find-object-or-neighbor-if (2) <A HREF="overview-AGENTS.html#find-object-or-neighbor-if">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_firstcm_s_inthcm_tenth.html#fourth">fourth</A> (1) 
+find-transform (0) [p. 753]                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_funcall.html#funcall">funcall</A> (70) 
+foil (0) [p. 643]                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_function.html#function">function</A> (417) 
+fol-kb (3) <A HREF="overview-LOGIC.html#fol-kb">T</A>                                 
+for (79) <A HREF="overview-UTILITIES.html#for">M</A>                                   
+for-each (1) <A HREF="overview-UTILITIES.html#for-each">M</A>                               
+forward (14) <A HREF="overview-AGENTS.html#forward:grid-environment">F</A>                               
+forward-chain (0) [p. 273]                   
+free-loc? (3) <A HREF="overview-AGENTS.html#free-loc?">F</A>                              
+function-symbol? (1) <A HREF="overview-LOGIC.html#function-symbol?">F</A>                       
+fuzz (2) <A HREF="overview-UTILITIES.html#fuzz">F</A>                                   
+                                             
+                                         <B><A NAME=G>G</A></B>
+game->environment (1) <A HREF="overview-SEARCH.html#game->environment">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_gensym.html#gensym">gensym</A> (5) 
+game-over? (5) <A HREF="overview-SEARCH.html#game-over?:ttt-game">F</A> <A HREF="overview-SEARCH.html#game-over?:game">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_get.html#get">get</A> (13) 
+game-players (0) <A HREF="overview-SEARCH.html#game-players">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_getf.html#getf">getf</A> (4) 
+game-successors (7) <A HREF="overview-SEARCH.html#game-successors">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_gethash.html#gethash">gethash</A> (114) 
+general-search (7) [p. 73] <A HREF="overview-SEARCH.html#general-search">F</A>                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_go.html#go">go</A> (3) 
+generate-terms (1) <A HREF="overview-LEARNING.html#generate-terms">F</A>                         
+genetic-algorithm (0) [p. 620]               
+get-binding (7) <A HREF="overview-LOGIC.html#get-binding">F</A>                            
+get-percept (1) <A HREF="overview-UNCERTAINTY.html#get-percept:mdp-environment">F</A> <A HREF="overview-LOGIC.html#get-percept:shopping-world">F</A> <A HREF="overview-SEARCH.html#get-percept:problem-solving-environment">F</A> <A HREF="overview-SEARCH.html#get-percept:game-environment">F</A> <A HREF="overview-AGENTS.html#get-percept:wumpus-world">F</A> <A HREF="overview-AGENTS.html#get-percept:vacuum-world">F</A> <A HREF="overview-AGENTS.html#get-percept:environment">F</A>                
+get-unit-inputs (1) <A HREF="overview-LEARNING.html#get-unit-inputs">F</A>                        
+goal-test (9) <A HREF="overview-SEARCH.html#goal-test:tsp-problem">F</A> <A HREF="overview-SEARCH.html#goal-test:cannibal-problem">F</A> <A HREF="overview-SEARCH.html#goal-test:csp-problem">F</A> <A HREF="overview-SEARCH.html#goal-test:problem">F</A>                        
+grab (9) <A HREF="overview-AGENTS.html#grab:grid-environment">F</A>                                   
+grabable? (1) <A HREF="overview-AGENTS.html#grabable?">F</A>                              
+grammar (12) <A HREF="overview-LANGUAGE.html#grammar">F</A>                               
+greedy-search (1) [p. 93] <A HREF="overview-SEARCH.html#greedy-search">F</A>                  
+grid-contents (4) <A HREF="overview-AGENTS.html#grid-contents">F</A>                          
+gsat (0) [p. 183]                            
+                                             
+                                         <B><A NAME=H>H</A></B>
+h-cost (3) <A HREF="overview-SEARCH.html#h-cost:tsp-problem">F</A> <A HREF="overview-SEARCH.html#h-cost:route-finding-problem">F</A> <A HREF="overview-SEARCH.html#h-cost:8-puzzle-problem">F</A> <A HREF="overview-SEARCH.html#h-cost:path-planning-problem">F</A> <A HREF="overview-SEARCH.html#h-cost:problem">F</A>                         
+handle-augmentation (1) <A HREF="overview-LANGUAGE.html#handle-augmentation:grammar">F</A>                    
+handle-quantifiers (1) <A HREF="overview-LOGIC.html#handle-quantifiers">F</A>                     
+hash-table->list (0) <A HREF="overview-UTILITIES.html#hash-table->list">F</A>                       
+hd-pop (0) [p. 374]                          
+heading->string (1) <A HREF="overview-AGENTS.html#heading->string">F</A>                        
+heap-extract-min (2) <A HREF="overview-UTILITIES.html#heap-extract-min">F</A>                       
+heap-insert (2) <A HREF="overview-UTILITIES.html#heap-insert">F</A>                            
+heap-left (1) <A HREF="overview-UTILITIES.html#heap-left">F</A>                              
+heap-parent (3) <A HREF="overview-UTILITIES.html#heap-parent">F</A>                            
+heap-right (1) <A HREF="overview-UTILITIES.html#heap-right">F</A>                             
+heap-sort (2) <A HREF="overview-UTILITIES.html#heap-sort">F</A>                              
+heap-val (5) <A HREF="overview-UTILITIES.html#heap-val">F</A>                               
+heapify (1) <A HREF="overview-UTILITIES.html#heapify">F</A>                                
+hear (1) <A HREF="overview-LOGIC.html#hear">F</A>                                   
+hill-climbing (0) [p. 112]                   
+hill-climbing-search (3) <A HREF="overview-SEARCH.html#hill-climbing-search">F</A>                   
+hill-climbing-until-flat-n-times-search (0) <A HREF="overview-SEARCH.html#hill-climbing-until-flat-n-times-search">F</A>
+horn-clause? (1) <A HREF="overview-LOGIC.html#horn-clause?">F</A>                           
+hprint (0) <A HREF="overview-UTILITIES.html#hprint">F</A>                                 
+                                             
+                                         <B><A NAME=I>I</A></B>
+ida* (0) [p. 107]                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_identity.html#identity">identity</A> (17) 
+incremental-learning-curve (0) <A HREF="overview-LEARNING.html#incremental-learning-curve">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_if.html#if">if</A> (120) 
+infinity (14) <A HREF="overview-UTILITIES.html#infinity">V</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/dec_ignorecm_ignorable.html#ignore">ignore</A> (29) 
+information-value (1) <A HREF="overview-LEARNING.html#information-value">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_incfcm_decf.html#incf">incf</A> (57) 
+initialize (1) <A HREF="overview-UNCERTAINTY.html#initialize:mdp-environment">F</A> <A HREF="overview-SEARCH.html#initialize:problem-solving-environment">F</A> <A HREF="overview-SEARCH.html#initialize:game-environment">F</A> <A HREF="overview-AGENTS.html#initialize:grid-environment">F</A> <A HREF="overview-AGENTS.html#initialize:environment">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_integer.html#integer">integer</A> (6) 
+initialize-agent-names (1) <A HREF="overview-AGENTS.html#initialize-agent-names">F</A>                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_intern.html#intern">intern</A> (5) 
+inorder-successor (1) <A HREF="overview-UTILITIES.html#inorder-successor">F</A>                      
+insert (1) <A HREF="overview-LOGIC.html#insert">F</A>                                 
+insert-between (1) <A HREF="overview-UTILITIES.html#insert-between">F</A>                         
+insert-element (4) <A HREF="overview-UTILITIES.html#insert-element">F</A>                         
+inside (2) <A HREF="overview-UTILITIES.html#inside">F</A>                                 
+integer (0) [p. 856]                         
+intersects (1) <A HREF="overview-SEARCH.html#intersects">F</A>                             
+iota (7) <A HREF="overview-UTILITIES.html#iota">F</A>                                   
+iterative-deepening-search (0) [p. 79] <A HREF="overview-SEARCH.html#iterative-deepening-search">F</A>     
+                                             
+                                         <B><A NAME=K>K</A></B>
+kb-agent (0) [p. 202]                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/typ_keyword.html#keyword">keyword</A> (2) 
+kill (5) <A HREF="overview-AGENTS.html#kill">F</A>                                   
+                                             
+                                         <B><A NAME=L>L</A></B>
+largest-key (0) <A HREF="overview-UTILITIES.html#largest-key">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_fletcm_scm_macrolet.html#labels">labels</A> (2) 
+last1 (7) <A HREF="overview-UTILITIES.html#last1">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_lambda.html#lambda">lambda</A> (165) 
+leafp (1) <A HREF="overview-SEARCH.html#leafp">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_last.html#last">last</A> (6) 
+learning-curve (0) <A HREF="overview-LEARNING.html#learning-curve">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_length.html#length">length</A> (54) 
+learning-problem (0) <A HREF="overview-LEARNING.html#learning-problem">T</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_letcm_letst.html#let">let</A> (180) 
+least-key (0) <A HREF="overview-UTILITIES.html#least-key">F</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_letcm_letst.html#let*">let*</A> (39) 
+left-rotate (1) <A HREF="overview-UTILITIES.html#left-rotate">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_list.html#list">list</A> (147) 
+leftmost (4) <A HREF="overview-UTILITIES.html#leftmost">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_listcm_listst.html#list*">list*</A> (2) 
+legal-actions (1) <A HREF="overview-AGENTS.html#legal-actions:wumpus-world">F</A> <A HREF="overview-AGENTS.html#legal-actions:vacuum-world">F</A> <A HREF="overview-AGENTS.html#legal-actions:grid-environment">F</A> <A HREF="overview-AGENTS.html#legal-actions:environment">F</A>                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_listp.html#listp">listp</A> (3) 
+legal-move? (1) <A HREF="overview-SEARCH.html#legal-move?">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_log.html#log">log</A> (1) 
+legal-moves (7) <A HREF="overview-SEARCH.html#legal-moves:cognac-game">F</A> <A HREF="overview-SEARCH.html#legal-moves:ttt-game">F</A> <A HREF="overview-SEARCH.html#legal-moves:game">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_loop.html#loop">loop</A> (15) 
+length=1 (3) <A HREF="overview-UTILITIES.html#length=1">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_upper-cas__both-case-p.html#lower-case-p">lower-case-p</A> (1) 
+length>1 (5) <A HREF="overview-UTILITIES.html#length>1">F</A>                               
+lhs-op (3) <A HREF="overview-LANGUAGE.html#lhs-op">F</A>                                 
+line-intersects-poly? (1) <A HREF="overview-SEARCH.html#line-intersects-poly?">F</A>                  
+list-elements (0) <A HREF="overview-UTILITIES.html#list-elements">F</A>                          
+literal-clause? (2) <A HREF="overview-LOGIC.html#literal-clause?">F</A>                        
+lms-update (1) [p. 602] <A HREF="overview-LEARNING.html#lms-update">F</A>                    
+local-minimum (0) <A HREF="overview-SEARCH.html#local-minimum">F</A>                          
+logic (10) <A HREF="overview-LOGIC.html#logic">F</A>                                 
+lookup (6) <A HREF="overview-LOGIC.html#lookup">F</A>                                 
+looping-node? (2) <A HREF="overview-SEARCH.html#looping-node?">F</A>                          
+loss (0) <A HREF="overview-UNCERTAINTY.html#loss">F</A>                                   
+                                             
+                                         <B><A NAME=M>M</A></B>
+majority (3) <A HREF="overview-LEARNING.html#majority">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_macro-function.html#macro-function">macro-function</A> (2) 
+majority-perceptron (1) <A HREF="overview-LEARNING.html#majority-perceptron">F</A>                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_make-array.html#make-array">make-array</A> (9) 
+make (2) <A HREF="overview-AGENTS.html#make">F</A>                                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_make-broadcast-stream.html#make-broadcast-stream">make-broadcast-stream</A> (1) 
+make-active-adp-learner (2) <A HREF="overview-LEARNING.html#make-active-adp-learner">F</A>                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_make-hash-table.html#make-hash-table">make-hash-table</A> (37) 
+make-active-qi-learner (2) <A HREF="overview-LEARNING.html#make-active-qi-learner">F</A>                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_make-list.html#make-list">make-list</A> (4) 
+make-binding (2) <A HREF="overview-LOGIC.html#make-binding">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_make-random-state.html#make-random-state">make-random-state</A> (4) 
+make-cognac-game (1) <A HREF="overview-SEARCH.html#make-cognac-game">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_map.html#map">map</A> (29) 
+make-connected-nn (2) <A HREF="overview-LEARNING.html#make-connected-nn">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_mapccm_ma_istcm_mapcon.html#mapc">mapc</A> (8) 
+make-eliminating-queuing-fn (1) <A HREF="overview-SEARCH.html#make-eliminating-queuing-fn">F</A>            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_mapccm_ma_istcm_mapcon.html#mapcan">mapcan</A> (3) 
+make-empty-queue (1) <A HREF="overview-UTILITIES.html#make-empty-queue">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_mapccm_ma_istcm_mapcon.html#mapcar">mapcar</A> (74) 
+make-exp (5) <A HREF="overview-UTILITIES.html#make-exp">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_maphash.html#maphash">maphash</A> (14) 
+make-exp-schedule (1) <A HREF="overview-SEARCH.html#make-exp-schedule">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_mapccm_ma_istcm_mapcon.html#mapl">mapl</A> (2) 
+make-exploring-adp-learner (1) <A HREF="overview-LEARNING.html#make-exploring-adp-learner">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_maxcm_min.html#max">max</A> (11) 
+make-exploring-tdq-learner (1) <A HREF="overview-LEARNING.html#make-exploring-tdq-learner">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_member.html#member">member</A> (30) 
+make-heap (2) <A HREF="overview-UTILITIES.html#make-heap">F</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_merge.html#merge">merge</A> (1) 
+make-initial-queue (3) <A HREF="overview-SEARCH.html#make-initial-queue">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_maxcm_min.html#min">min</A> (5) 
+make-logic-symbol (1) <A HREF="overview-LOGIC.html#make-logic-symbol">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_mod.html#mod">mod</A> (3) 
+make-maximizing-adp-learner (1) <A HREF="overview-LEARNING.html#make-maximizing-adp-learner">F</A>            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/convar_most-p_d-long-float.html#most-negative-single-float">most-negative-single-float</A> (1) 
+make-maximizing-qi-learner (1) <A HREF="overview-LEARNING.html#make-maximizing-qi-learner">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/convar_most-p_d-long-float.html#most-positive-single-float">most-positive-single-float</A> (1) 
+make-mdp-agent (7) <A HREF="overview-UNCERTAINTY.html#make-mdp-agent">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_multiple-value-bind.html#multiple-value-bind">multiple-value-bind</A> (5) 
+make-move (2) <A HREF="overview-SEARCH.html#make-move:ttt-game">F</A> <A HREF="overview-SEARCH.html#make-move:game">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_multiple-value-setq.html#multiple-value-setq">multiple-value-setq</A> (1) 
+make-nqueens-problem (2) <A HREF="overview-SEARCH.html#make-nqueens-problem">F</A>                   
+make-passive-adp-learner (0) <A HREF="overview-LEARNING.html#make-passive-adp-learner">F</A>               
+make-passive-lms-learner (1) <A HREF="overview-LEARNING.html#make-passive-lms-learner">F</A>               
+make-passive-td-learner (1) <A HREF="overview-LEARNING.html#make-passive-td-learner">F</A>                
+make-path-planning-problem (1) <A HREF="overview-SEARCH.html#make-path-planning-problem">F</A>             
+make-perceptron (2) <A HREF="overview-LEARNING.html#make-perceptron">F</A>                        
+make-random-adp-learner (0) <A HREF="overview-LEARNING.html#make-random-adp-learner">F</A>                
+make-random-qi-learner (0) <A HREF="overview-LEARNING.html#make-random-qi-learner">F</A>                 
+make-search-tree (2) <A HREF="overview-UTILITIES.html#make-search-tree">F</A>                       
+make-tsp-problem (2) <A HREF="overview-SEARCH.html#make-tsp-problem">F</A>                       
+make-ttt-game (3) <A HREF="overview-SEARCH.html#make-ttt-game">F</A>                          
+mappend (4) <A HREF="overview-UTILITIES.html#mappend">F</A>                                
+max-choice (2) <A HREF="overview-UNCERTAINTY.html#max-choice">F</A>                             
+max-value (0) [p. 132]                       
+mdp (55) <A HREF="overview-UNCERTAINTY.html#mdp">T</A>                                   
+mdp-action-model (0) <A HREF="overview-UNCERTAINTY.html#mdp-action-model">T</A>                       
+mdp-next-state (1) <A HREF="overview-UNCERTAINTY.html#mdp-next-state">F</A>                         
+mdp-percept (0) <A HREF="overview-UNCERTAINTY.html#mdp-percept">T</A>                            
+mdp-transitions (1) <A HREF="overview-UNCERTAINTY.html#mdp-transitions">F</A>                        
+meanings (3) <A HREF="overview-LANGUAGE.html#meanings">F</A>                               
+member? (0) [p. 322]                         
+merge-disjuncts (1) <A HREF="overview-LOGIC.html#merge-disjuncts">F</A>                        
+min-conflicts-value (0) <A HREF="overview-SEARCH.html#min-conflicts-value">F</A>                    
+min-value (0) [p. 132]                       
+minimal-consistent-det (0) [p. 635]          
+minimax-cutoff-decision (0) <A HREF="overview-SEARCH.html#minimax-cutoff-decision">F</A>                
+minimax-cutoff-value (1) <A HREF="overview-SEARCH.html#minimax-cutoff-value">F</A>                   
+minimax-decision (1) [p. 126] <A HREF="overview-SEARCH.html#minimax-decision">F</A>              
+minimax-value (1) [p. 126] <A HREF="overview-SEARCH.html#minimax-value">F</A>                 
+minimum-or-flat (1) <A HREF="overview-SEARCH.html#minimum-or-flat">F</A>                        
+minimum-or-flat-n-times (1) <A HREF="overview-SEARCH.html#minimum-or-flat-n-times">F</A>                
+minus-infinity (0) <A HREF="overview-UTILITIES.html#minus-infinity">V</A>                         
+misplaced-tile? (1) <A HREF="overview-SEARCH.html#misplaced-tile?">F</A>                        
+misplaced-tiles (0) <A HREF="overview-SEARCH.html#misplaced-tiles">F</A>                        
+modify-assignment (1) <A HREF="overview-SEARCH.html#modify-assignment">F</A>                      
+most-constrained-variable (0) <A HREF="overview-SEARCH.html#most-constrained-variable">F</A>              
+move-blank (2) <A HREF="overview-SEARCH.html#move-blank">F</A>                             
+move-not-inwards (1) <A HREF="overview-LOGIC.html#move-not-inwards">F</A>                       
+move-object-to (1) <A HREF="overview-AGENTS.html#move-object-to">F</A>                         
+ms-error (1) <A HREF="overview-UTILITIES.html#ms-error">F</A>                               
+                                             
+                                         <B><A NAME=N>N</A></B>
+near? (1) <A HREF="overview-AGENTS.html#near?">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_nconc.html#nconc">nconc</A> (9) 
+nearest-neighbor-distance (3) <A HREF="overview-SEARCH.html#nearest-neighbor-distance">F</A>              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_not.html#not">not</A> (63) 
+negative-clause? (3) <A HREF="overview-LOGIC.html#negative-clause?">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_reversecm_nreverse.html#nreverse">nreverse</A> (5) 
+neighbors (2) <A HREF="overview-SEARCH.html#neighbors">F</A>                              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_nth.html#nth">nth</A> (5) 
+network-output (3) <A HREF="overview-LEARNING.html#network-output">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_nthcdr.html#nthcdr">nthcdr</A> (2) 
+neural-network-learning (0) [p. 577]         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_null.html#null">null</A> (67) 
+new-clause (3) [p. 643]                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_number.html#number">number</A> (20) 
+new-variable (2) <A HREF="overview-LOGIC.html#new-variable">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_numberp.html#numberp">numberp</A> (1) 
+nn-error (1) <A HREF="overview-LEARNING.html#nn-error">F</A>                               
+nn-learning (4) <A HREF="overview-LEARNING.html#nn-learning">F</A>                            
+nn-output (2) <A HREF="overview-LEARNING.html#nn-output">F</A>                              
+no-cycles-depth-first-search (1) <A HREF="overview-SEARCH.html#no-cycles-depth-first-search">F</A>           
+no-duplicates-breadth-first-search (3) <A HREF="overview-SEARCH.html#no-duplicates-breadth-first-search">F</A>     
+no-returns-breadth-first-search (1) <A HREF="overview-SEARCH.html#no-returns-breadth-first-search">F</A>        
+node (107) [p. 72]                           
+nondeterministic-chart-parse (0) [p. 699]    
+normal (0) <A HREF="overview-UTILITIES.html#normal">F</A>                                 
+nothing (6) <A HREF="overview-UTILITIES.html#nothing">F</A>                                
+nqueens-constraint-fn (1) <A HREF="overview-SEARCH.html#nqueens-constraint-fn">F</A>                  
+nqueens-constraints (1) <A HREF="overview-SEARCH.html#nqueens-constraints">F</A>                    
+nqueens-initial-state (1) <A HREF="overview-SEARCH.html#nqueens-initial-state">F</A>                  
+number->name (1) <A HREF="overview-SEARCH.html#number->name">F</A>                           
+                                             
+                                         <B><A NAME=O>O</A></B>
+object-words (1) <A HREF="overview-LOGIC.html#object-words">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_evenpcm_oddp.html#oddp">oddp</A> (1) 
+obstacle (1) <A HREF="overview-AGENTS.html#obstacle">T</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_or.html#or">or</A> (66) 
+occurs-in? (1) <A HREF="overview-LOGIC.html#occurs-in?">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_casecm_ccasecm_ecase.html#otherwise">otherwise</A> (2) 
+offset-loc (0) <A HREF="overview-AGENTS.html#offset-loc">F</A>                             
+op (66) <A HREF="overview-UTILITIES.html#op">F</A>                                    
+op-match (1) <A HREF="overview-LOGIC.html#op-match">F</A>                               
+op-name (4) <A HREF="overview-LOGIC.html#op-name">F</A>                                
+op-token (0) <A HREF="overview-LOGIC.html#op-token">F</A>                               
+op-type (2) <A HREF="overview-LOGIC.html#op-type">F</A>                                
+openp (1) <A HREF="overview-SEARCH.html#openp">F</A>                                  
+operator-char? (2) <A HREF="overview-LOGIC.html#operator-char?">F</A>                         
+optimal-policy (2) <A HREF="overview-UNCERTAINTY.html#optimal-policy">F</A>                         
+                                             
+                                         <B><A NAME=P>P</A></B>
+parse-infix-token (1) <A HREF="overview-LOGIC.html#parse-infix-token">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_parse-integer.html#parse-integer">parse-integer</A> (1) 
+parse-n (2) <A HREF="overview-AGENTS.html#parse-n">F</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/convar_pi.html#pi">pi</A> (1) 
+parse-span (2) <A HREF="overview-LOGIC.html#parse-span">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_minuspcm_plusp.html#plusp">plusp</A> (3) 
+parse-spec (1) <A HREF="overview-AGENTS.html#parse-spec">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_pop.html#pop">pop</A> (11) 
+parse-specs (4) <A HREF="overview-AGENTS.html#parse-specs">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_positionc_ition-if-not.html#position">position</A> (5) 
+parse-what (2) <A HREF="overview-AGENTS.html#parse-what">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_positionc_ition-if-not.html#position-if">position-if</A> (1) 
+parse-whats (9) <A HREF="overview-AGENTS.html#parse-whats">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_positionc_ition-if-not.html#position-if-not">position-if-not</A> (2) 
+parse-where (1) <A HREF="overview-AGENTS.html#parse-where">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_writecm_p_rintcm_princ.html#princ">princ</A> (2) 
+passes (2) <A HREF="overview-LEARNING.html#passes">F</A>                                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_writecm_p_rintcm_princ.html#print">print</A> (4) 
+passive-policy (1) <A HREF="overview-LEARNING.html#passive-policy">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_progn.html#progn">progn</A> (8) 
+passive-rl-agent (0) [p. 602]                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_push.html#push">push</A> (52) 
+path-lower-bound (1) <A HREF="overview-SEARCH.html#path-lower-bound">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_pushnew.html#pushnew">pushnew</A> (5) 
+perceptron-learning (0) <A HREF="overview-LEARNING.html#perceptron-learning">F</A>                    
+perceptron-update (2) <A HREF="overview-LEARNING.html#perceptron-update">F</A>                      
+performance-measure (1) <A HREF="overview-UNCERTAINTY.html#performance-measure:mdp-environment">F</A> <A HREF="overview-SEARCH.html#performance-measure:problem-solving-environment">F</A> <A HREF="overview-SEARCH.html#performance-measure:game-environment">F</A> <A HREF="overview-AGENTS.html#performance-measure:wumpus-world">F</A> <A HREF="overview-AGENTS.html#performance-measure:vacuum-world">F</A> <A HREF="overview-AGENTS.html#performance-measure:environment">F</A>          
+pick-random-move (1) <A HREF="overview-SEARCH.html#pick-random-move">F</A>                       
+place-in-container (2) <A HREF="overview-AGENTS.html#place-in-container">F</A>                     
+place-object (3) <A HREF="overview-AGENTS.html#place-object">F</A>                           
+plot-alist (0) <A HREF="overview-UTILITIES.html#plot-alist">F</A>                             
+policy-choice (1) <A HREF="overview-UNCERTAINTY.html#policy-choice">F</A>                          
+policy-iteration (0) [p. 506] <A HREF="overview-UNCERTAINTY.html#policy-iteration">F</A>              
+pop (0) [p. 356]                             
+pop-largest-element (0) <A HREF="overview-UTILITIES.html#pop-largest-element">F</A>                    
+pop-least-element (0) <A HREF="overview-UTILITIES.html#pop-least-element">F</A>                      
+possible-resolvers (1) <A HREF="overview-LOGIC.html#possible-resolvers">F</A>                     
+predictor (1) [p. 702] <A HREF="overview-LANGUAGE.html#predictor">F</A>                     
+prefix->infix (1) <A HREF="overview-UTILITIES.html#prefix->infix">F</A>                          
+previous-player (2) <A HREF="overview-SEARCH.html#previous-player">F</A>                        
+print-centered (4) <A HREF="overview-UTILITIES.html#print-centered">F</A>                         
+print-dashes (5) <A HREF="overview-UTILITIES.html#print-dashes">F</A>                           
+print-grid (2) <A HREF="overview-UTILITIES.html#print-grid">F</A>                             
+print-learning-problem (1) <A HREF="overview-LEARNING.html#print-learning-problem">F</A>                 
+print-nn (0) <A HREF="overview-LEARNING.html#print-nn">F</A>                               
+print-repeated (6) <A HREF="overview-UTILITIES.html#print-repeated">F</A>                         
+print-solution (1) <A HREF="overview-SEARCH.html#print-solution">F</A>                         
+print-structure (1) <A HREF="overview-LANGUAGE.html#print-structure:edge">F</A> <A HREF="overview-SEARCH.html#print-structure:vertex">F</A> <A HREF="overview-SEARCH.html#print-structure:problem-solving-environment">F</A> <A HREF="overview-SEARCH.html#print-structure:game-state">F</A> <A HREF="overview-SEARCH.html#print-structure:game">F</A> <A HREF="overview-SEARCH.html#print-structure:csp-state">F</A> <A HREF="overview-SEARCH.html#print-structure:node">F</A> <A HREF="overview-AGENTS.html#print-structure:agent">F</A> <A HREF="overview-AGENTS.html#print-structure:object">F</A> <A HREF="overview-AGENTS.html#print-structure:environment">F</A> <A HREF="overview-UTILITIES.html#print-structure:t">F</A>    
+print-truth-table (1) <A HREF="overview-LOGIC.html#print-truth-table">F</A>                      
+problem (171) [p. 60]                        
+problem->environment (1) <A HREF="overview-SEARCH.html#problem->environment">F</A>                   
+problem-solving-program (1) <A HREF="overview-SEARCH.html#problem-solving-program">F</A>                
+prop-symbols-in (1) <A HREF="overview-LOGIC.html#prop-symbols-in">F</A>                        
+propagate-arrow (1) <A HREF="overview-AGENTS.html#propagate-arrow">F</A>                        
+propositional-kb-agent (0) [p. 177]          
+prove-by-refutation (1) <A HREF="overview-LOGIC.html#prove-by-refutation">F</A>                    
+                                             
+                                         <B><A NAME=Q>Q</A></B>
+q (130) <A HREF="overview-UTILITIES.html#q">T</A>                                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_quote.html#quote">quote</A> (416) 
+q-actions (2) <A HREF="overview-LEARNING.html#q-actions">F</A>                              
+q-dmax-choice (1) <A HREF="overview-LEARNING.html#q-dmax-choice">F</A>                          
+q-entry (4) <A HREF="overview-LEARNING.html#q-entry">F</A>                                
+q-iteration (1) <A HREF="overview-LEARNING.html#q-iteration">F</A>                            
+q-learning-agent (0) [p. 614]                
+q-max-choice (1) <A HREF="overview-LEARNING.html#q-max-choice">F</A>                           
+q-optimal-policy (0) <A HREF="overview-LEARNING.html#q-optimal-policy">F</A>                       
+q-random-choice (1) <A HREF="overview-LEARNING.html#q-random-choice">F</A>                        
+q-value (8) <A HREF="overview-UNCERTAINTY.html#q-value">F</A>                                
+queue-front (0) <A HREF="overview-UTILITIES.html#queue-front">F</A>                            
+                                             
+                                         <B><A NAME=R>R</A></B>
+random-8-puzzle-state (1) <A HREF="overview-SEARCH.html#random-8-puzzle-state">F</A>                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_random.html#random">random</A> (19) 
+random-choice (1) <A HREF="overview-UNCERTAINTY.html#random-choice">F</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_random-state.html#random-state">random-state</A> (2) 
+random-conflicted-variable (1) <A HREF="overview-SEARCH.html#random-conflicted-variable">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_ratio.html#ratio">ratio</A> (2) 
+random-element (18) <A HREF="overview-UTILITIES.html#random-element">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_rational.html#rational">rational</A> (6) 
+random-examples (0) <A HREF="overview-LEARNING.html#random-examples">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_readcm_re_g-whitespace.html#read">read</A> (2) 
+random-integer (2) <A HREF="overview-UTILITIES.html#random-integer">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_real.html#real">real</A> (6) 
+random-loc (2) <A HREF="overview-AGENTS.html#random-loc">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_reduce.html#reduce">reduce</A> (1) 
+random-move-blank (1) <A HREF="overview-SEARCH.html#random-move-blank">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_removecm__elete-if-not.html#remove">remove</A> (10) 
+random-restart-search (0) <A HREF="overview-SEARCH.html#random-restart-search">F</A>                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_removecm__elete-if-not.html#remove-if">remove-if</A> (5) 
+random-route-map (2) <A HREF="overview-SEARCH.html#random-route-map">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_removecm__elete-if-not.html#remove-if-not">remove-if-not</A> (9) 
+random-transition (1) <A HREF="overview-UNCERTAINTY.html#random-transition">F</A>                      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_rest.html#rest">rest</A> (46) 
+random-tsp-map (1) <A HREF="overview-SEARCH.html#random-tsp-map">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_restart.html#restart">restart</A> (4) 
+random-weights (2) <A HREF="overview-LEARNING.html#random-weights">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_return.html#return">return</A> (47) 
+randomized-insert-element (0) <A HREF="overview-UTILITIES.html#randomized-insert-element">F</A>              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_return-from.html#return-from">return-from</A> (3) 
+randomized-push (1) <A HREF="overview-UTILITIES.html#randomized-push">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_reversecm_nreverse.html#reverse">reverse</A> (5) 
+rbdtl (0) [p. 635]                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_rotatef.html#rotatef">rotatef</A> (4) 
+reduce-infix (1) <A HREF="overview-LOGIC.html#reduce-infix">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_floorcm_f_undcm_fround.html#round">round</A> (4) 
+reduce-matching-op (1) <A HREF="overview-LOGIC.html#reduce-matching-op">F</A>                     
+reflex-learning-element (0) [p. 530]         
+reflex-performance-element (0) [p. 530]      
+related-to? (0) [p. 322]                     
+release (3) <A HREF="overview-AGENTS.html#release:grid-environment">F</A>                                
+remove-commas (1) <A HREF="overview-LOGIC.html#remove-commas">F</A>                          
+remove-front (3) <A HREF="overview-UTILITIES.html#remove-front">F</A>                           
+remove-object (2) <A HREF="overview-AGENTS.html#remove-object">F</A>                          
+rename-variables (2) <A HREF="overview-LOGIC.html#rename-variables">F</A>                       
+renaming? (7) <A HREF="overview-LOGIC.html#renaming?">F</A>                              
+replace-subseq (5) <A HREF="overview-LOGIC.html#replace-subseq">F</A>                         
+replanning-agent (0) [p. 402]                
+required (7) <A HREF="overview-UTILITIES.html#required">F</A>                               
+resolve (0) <A HREF="overview-LOGIC.html#resolve">F</A>                                
+resolve-threats (0) [p. 385]                 
+retract (0) <A HREF="overview-LOGIC.html#retract:fol-kb">F</A> <A HREF="overview-LOGIC.html#retract:horn-kb">F</A> <A HREF="overview-LOGIC.html#retract:prop-kb">F</A> <A HREF="overview-LOGIC.html#retract:literal-kb">F</A>                          
+retract-minimal-cnf-clauses (2) <A HREF="overview-LOGIC.html#retract-minimal-cnf-clauses">F</A>            
+return-node? (1) <A HREF="overview-SEARCH.html#return-node?">F</A>                           
+reuse-cons (1) <A HREF="overview-UTILITIES.html#reuse-cons">F</A>                             
+rewrites-for (2) <A HREF="overview-LANGUAGE.html#rewrites-for">F</A>                           
+right-rotate (9) <A HREF="overview-UTILITIES.html#right-rotate">F</A>                           
+rightmost (3) <A HREF="overview-UTILITIES.html#rightmost">F</A>                              
+rms-error (1) <A HREF="overview-UTILITIES.html#rms-error">F</A>                              
+road-distance (6) <A HREF="overview-SEARCH.html#road-distance">F</A>                          
+rotate (2) <A HREF="overview-UTILITIES.html#rotate">F</A>                                 
+round-off (4) <A HREF="overview-UTILITIES.html#round-off">F</A>                              
+rule-lhs (3) <A HREF="overview-LANGUAGE.html#rule-lhs">F</A>                               
+rule-rhs (2) <A HREF="overview-LANGUAGE.html#rule-rhs">F</A>                               
+run-environment (16) [p. 49] <A HREF="overview-AGENTS.html#run-environment">F</A>               
+run-eval-environment (0) [p. 49] <A HREF="overview-AGENTS.html#run-eval-environment">F</A>           
+run-game (4) <A HREF="overview-SEARCH.html#run-game">F</A>                               
+running-average (2) <A HREF="overview-UTILITIES.html#running-average">F</A>                        
+                                             
+                                         <B><A NAME=S>S</A></B>
+sample-with-replacement (0) <A HREF="overview-UTILITIES.html#sample-with-replacement">F</A>                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_firstcm_s_inthcm_tenth.html#second">second</A> (18) 
+sample-without-replacement (2) <A HREF="overview-UTILITIES.html#sample-without-replacement">F</A>             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_sequence.html#sequence">sequence</A> (5) 
+scanner (1) [p. 702] <A HREF="overview-LANGUAGE.html#scanner">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_set-diffe_t-difference.html#set-difference">set-difference</A> (1) 
+search-tree-node (0) <A HREF="overview-UTILITIES.html#search-tree-node">T</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_setf.html#setf">setf</A> (197) 
+see (6) <A HREF="overview-LOGIC.html#see">F</A>                                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/spefor_setq.html#setq">setq</A> (138) 
+see-loc (1) <A HREF="overview-LOGIC.html#see-loc">F</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_everycm_s_erycm_notany.html#some">some</A> (16) 
+select-attribute (1) <A HREF="overview-LEARNING.html#select-attribute">F</A>                       <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_sortcm_stable-sort.html#sort">sort</A> (2) 
+select-k-test (1) <A HREF="overview-LEARNING.html#select-k-test">F</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/dec_special.html#special">special</A> (1) 
+select-sub-goal (0) [p. 385]                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_sqrtcm_isqrt.html#sqrt">sqrt</A> (5) 
+select-subgoal (0) [p. 356]                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_step.html#step">step</A> (1) 
+select-test (1) <A HREF="overview-LEARNING.html#select-test">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_stream.html#stream">stream</A> (76) 
+sem-net-node (0) [p. 321]                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_string.html#string">string</A> (27) 
+sentence-output-form (1) <A HREF="overview-LOGIC.html#sentence-output-form">F</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_stringeqc_ng-not-lessp.html#string-equal">string-equal</A> (1) 
+shallowest-largest-leaf (1) <A HREF="overview-SEARCH.html#shallowest-largest-leaf">F</A>                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_string-up_g-capitalize.html#string-upcase">string-upcase</A> (2) 
+shoot (7) <A HREF="overview-AGENTS.html#shoot:wumpus-world">F</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_stringp.html#stringp">stringp</A> (4) 
+shut-off (4) <A HREF="overview-AGENTS.html#shut-off:environment">F</A>                               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/stagenfun_doc_umentationcp.html#structure">structure</A> (3) 
+sigmoid (1) <A HREF="overview-LEARNING.html#sigmoid">F</A>                                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_subliscm_nsublis.html#sublis">sublis</A> (5) 
+sign-function (0) <A HREF="overview-LEARNING.html#sign-function">F</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_subseq.html#subseq">subseq</A> (4) 
+simple-communicating-agent (0) [p. 663]      <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_substcm_s_subst-if-not.html#subst">subst</A> (1) 
+simple-planning-agent (0) [p. 338]           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_svref.html#svref">svref</A> (6) 
+simple-policy-agent (0) [p. 501]             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/syscla_symbol.html#symbol">symbol</A> (5) 
+simple-problem-solving-agent (0) [p. 57]     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_symbol-function.html#symbol-function">symbol-function</A> (4) 
+simple-reflex-agent (0) [p. 41]              <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_symbol-name.html#symbol-name">symbol-name</A> (2) 
+simulated-annealing (0) [p. 113]             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_symbolp.html#symbolp">symbolp</A> (9) 
+simulated-annealing-search (1) <A HREF="overview-SEARCH.html#simulated-annealing-search">F</A>             
+sink? (4) <A HREF="overview-UNCERTAINTY.html#sink?">F</A>                                  
+situated-planning-agent (0) [p. 408]         
+skolem-constant (2) <A HREF="overview-LOGIC.html#skolem-constant">F</A>                        
+skolemize (1) <A HREF="overview-LOGIC.html#skolemize">F</A>                              
+sma* (0) [p. 110]                            
+solution-actions (3) <A HREF="overview-SEARCH.html#solution-actions">F</A>                       
+solution-nodes (2) <A HREF="overview-SEARCH.html#solution-nodes">F</A>                         
+solve (10) <A HREF="overview-SEARCH.html#solve">F</A>                                 
+spanning-edges (2) <A HREF="overview-LANGUAGE.html#spanning-edges">F</A>                         
+speak (1) <A HREF="overview-AGENTS.html#speak:grid-environment">F</A>                                  
+square (27) <A HREF="overview-UTILITIES.html#square">F</A>                                
+starts-with (1) <A HREF="overview-UTILITIES.html#starts-with">F</A>                            
+step-function (2) <A HREF="overview-LEARNING.html#step-function">F</A>                          
+straight-distance (3) <A HREF="overview-SEARCH.html#straight-distance">F</A>                      
+string->infix (1) <A HREF="overview-LOGIC.html#string->infix">F</A>                          
+stringify (2) <A HREF="overview-UTILITIES.html#stringify">F</A>                              
+subset? (0) [p. 322]                         
+subst-bindings (5) <A HREF="overview-LOGIC.html#subst-bindings">F</A>                         
+subtract-locs (0) <A HREF="overview-AGENTS.html#subtract-locs">F</A>                          
+successors (11) <A HREF="overview-SEARCH.html#successors:tsp-problem">F</A> <A HREF="overview-SEARCH.html#successors:route-finding-problem">F</A> <A HREF="overview-SEARCH.html#successors:8-puzzle-problem">F</A> <A HREF="overview-SEARCH.html#successors:path-planning-problem">F</A> <A HREF="overview-SEARCH.html#successors:cannibal-problem">F</A> <A HREF="overview-SEARCH.html#successors:csp-problem">F</A> <A HREF="overview-SEARCH.html#successors:problem">F</A>                
+suck (4) <A HREF="overview-AGENTS.html#suck:vacuum-world">F</A>                                   
+sum (34) <A HREF="overview-UTILITIES.html#sum">F</A>                                   
+summation (0) [p. 851]                       
+supertype (7) <A HREF="overview-UTILITIES.html#supertype">F</A>                              
+support-except (0) [p. 452]                  
+symbol-char? (2) <A HREF="overview-LOGIC.html#symbol-char?">F</A>                           
+                                             
+                                         <B><A NAME=T>T</A></B>
+table-driven-agent (0) [p. 38]               <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_t.html#t">t</A> (166) 
+take-the-boat (1) <A HREF="overview-SEARCH.html#take-the-boat">F</A>                          <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_terpricm_fresh-line.html#terpri">terpri</A> (2) 
+tautology? (1) <A HREF="overview-LOGIC.html#tautology?">F</A>                             <A HREF="http://www.harlequin.com/books/HyperSpec/Body/speope_the.html#the">the</A> (25) 
+td-update (1) [p. 605] <A HREF="overview-LEARNING.html#td-update">F</A>                     <A HREF="http://www.harlequin.com/books/HyperSpec/Body/acc_firstcm_s_inthcm_tenth.html#third">third</A> (1) 
+tell (32) <A HREF="overview-LOGIC.html#tell:fol-kb">F</A> <A HREF="overview-LOGIC.html#tell:horn-kb">F</A> <A HREF="overview-LOGIC.html#tell:prop-kb">F</A> <A HREF="overview-LOGIC.html#tell:literal-kb">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_time.html#time">time</A> (5) 
+tell-minimal-cnf-clause (2) <A HREF="overview-LOGIC.html#tell-minimal-cnf-clause">F</A>                <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_type.html#type">type</A> (158) 
+terminal-values (4) <A HREF="overview-SEARCH.html#terminal-values">F</A>                        <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_type-of.html#type-of">type-of</A> (11) 
+termination? (2) <A HREF="overview-UNCERTAINTY.html#termination?:mdp-environment">F</A> <A HREF="overview-SEARCH.html#termination?:problem-solving-environment">F</A> <A HREF="overview-SEARCH.html#termination?:game-environment">F</A> <A HREF="overview-AGENTS.html#termination?:wumpus-world">F</A> <A HREF="overview-AGENTS.html#termination?:grid-environment">F</A> <A HREF="overview-AGENTS.html#termination?:environment">F</A>                 <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_typecasec_cm_etypecase.html#typecase">typecase</A> (1) 
+test (22) <A HREF="overview-UTILITIES.html#test">F</A>                                  
+test-example (1) <A HREF="overview-UTILITIES.html#test-example">F</A>                           
+the-biggest (14) <A HREF="overview-UTILITIES.html#the-biggest">F</A>                           
+the-biggest-random-tie (5) <A HREF="overview-UTILITIES.html#the-biggest-random-tie">F</A>                 
+the-biggest-that (2) <A HREF="overview-UTILITIES.html#the-biggest-that">F</A>                       
+the-smallest (1) <A HREF="overview-UTILITIES.html#the-smallest">F</A>                           
+the-smallest-random-tie (2) <A HREF="overview-UTILITIES.html#the-smallest-random-tie">F</A>                
+the-smallest-that (1) <A HREF="overview-UTILITIES.html#the-smallest-that">F</A>                      
+transition (19) <A HREF="overview-UNCERTAINTY.html#transition">T</A>                            
+transitions (10) <A HREF="overview-UNCERTAINTY.html#transitions">F</A>                           
+transpose (1) <A HREF="overview-UTILITIES.html#transpose">F</A>                              
+tree-a*-search (1) <A HREF="overview-SEARCH.html#tree-a*-search">F</A>                         
+tree-backup-f-cost (1) <A HREF="overview-SEARCH.html#tree-backup-f-cost">F</A>                     
+tree-get-next-successor (1) <A HREF="overview-SEARCH.html#tree-get-next-successor">F</A>                
+tree-ida*-search (1) <A HREF="overview-SEARCH.html#tree-ida*-search">F</A>                       
+tree-prune-open (1) <A HREF="overview-SEARCH.html#tree-prune-open">F</A>                        
+tree-sma (0) <A HREF="overview-SEARCH.html#tree-sma">F</A>                               
+tree-unexpand-successor (1) <A HREF="overview-SEARCH.html#tree-unexpand-successor">F</A>                
+true (10) <A HREF="overview-UTILITIES.html#true">F</A>                                  
+truth-table (1) <A HREF="overview-LOGIC.html#truth-table">F</A>                            
+tsp (0) <A HREF="overview-SEARCH.html#tsp">T</A>                                    
+tsp-city-name (6) <A HREF="overview-SEARCH.html#tsp-city-name">F</A>                          
+tsp-start (3) <A HREF="overview-SEARCH.html#tsp-start">F</A>                              
+ttt-eval (1) <A HREF="overview-SEARCH.html#ttt-eval">F</A>                               
+turn (23) <A HREF="overview-AGENTS.html#turn:grid-environment">F</A>                                  
+                                             
+                                         <B><A NAME=U>U</A></B>
+u-rms-error (0) <A HREF="overview-UNCERTAINTY.html#u-rms-error">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_whencm_unless.html#unless">unless</A> (42) 
+undo-temp-changes (1) <A HREF="overview-LOGIC.html#undo-temp-changes">F</A>                      
+unifier (0) <A HREF="overview-LOGIC.html#unifier">F</A>                                
+uniform-classification (1) <A HREF="overview-LEARNING.html#uniform-classification">F</A>                 
+uniform-cost-search (1) <A HREF="overview-SEARCH.html#uniform-cost-search">F</A>                    
+unify (8) [p. 303] <A HREF="overview-LOGIC.html#unify">F</A>                         
+unify-internal (0) [p. 303]                  
+unify-var (2) <A HREF="overview-LOGIC.html#unify-var">F</A>                              
+unique-find-anywhere-if (1) <A HREF="overview-LOGIC.html#unique-find-anywhere-if">F</A>                
+unit (21) <A HREF="overview-LEARNING.html#unit">T</A>                                  
+unit-output (1) <A HREF="overview-LEARNING.html#unit-output">F</A>                            
+update-active-model (3) <A HREF="overview-LEARNING.html#update-active-model">F</A>                    
+update-exploratory-q (1) <A HREF="overview-LEARNING.html#update-exploratory-q">F</A>                   
+update-fn (1) <A HREF="overview-UNCERTAINTY.html#update-fn:mdp-environment">F</A> <A HREF="overview-SEARCH.html#update-fn:problem-solving-environment">F</A> <A HREF="overview-SEARCH.html#update-fn:game-environment">F</A> <A HREF="overview-AGENTS.html#update-fn:wumpus-world">F</A> <A HREF="overview-AGENTS.html#update-fn:grid-environment">F</A> <A HREF="overview-AGENTS.html#update-fn:environment">F</A>                    
+update-passive-model (1) <A HREF="overview-LEARNING.html#update-passive-model">F</A>                   
+use-8-puzzle-goal (1) <A HREF="overview-SEARCH.html#use-8-puzzle-goal">F</A>                      
+                                             
+                                         <B><A NAME=V>V</A></B>
+vacuum-goalp (1) <A HREF="overview-SEARCH.html#vacuum-goalp">F</A>                           <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_values.html#values">values</A> (26) 
+vacuum-initial-state (1) <A HREF="overview-SEARCH.html#vacuum-initial-state">F</A>                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/any_vector.html#vector">vector</A> (6) 
+vacuum-problem (0) <A HREF="overview-SEARCH.html#vacuum-problem">F</A>                         <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_vector-pu_-push-extend.html#vector-push-extend">vector-push-extend</A> (1) 
+vacuum-state (0) <A HREF="overview-SEARCH.html#vacuum-state">T</A>                           
+vacuum-successors (1) <A HREF="overview-SEARCH.html#vacuum-successors">F</A>                      
+validity (8) <A HREF="overview-LOGIC.html#validity">F</A>                               
+value-determination (3) <A HREF="overview-UNCERTAINTY.html#value-determination">F</A>                    
+value-iteration (2) [p. 504] <A HREF="overview-UNCERTAINTY.html#value-iteration">F</A>               
+value-iteration-policy (2) <A HREF="overview-UNCERTAINTY.html#value-iteration-policy">F</A>                 
+variable? (9) <A HREF="overview-LOGIC.html#variable?">F</A>                              
+variables-in (1) <A HREF="overview-LOGIC.html#variables-in">F</A>                           
+version-space-learning (0) [p. 549]          
+vertices-in-view (1) <A HREF="overview-SEARCH.html#vertices-in-view">F</A>                       
+vertices-visible-from (1) <A HREF="overview-SEARCH.html#vertices-visible-from">F</A>                  
+visible-p (1) <A HREF="overview-SEARCH.html#visible-p">F</A>                              
+                                             
+                                         <B><A NAME=W>W</A></B>
+wall (3) <A HREF="overview-AGENTS.html#wall">T</A>                                   <A HREF="http://www.harlequin.com/books/HyperSpec/Body/fun_warn.html#warn">warn</A> (3) 
+while (3) <A HREF="overview-UTILITIES.html#while">M</A>                                  <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_whencm_unless.html#when">when</A> (130) 
+whitespace? (1) <A HREF="overview-LOGIC.html#whitespace?">F</A>                            <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_with-open-file.html#with-open-file">with-open-file</A> (1) 
+with-simple-restart (0) <A HREF="overview-UTILITIES.html#with-simple-restart">M</A>                    <A HREF="http://www.harlequin.com/books/HyperSpec/Body/mac_with-simple-restart.html#with-simple-restart">with-simple-restart</A> (1) 
+                                             
+                                         <B><A NAME=X>X</A></B>
+x+y-distance (1) <A HREF="overview-UTILITIES.html#x+y-distance">F</A>                           
+xy (9) <A HREF="overview-UTILITIES.html#xy">T</A>                                     
+xy-add (4) <A HREF="overview-UTILITIES.html#xy-add">F</A>                                 
+xy-between (0) <A HREF="overview-UTILITIES.html#xy-between">F</A>                             
+xy-distance (4) <A HREF="overview-UTILITIES.html#xy-distance">F</A>                            
+xy-equal (3) <A HREF="overview-UTILITIES.html#xy-equal">F</A>                               
+xy-p (1) <A HREF="overview-UTILITIES.html#xy-p">F</A>                                   
+                                             
+                                         <B><A NAME=Z>Z</A></B>
+zoom (0) <A HREF="overview-LOGIC.html#zoom">F</A>                                   
+                                             

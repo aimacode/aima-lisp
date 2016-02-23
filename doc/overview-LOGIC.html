@@ -1,0 +1,540 @@
+<HTML>
+<HEAD>
+<TITLE>Logic (Subsystem of AIMA Code)</TITLE> 
+<!-- Changed by: Peter Norvig, 14-Apr-1997 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<H1>Logic (Subsystem of AIMA Code)</H1>
+
+The <b>logic</b> system covers part III of the book.  We define
+knowledge bases, and <tt>tell</tt> and <tt>ask</tt> operations on
+those knowledge bases.  The interface is defined in the file <A
+HREF="#logic/algorithms/tell-ask.lisp">tell-ask.lisp</A>.
+
+<P>
+We need a new language for logical expressions,
+since we don't have all the nice characters (like upside-down A) that
+we would like to use.  We will allow an infix format for input, and
+manipulate a Lisp-like prefix format internally.  Here is a
+description of the formats (compare to [p 167, 187]). The prefix
+notation is a subset of the <A
+href="http://logic.stanford.edu/kif/Hypertext/kif-manual.html">KIF
+3.0</A> Knowledge Interchange Format.
+
+<pre>
+Infix         Prefix             Meaning              Alternate Infix Notation
+==========    ======             ===========          ========================
+~P            (not P)            negation             not P    
+P ^ Q         (and P Q)          conjunction          P and Q  
+P | Q         (or P Q)           disjunction          P or Q   
+P => Q        (=> P Q)           implication                   
+P <=> Q       (<=> P Q)          logical equivalence
+P(x)          (P x)              predicate   
+Q(x,y)        (Q x y)            predicate with multiple arguments
+f(x)          (f x)              function    
+f(x)=3        (= (f x) 3)        equality    
+forall(x,P(x) (forall (x) (P x)) universal quantification
+exists(x,P(x) (exists (x) (P x)) existential quantification
+[a,b]         (listof a b)       list of elements
+{a,b}         (setof a b)        mathematical set of elements
+true          true               the true logical constant
+false         false              the false logical constant
+</pre>
+
+You can also use the usual operators for mathematical notation: +, -,
+*, / for arithmetic, and &;lt;, &gt;, &lt;=, &gt;= for comparison.
+Many of the functions we define also accept strings as input,
+interpreting them as infix expressions, so the following are
+equivalent:
+
+<pre>
+	(tell kb "P=>Q")  
+        (tell kb '(=> P Q))
+</pre>
+
+<P><HR size=3></UL><A HREF="../logic/"><B>logic/</B></A>:
+<UL> <LI><A HREF="#logic/test-logic.lisp"><B>test-logic.lisp</B></A>  Testing Logical Inference</UL><A HREF="../logic/algorithms/"><B>logic/algorithms/</B></A>:
+<UL> <LI><A HREF="#logic/algorithms/tell-ask.lisp"><B>tell-ask.lisp</B></A>  Main Functions on KBs: Tell, Retract, Ask-Each, Ask, Ask-Pattern[s]<LI><A HREF="#logic/algorithms/unify.lisp"><B>unify.lisp</B></A>  Unification and Substitutions (aka Binding Lists)<LI><A HREF="#logic/algorithms/normal.lisp"><B>normal.lisp</B></A>  Convert Expressions to Normal Form (Conjunctive, Implicative or Horn)<LI><A HREF="#logic/algorithms/prop.lisp"><B>prop.lisp</B></A>  Propositional Logic<LI><A HREF="#logic/algorithms/horn.lisp"><B>horn.lisp</B></A>  Logical Reasoning in Horn Clause Knowledge Bases<LI><A HREF="#logic/algorithms/fol.lisp"><B>fol.lisp</B></A>  First Order Logic (FOL) Tell, Retract, and Ask-Each<LI><A HREF="#logic/algorithms/infix.lisp"><B>infix.lisp</B></A>  Prefix to Infix Conversion</UL><A HREF="../logic/environments/"><B>logic/environments/</B></A>:
+<UL> <LI><A HREF="#logic/environments/shopping.lisp"><B>shopping.lisp</B></A>  The Shopping World: </UL>
+
+<A NAME="logic/test-logic.lisp"><HR>
+<H2>File <A HREF="../logic/test-logic.lisp">logic/test-logic.lisp</A></H2></A>
+<H2><I> Testing Logical Inference</I>
+</H2>
+<A NAME="logic/algorithms/tell-ask.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/tell-ask.lisp">logic/algorithms/tell-ask.lisp</A></H2></A>
+<H2><I> Main Functions on KBs: Tell, Retract, Ask-Each, Ask, Ask-Pattern[s]</I>
+</H2>
+<I> First we define a very simple kind of knowledge base, literal-kb,</I>
+<I> that just stores a list of literal sentences.</I>
+<A NAME="literal-kb"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>literal-kb</B></A></A> <I>type</I> (sentences)
+  <blockquote>A knowledge base that just stores a set of literal sentences.</blockquote>
+<I> There are three generic functions that operate on knowledge bases, and</I>
+<I> that must be defined as methods for each type of knowledge base: TELL,</I>
+<I> RETRACT, and ASK-EACH.  Here we show the implementation for literal-kb;</I>
+<I> elsewhere you'll see implementations for propositional, Horn, and FOL KBs.</I>
+<A NAME="tell:literal-kb"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>tell</B></A></A> <I>method</I> ((kb
+                                                                                                             literal-kb)
+                                                                                                            sentence)
+  <blockquote>Add the sentence to the knowledge base.</blockquote>
+<A NAME="retract:literal-kb"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>retract</B></A></A> <I>method</I> ((kb
+                                                                                                                   literal-kb)
+                                                                                                                  sentence)
+  <blockquote>Remove the sentence from the knowledge base.</blockquote>
+<A NAME="ask-each:literal-kb"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>ask-each</B></A></A> <I>method</I> ((kb
+                                                                                                                     literal-kb)
+                                                                                                                    query
+                                                                                                                    fn)
+  <blockquote>For each proof of query, call fn on the substitution that 
+  the proof ends up with.</blockquote>
+<I> There are three other ASK functions, defined below, that are</I>
+<I> defined in terms of ASK-EACH.  These are defined once and for all</I>
+<I> here (not for each kind of KB)."</I>
+<A NAME="ask"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>ask</B></A></A> <I>function</I> (kb
+                                                                                                 query)
+  <blockquote>Ask if query sentence is true; return t or nil.</blockquote>
+<A NAME="ask-pattern"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>ask-pattern</B></A></A> <I>function</I> (kb
+                                                                                                                 query
+                                                                                                                 &optional
+                                                                                                                 pattern)
+  <blockquote>Ask if query sentence is true; if it is, substitute bindings into pattern.</blockquote>
+<A NAME="ask-patterns"><P><A HREF="../logic/algorithms/tell-ask.lisp"><B>ask-patterns</B></A></A> <I>function</I> (kb
+                                                                                                                   query
+                                                                                                                   &optional
+                                                                                                                   pattern)
+  <blockquote>Find all proofs for query sentence, substitute bindings into pattern
+  once for each proof.  Return a list of all substituted patterns.</blockquote>
+<A NAME="logic/algorithms/unify.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/unify.lisp">logic/algorithms/unify.lisp</A></H2></A>
+<H2><I> Unification and Substitutions (aka Binding Lists)</I>
+</H2>
+<I> This code is borrowed from "Paradigms of AI Programming: Case Studies</I>
+<I> in Common Lisp", by Peter Norvig, published by Morgan Kaufmann, 1992.</I>
+<I> The complete code from that book is available for ftp at mkp.com in</I>
+<I> the directory "pub/Norvig".  Note that it uses the term "bindings"</I>
+<I> rather than "substitution" or "theta".  The meaning is the same.</I>
+<H2><I> Constants</I>
+</H2>
+<A NAME="+fail+"><P><A HREF="../logic/algorithms/unify.lisp"><B>+fail+</B></A></A> <I>constant</I> 
+  <blockquote>Indicates unification failure</blockquote>
+<A NAME="+no-bindings+"><P><A HREF="../logic/algorithms/unify.lisp"><B>+no-bindings+</B></A></A> <I>constant</I> 
+  <blockquote>Indicates unification success, with no variables.</blockquote>
+<H2><I> Top Level Functions</I>
+</H2>
+<A NAME="unify"><P><A HREF="../logic/algorithms/unify.lisp"><B>unify</B></A></A> <I>function</I> (x
+                                                                                                  y
+                                                                                                  &optional
+                                                                                                  bindings)
+  <blockquote>See if x and y match with given bindings.  If they do,
+  return a binding list that would make them equal [p 303].</blockquote>
+<A NAME="rename-variables"><P><A HREF="../logic/algorithms/unify.lisp"><B>rename-variables</B></A></A> <I>function</I> (x)
+  <blockquote>Replace all variables in x with new ones.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="unify-var"><P><A HREF="../logic/algorithms/unify.lisp"><B>unify-var</B></A></A> <I>function</I> (var
+                                                                                                          x
+                                                                                                          bindings)
+  <blockquote>Unify var with x, using (and maybe extending) bindings [p 303].</blockquote>
+<A NAME="variable?"><P><A HREF="../logic/algorithms/unify.lisp"><B>variable?</B></A></A> <I>function</I> (x)
+  <blockquote>Is x a variable (a symbol starting with $)?</blockquote>
+<A NAME="get-binding"><P><A HREF="../logic/algorithms/unify.lisp"><B>get-binding</B></A></A> <I>function</I> (var
+                                                                                                              bindings)
+  <blockquote>Find a (variable . value) pair in a binding list.</blockquote>
+<A NAME="binding-var"><P><A HREF="../logic/algorithms/unify.lisp"><B>binding-var</B></A></A> <I>function</I> (binding)
+  <blockquote>Get the variable part of a single binding.</blockquote>
+<A NAME="binding-val"><P><A HREF="../logic/algorithms/unify.lisp"><B>binding-val</B></A></A> <I>function</I> (binding)
+  <blockquote>Get the value part of a single binding.</blockquote>
+<A NAME="make-binding"><P><A HREF="../logic/algorithms/unify.lisp"><B>make-binding</B></A></A> <I>function</I> (var
+                                                                                                                val)
+  <P>
+<A NAME="lookup"><P><A HREF="../logic/algorithms/unify.lisp"><B>lookup</B></A></A> <I>function</I> (var
+                                                                                                    bindings)
+  <blockquote>Get the value part (for var) from a binding list.</blockquote>
+<A NAME="extend-bindings"><P><A HREF="../logic/algorithms/unify.lisp"><B>extend-bindings</B></A></A> <I>function</I> (var
+                                                                                                                      val
+                                                                                                                      bindings)
+  <blockquote>Add a (var . value) pair to a binding list.</blockquote>
+<A NAME="occurs-in?"><P><A HREF="../logic/algorithms/unify.lisp"><B>occurs-in?</B></A></A> <I>function</I> (var
+                                                                                                            x
+                                                                                                            bindings)
+  <blockquote>Does var occur anywhere inside x?</blockquote>
+<A NAME="subst-bindings"><P><A HREF="../logic/algorithms/unify.lisp"><B>subst-bindings</B></A></A> <I>function</I> (bindings
+                                                                                                                    x)
+  <blockquote>Substitute the value of variables in bindings into x,
+  taking recursively bound variables into account.</blockquote>
+<A NAME="unifier"><P><A HREF="../logic/algorithms/unify.lisp"><B>unifier</B></A></A> <I>function</I> (x
+                                                                                                      y)
+  <blockquote>Return something that unifies with both x and y (or fail).</blockquote>
+<A NAME="variables-in"><P><A HREF="../logic/algorithms/unify.lisp"><B>variables-in</B></A></A> <I>function</I> (exp)
+  <blockquote>Return a list of all the variables in EXP.</blockquote>
+<A NAME="unique-find-anywhere-if"><P><A HREF="../logic/algorithms/unify.lisp"><B>unique-find-anywhere-if</B></A></A> <I>function</I> (predicate
+                                                                                                                                      tree
+                                                                                                                                      &optional
+                                                                                                                                      found-so-far)
+  <blockquote>Return a list of leaves of tree satisfying predicate,
+  with duplicates removed.</blockquote>
+<A NAME="find-anywhere-if"><P><A HREF="../logic/algorithms/unify.lisp"><B>find-anywhere-if</B></A></A> <I>function</I> (predicate
+                                                                                                                        tree)
+  <blockquote>Does predicate apply to any atom in the tree?</blockquote>
+<A NAME="*new-variable-counter*"><P><A HREF="../logic/algorithms/unify.lisp"><B>*new-variable-counter*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="new-variable"><P><A HREF="../logic/algorithms/unify.lisp"><B>new-variable</B></A></A> <I>function</I> (var)
+  <blockquote>Create a new variable.  Assumes user never types variables of form $X.9</blockquote>
+<A NAME="logic/algorithms/normal.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/normal.lisp">logic/algorithms/normal.lisp</A></H2></A>
+<H2><I> Convert Expressions to Normal Form (Conjunctive, Implicative or Horn)</I>
+</H2>
+<I> This could be done much more efficiently by using a special</I>
+<I> representation for CNF, which eliminates the explicit ANDs</I>
+<I> and ORs.  This code is meant to be informative, not efficient.</I>
+<H2><I> Top-Level Functions</I>
+</H2>
+<A NAME="->cnf"><P><A HREF="../logic/algorithms/normal.lisp"><B>->cnf</B></A></A> <I>function</I> (p
+                                                                                                   &optional
+                                                                                                   vars)
+  <blockquote>Convert a sentence p to conjunctive normal form [p 279-280].</blockquote>
+<A NAME="->inf"><P><A HREF="../logic/algorithms/normal.lisp"><B>->inf</B></A></A> <I>function</I> (p)
+  <blockquote>Convert a sentence p to implicative normal form [p 282].</blockquote>
+<A NAME="->horn"><P><A HREF="../logic/algorithms/normal.lisp"><B>->horn</B></A></A> <I>function</I> (p)
+  <blockquote>Try to convert sentence to a Horn clause, or a conjunction of Horn clauses.
+  Signal an error if this cannot be done.</blockquote>
+<A NAME="logic"><P><A HREF="../logic/algorithms/normal.lisp"><B>logic</B></A></A> <I>function</I> (sentence)
+  <blockquote>Canonicalize a sentence into proper logical form.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="cnf1->inf1"><P><A HREF="../logic/algorithms/normal.lisp"><B>cnf1->inf1</B></A></A> <I>function</I> (p)
+  <P>
+<A NAME="eliminate-implications"><P><A HREF="../logic/algorithms/normal.lisp"><B>eliminate-implications</B></A></A> <I>function</I> (p)
+  <P>
+<A NAME="move-not-inwards"><P><A HREF="../logic/algorithms/normal.lisp"><B>move-not-inwards</B></A></A> <I>function</I> (p)
+  <blockquote>Given P, return ~P, but with the negation moved as far in as possible.</blockquote>
+<A NAME="merge-disjuncts"><P><A HREF="../logic/algorithms/normal.lisp"><B>merge-disjuncts</B></A></A> <I>function</I> (disjuncts)
+  <blockquote>Return a CNF expression for the disjunction.</blockquote>
+<A NAME="skolemize"><P><A HREF="../logic/algorithms/normal.lisp"><B>skolemize</B></A></A> <I>function</I> (p
+                                                                                                           vars
+                                                                                                           outside-vars)
+  <blockquote>Within the proposition P, replace each of VARS with a skolem constant,
+  or if OUTSIDE-VARS is non-null, a skolem function of them.</blockquote>
+<A NAME="skolem-constant"><P><A HREF="../logic/algorithms/normal.lisp"><B>skolem-constant</B></A></A> <I>function</I> (name)
+  <blockquote>Return a unique skolem constant, a symbol starting with '$'.</blockquote>
+<A NAME="renaming?"><P><A HREF="../logic/algorithms/normal.lisp"><B>renaming?</B></A></A> <I>function</I> (p
+                                                                                                           q
+                                                                                                           &optional
+                                                                                                           bindings)
+  <blockquote>Are p and q renamings of each other? (That is, expressions that differ
+  only in variable names?)</blockquote>
+<H2><I> Utility Predicates and Accessors</I>
+</H2>
+<A NAME="+logical-connectives+"><P><A HREF="../logic/algorithms/normal.lisp"><B>+logical-connectives+</B></A></A> <I>constant</I> 
+  <P>
+<A NAME="+logical-quantifiers+"><P><A HREF="../logic/algorithms/normal.lisp"><B>+logical-quantifiers+</B></A></A> <I>constant</I> 
+  <P>
+<A NAME="atomic-clause?"><P><A HREF="../logic/algorithms/normal.lisp"><B>atomic-clause?</B></A></A> <I>function</I> (sentence)
+  <blockquote>An atomic clause has no connectives or quantifiers.</blockquote>
+<A NAME="literal-clause?"><P><A HREF="../logic/algorithms/normal.lisp"><B>literal-clause?</B></A></A> <I>function</I> (sentence)
+  <blockquote>A literal is an atomic clause or a negated atomic clause.</blockquote>
+<A NAME="negative-clause?"><P><A HREF="../logic/algorithms/normal.lisp"><B>negative-clause?</B></A></A> <I>function</I> (sentence)
+  <blockquote>A negative clause has NOT as the operator.</blockquote>
+<A NAME="horn-clause?"><P><A HREF="../logic/algorithms/normal.lisp"><B>horn-clause?</B></A></A> <I>function</I> (sentence)
+  <blockquote>A Horn clause (in INF) is an implication with atoms on the left and one
+  atom on the right.</blockquote>
+<A NAME="conjuncts"><P><A HREF="../logic/algorithms/normal.lisp"><B>conjuncts</B></A></A> <I>function</I> (sentence)
+  <blockquote>Return a list of the conjuncts in this sentence.</blockquote>
+<A NAME="disjuncts"><P><A HREF="../logic/algorithms/normal.lisp"><B>disjuncts</B></A></A> <I>function</I> (sentence)
+  <blockquote>Return a list of the disjuncts in this sentence.</blockquote>
+<A NAME="conjunction"><P><A HREF="../logic/algorithms/normal.lisp"><B>conjunction</B></A></A> <I>function</I> (args)
+  <blockquote>Form a conjunction with these args.</blockquote>
+<A NAME="disjunction"><P><A HREF="../logic/algorithms/normal.lisp"><B>disjunction</B></A></A> <I>function</I> (args)
+  <blockquote>Form a disjunction with these args.</blockquote>
+<A NAME="logic/algorithms/prop.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/prop.lisp">logic/algorithms/prop.lisp</A></H2></A>
+<H2><I> Propositional Logic</I>
+</H2>
+<A NAME="prop-kb"><P><A HREF="../logic/algorithms/prop.lisp"><B>prop-kb</B></A></A> <I>type</I> (sentence)
+  <blockquote>A simple KB implementation that builds a big conjoined sentence.</blockquote>
+<A NAME="truth-table"><P><A HREF="../logic/algorithms/prop.lisp"><B>truth-table</B></A></A> <I>type</I> (symbols
+                                                                                                         sentences
+                                                                                                         rows)
+  <P>
+<H2><I> Tell, Ask, and Retract</I>
+</H2>
+<A NAME="tell:prop-kb"><P><A HREF="../logic/algorithms/prop.lisp"><B>tell</B></A></A> <I>method</I> ((kb
+                                                                                                      prop-kb)
+                                                                                                     sentence)
+  <blockquote>Add a sentence to a propositional knowledge base.</blockquote>
+<A NAME="ask-each:prop-kb"><P><A HREF="../logic/algorithms/prop.lisp"><B>ask-each</B></A></A> <I>method</I> ((kb
+                                                                                                              prop-kb)
+                                                                                                             query
+                                                                                                             fn)
+  <blockquote>Ask a propositional knowledge base if the query is entailed by the kb.</blockquote>
+<A NAME="retract:prop-kb"><P><A HREF="../logic/algorithms/prop.lisp"><B>retract</B></A></A> <I>method</I> ((kb
+                                                                                                            prop-kb)
+                                                                                                           sentence)
+  <blockquote>Remove a sentence from a knowledge base.</blockquote>
+<H2><I> Other Useful Top-Level Functions</I>
+</H2>
+<A NAME="validity"><P><A HREF="../logic/algorithms/prop.lisp"><B>validity</B></A></A> <I>function</I> (sentence)
+  <blockquote>Return either VALID, SATISFIABLE or UNSATISFIABLE.</blockquote>
+<A NAME="truth-table"><P><A HREF="../logic/algorithms/prop.lisp"><B>truth-table</B></A></A> <I>function</I> (sentence)
+  <blockquote>Build and print a truth table for this sentence, with columns for all the
+  propositions and all the non-trivial component sentences.  Iff the sentence
+  is valid, the last column will have all T's.
+  Example: (truth-table '(<=> P (not (not P)))).</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="eval-truth"><P><A HREF="../logic/algorithms/prop.lisp"><B>eval-truth</B></A></A> <I>function</I> (sentence
+                                                                                                           &optional
+                                                                                                           interpretation)
+  <blockquote>Evaluate the truth of the sentence under an interpretation.
+  The interpretation is a list of (proposition . truth-value) pairs,
+  where a truth-value is t or nil, e.g., ((P . t) (Q . nil)).
+  It is an error if there are any propositional symbols in the sentence
+  that are not given a value in the interpretation.</blockquote>
+<H2><I> Truth Tables</I>
+</H2>
+<A NAME="build-truth-table"><P><A HREF="../logic/algorithms/prop.lisp"><B>build-truth-table</B></A></A> <I>function</I> (sentence
+                                                                                                                         &key
+                                                                                                                         short)
+  <blockquote>Build a truth table whose last column is the sentence.  If SHORT is true,
+  then that is the only column. If SHORT is false, all the sub-sentences
+  are also included as columns (except constants).</blockquote>
+<A NAME="print-truth-table"><P><A HREF="../logic/algorithms/prop.lisp"><B>print-truth-table</B></A></A> <I>function</I> (table
+                                                                                                                         &optional
+                                                                                                                         stream)
+  <blockquote>Print a truth table.</blockquote>
+<A NAME="compute-truth-entries"><P><A HREF="../logic/algorithms/prop.lisp"><B>compute-truth-entries</B></A></A> <I>function</I> (symbols
+                                                                                                                                 sentences)
+  <blockquote>Compute the truth of each sentence under all interpretations of symbols.</blockquote>
+<A NAME="all-truth-interpretations"><P><A HREF="../logic/algorithms/prop.lisp"><B>all-truth-interpretations</B></A></A> <I>function</I> (symbols)
+  <blockquote>Return all 2^n interpretations for a list of n symbols.</blockquote>
+<A NAME="prop-symbols-in"><P><A HREF="../logic/algorithms/prop.lisp"><B>prop-symbols-in</B></A></A> <I>function</I> (sentence)
+  <blockquote>Return a list of all the propositional symbols in sentence.</blockquote>
+<A NAME="complex-sentences-in"><P><A HREF="../logic/algorithms/prop.lisp"><B>complex-sentences-in</B></A></A> <I>function</I> (sentence)
+  <blockquote>Return a list of all non-atom sub-sentences of sentence.</blockquote>
+<A NAME="sentence-output-form"><P><A HREF="../logic/algorithms/prop.lisp"><B>sentence-output-form</B></A></A> <I>function</I> (sentence)
+  <blockquote>Convert a prefix sentence back into an infix notation with brief operators.</blockquote>
+<A NAME="logic/algorithms/horn.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/horn.lisp">logic/algorithms/horn.lisp</A></H2></A>
+<H2><I> Logical Reasoning in Horn Clause Knowledge Bases</I>
+</H2>
+<A NAME="horn-kb"><P><A HREF="../logic/algorithms/horn.lisp"><B>horn-kb</B></A></A> <I>type</I> (table)
+  <P>
+<A NAME="tell:horn-kb"><P><A HREF="../logic/algorithms/horn.lisp"><B>tell</B></A></A> <I>method</I> ((kb
+                                                                                                      horn-kb)
+                                                                                                     sentence)
+  <blockquote>Add a sentence to a Horn knowledge base.  Warn if its not a Horn sentence.</blockquote>
+<A NAME="retract:horn-kb"><P><A HREF="../logic/algorithms/horn.lisp"><B>retract</B></A></A> <I>method</I> ((kb
+                                                                                                            horn-kb)
+                                                                                                           sentence)
+  <blockquote>Delete each conjunct of sentence from KB.</blockquote>
+<A NAME="ask-each:horn-kb"><P><A HREF="../logic/algorithms/horn.lisp"><B>ask-each</B></A></A> <I>method</I> ((kb
+                                                                                                              horn-kb)
+                                                                                                             query
+                                                                                                             fn)
+  <blockquote>Use backward chaining to decide if sentence is true.</blockquote>
+<A NAME="back-chain-each"><P><A HREF="../logic/algorithms/horn.lisp"><B>back-chain-each</B></A></A> <I>function</I> (kb
+                                                                                                                     goals
+                                                                                                                     bindings
+                                                                                                                     fn)
+  <blockquote>Solve the conjunction of goals by backward chaining.
+  See [p 275], but notice that this implementation is different.
+  It applies fn to each answer found, and handles composition differently.</blockquote>
+<A NAME="logic/algorithms/fol.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/fol.lisp">logic/algorithms/fol.lisp</A></H2></A>
+<H2><I> First Order Logic (FOL) Tell, Retract, and Ask-Each</I>
+</H2>
+<A NAME="fol-kb"><P><A HREF="../logic/algorithms/fol.lisp"><B>fol-kb</B></A></A> <I>type</I> (<i> a fol (first-order logic) kb stores clauses. </i>
+
+                                                                                              <i> access to the kb is via possible-resolvers, which takes a</i>
+
+                                                                                              <i> literal (e.g. (not d), or b), and returns all the clauses that</i>
+
+                                                                                              <i> contain the literal.  we also keep a list of temporary clauses, </i>
+
+                                                                                              <i> added to the kb during a proof and removed at the end. internally,</i>
+
+                                                                                              <i> clauses are in minimal-cnf format, which is cnf without the and/or.</i>
+
+                                                                                              <i> so (and (or p q) (or r (not s))) becomes ((p q) (r (not s)))</i>
+
+                                                                                              positive-clauses
+                                                                                              negative-clauses
+                                                                                              temp-added)
+  <P>
+<A NAME="tell:fol-kb"><P><A HREF="../logic/algorithms/fol.lisp"><B>tell</B></A></A> <I>method</I> ((kb
+                                                                                                    fol-kb)
+                                                                                                   sentence)
+  <blockquote>Add a sentence to a FOL knowledge base.</blockquote>
+<A NAME="retract:fol-kb"><P><A HREF="../logic/algorithms/fol.lisp"><B>retract</B></A></A> <I>method</I> ((kb
+                                                                                                          fol-kb)
+                                                                                                         sentence)
+  <blockquote>Delete each conjunct of sentence from KB.</blockquote>
+<A NAME="ask-each:fol-kb"><P><A HREF="../logic/algorithms/fol.lisp"><B>ask-each</B></A></A> <I>method</I> ((kb
+                                                                                                            fol-kb)
+                                                                                                           query
+                                                                                                           fn)
+  <blockquote>Use resolution to decide if sentence is true.</blockquote>
+<H2><I> FOL Knowledge Base Utility Functions</I>
+</H2>
+<A NAME="possible-resolvers"><P><A HREF="../logic/algorithms/fol.lisp"><B>possible-resolvers</B></A></A> <I>function</I> (kb
+                                                                                                                          literal)
+  <blockquote>Find clauses that might resolve with a clause containing literal.</blockquote>
+<A NAME="tell-minimal-cnf-clause"><P><A HREF="../logic/algorithms/fol.lisp"><B>tell-minimal-cnf-clause</B></A></A> <I>function</I> (kb
+                                                                                                                                    clause)
+  <P>
+<A NAME="retract-minimal-cnf-clauses"><P><A HREF="../logic/algorithms/fol.lisp"><B>retract-minimal-cnf-clauses</B></A></A> <I>function</I> (kb
+                                                                                                                                            clauses)
+  <blockquote>Remove the minimal-cnf clauses from the KB.</blockquote>
+<A NAME="->minimal-cnf"><P><A HREF="../logic/algorithms/fol.lisp"><B>->minimal-cnf</B></A></A> <I>function</I> (sentence)
+  <blockquote>Convert a logical sentence to minimal CNF (no and/or connectives).</blockquote>
+<A NAME="undo-temp-changes"><P><A HREF="../logic/algorithms/fol.lisp"><B>undo-temp-changes</B></A></A> <I>function</I> (kb)
+  <blockquote>Undo the changes that were temporarilly made to KB.</blockquote>
+<A NAME="tautology?"><P><A HREF="../logic/algorithms/fol.lisp"><B>tautology?</B></A></A> <I>function</I> (clause)
+  <blockquote>Is clause a tautology (something that is always true)?</blockquote>
+<H2><I> Functions for Resolution Refutation Theorem Proving</I>
+</H2>
+<A NAME="prove-by-refutation"><P><A HREF="../logic/algorithms/fol.lisp"><B>prove-by-refutation</B></A></A> <I>function</I> (kb
+                                                                                                                            sos
+                                                                                                                            fn)
+  <blockquote>Try to prove that ~SOS is true (given KB) by resolution refutation.</blockquote>
+<A NAME="resolve"><P><A HREF="../logic/algorithms/fol.lisp"><B>resolve</B></A></A> <I>function</I> (literal
+                                                                                                    clause)
+  <blockquote>Resolve a single literal against a clause</blockquote>
+<A NAME="insert"><P><A HREF="../logic/algorithms/fol.lisp"><B>insert</B></A></A> <I>function</I> (item
+                                                                                                  list
+                                                                                                  pred
+                                                                                                  &key
+                                                                                                  key)
+  <P>
+<A NAME="logic/algorithms/infix.lisp"><HR>
+<H2>File <A HREF="../logic/algorithms/infix.lisp">logic/algorithms/infix.lisp</A></H2></A>
+<H2><I> Prefix to Infix Conversion</I>
+</H2>
+<A NAME="*infix-ops*"><P><A HREF="../logic/algorithms/infix.lisp"><B>*infix-ops*</B></A></A> <I>variable</I> 
+  <blockquote>A list of lists of operators, highest precedence first.</blockquote>
+<A NAME="->prefix"><P><A HREF="../logic/algorithms/infix.lisp"><B>->prefix</B></A></A> <I>function</I> (infix)
+  <blockquote>Convert an infix expression to prefix.</blockquote>
+<A NAME="reduce-infix"><P><A HREF="../logic/algorithms/infix.lisp"><B>reduce-infix</B></A></A> <I>function</I> (infix)
+  <blockquote>Find the highest-precedence operator in INFIX and reduce accordingly.</blockquote>
+<A NAME="op-token"><P><A HREF="../logic/algorithms/infix.lisp"><B>op-token</B></A></A> <I>function</I> (op)
+  <P>
+<A NAME="op-name"><P><A HREF="../logic/algorithms/infix.lisp"><B>op-name</B></A></A> <I>function</I> (op)
+  <P>
+<A NAME="op-type"><P><A HREF="../logic/algorithms/infix.lisp"><B>op-type</B></A></A> <I>function</I> (op)
+  <P>
+<A NAME="op-match"><P><A HREF="../logic/algorithms/infix.lisp"><B>op-match</B></A></A> <I>function</I> (op)
+  <P>
+<A NAME="replace-subseq"><P><A HREF="../logic/algorithms/infix.lisp"><B>replace-subseq</B></A></A> <I>function</I> (sequence
+                                                                                                                    start
+                                                                                                                    length
+                                                                                                                    new)
+  <P>
+<A NAME="reduce-matching-op"><P><A HREF="../logic/algorithms/infix.lisp"><B>reduce-matching-op</B></A></A> <I>function</I> (op
+                                                                                                                            pos
+                                                                                                                            infix)
+  <blockquote>Find the matching op (paren or bracket) and reduce.</blockquote>
+<A NAME="remove-commas"><P><A HREF="../logic/algorithms/infix.lisp"><B>remove-commas</B></A></A> <I>function</I> (exp)
+  <blockquote>Convert (|,| a b) to (a b).</blockquote>
+<A NAME="handle-quantifiers"><P><A HREF="../logic/algorithms/infix.lisp"><B>handle-quantifiers</B></A></A> <I>function</I> (exp)
+  <blockquote>Change (FORALL x y P) to (FORALL (x y) P).</blockquote>
+<H2><I> Tokenization: convert a string to a sequence of tokens</I>
+</H2>
+<A NAME="string->infix"><P><A HREF="../logic/algorithms/infix.lisp"><B>string->infix</B></A></A> <I>function</I> (string
+                                                                                                                  &optional
+                                                                                                                  start)
+  <blockquote>Convert a string to a list of tokens.</blockquote>
+<A NAME="parse-infix-token"><P><A HREF="../logic/algorithms/infix.lisp"><B>parse-infix-token</B></A></A> <I>function</I> (string
+                                                                                                                          start)
+  <blockquote>Return the first token in string and the position after it, or nil.</blockquote>
+<A NAME="parse-span"><P><A HREF="../logic/algorithms/infix.lisp"><B>parse-span</B></A></A> <I>function</I> (string
+                                                                                                            pred
+                                                                                                            i)
+  <P>
+<A NAME="make-logic-symbol"><P><A HREF="../logic/algorithms/infix.lisp"><B>make-logic-symbol</B></A></A> <I>function</I> (string)
+  <blockquote>Convert string to symbol, preserving case, except for AND/OR/NOT/FORALL/EXISTS.</blockquote>
+<A NAME="operator-char?"><P><A HREF="../logic/algorithms/infix.lisp"><B>operator-char?</B></A></A> <I>function</I> (x)
+  <P>
+<A NAME="symbol-char?"><P><A HREF="../logic/algorithms/infix.lisp"><B>symbol-char?</B></A></A> <I>function</I> (x)
+  <P>
+<A NAME="function-symbol?"><P><A HREF="../logic/algorithms/infix.lisp"><B>function-symbol?</B></A></A> <I>function</I> (x)
+  <P>
+<A NAME="whitespace?"><P><A HREF="../logic/algorithms/infix.lisp"><B>whitespace?</B></A></A> <I>function</I> (ch)
+  <P>
+<A NAME="logic/environments/shopping.lisp"><HR>
+<H2>File <A HREF="../logic/environments/shopping.lisp">logic/environments/shopping.lisp</A></H2></A>
+<H2><I> The Shopping World: </I>
+</H2>
+<I> Warning!  This code has not yet been tested or debugged!</I>
+<A NAME="*page250-supermarket*"><P><A HREF="../logic/environments/shopping.lisp"><B>*page250-supermarket*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="shopping-world"><P><A HREF="../logic/environments/shopping.lisp"><B>shopping-world</B></A></A> <I>type</I> nil
+  <P>
+<H2><I> New Structures</I>
+</H2>
+<A NAME="credit-card"><P><A HREF="../logic/environments/shopping.lisp"><B>credit-card</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="food"><P><A HREF="../logic/environments/shopping.lisp"><B>food</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="tomato"><P><A HREF="../logic/environments/shopping.lisp"><B>tomato</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="lettuce"><P><A HREF="../logic/environments/shopping.lisp"><B>lettuce</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="onion"><P><A HREF="../logic/environments/shopping.lisp"><B>onion</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="orange"><P><A HREF="../logic/environments/shopping.lisp"><B>orange</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="apple"><P><A HREF="../logic/environments/shopping.lisp"><B>apple</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="grapefruit"><P><A HREF="../logic/environments/shopping.lisp"><B>grapefruit</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="sign"><P><A HREF="../logic/environments/shopping.lisp"><B>sign</B></A></A> <I>type</I> (words)
+  <P>
+<A NAME="cashier-stand"><P><A HREF="../logic/environments/shopping.lisp"><B>cashier-stand</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="cashier"><P><A HREF="../logic/environments/shopping.lisp"><B>cashier</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="seeing-agent-body"><P><A HREF="../logic/environments/shopping.lisp"><B>seeing-agent-body</B></A></A> <I>type</I> (zoomed-at
+                                                                                                                           can-zoom-at
+                                                                                                                           visible-offsets)
+  <P>
+<A NAME="shopper"><P><A HREF="../logic/environments/shopping.lisp"><B>shopper</B></A></A> <I>type</I> nil
+  <P>
+<H2><I> Percepts</I>
+</H2>
+<A NAME="get-percept:shopping-world"><P><A HREF="../logic/environments/shopping.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                                 shopping-world)
+                                                                                                                                agent)
+  <blockquote>The percept is a sequence of sights, touch (i.e. bump), and sounds.</blockquote>
+<A NAME="see"><P><A HREF="../logic/environments/shopping.lisp"><B>see</B></A></A> <I>function</I> (agent
+                                                                                                   env)
+  <blockquote>Return a list of visual percepts for an agent.  Note the agent's camera may
+  either be zoomed out, so that it sees several squares, or zoomed in on one.</blockquote>
+<A NAME="feel"><P><A HREF="../logic/environments/shopping.lisp"><B>feel</B></A></A> <I>function</I> (agent
+                                                                                                     env)
+  <P>
+<A NAME="hear"><P><A HREF="../logic/environments/shopping.lisp"><B>hear</B></A></A> <I>function</I> (agent
+                                                                                                     env)
+  <P>
+<A NAME="see-loc"><P><A HREF="../logic/environments/shopping.lisp"><B>see-loc</B></A></A> <I>function</I> (loc
+                                                                                                           env
+                                                                                                           zoomed-at)
+  <P>
+<A NAME="appearance"><P><A HREF="../logic/environments/shopping.lisp"><B>appearance</B></A></A> <I>function</I> (object)
+  <blockquote>Return a list of visual attributes: (loc size color shape words)</blockquote>
+<A NAME="object-words"><P><A HREF="../logic/environments/shopping.lisp"><B>object-words</B></A></A> <I>function</I> (object)
+  <P>
+<A NAME="zoom"><P><A HREF="../logic/environments/shopping.lisp"><B>zoom</B></A></A> <I>function</I> (agent-body
+                                                                                                     env
+                                                                                                     offset)
+  <blockquote>Zoom the camera at an offset if it is feasible; otherwise zoom out.</blockquote>
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="../../aima.html">AIMA Home</A>
+<td> <A HREF="../../contact.html">Authors</A>
+<td> <A HREF="overview.html">Lisp Code</A>
+<td> <A HREF="../../prog.html">AI Programming</A>
+<td> <A HREF="../../instructors.html">Instructors Pages</A>
+</TABLE>
+</BODY> 
+</HTML>

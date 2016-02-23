@@ -1,0 +1,256 @@
+<HTML>
+<HEAD>
+<TITLE>Using the Code for AIMA</TITLE> 
+<!-- Changed by: Peter Norvig, 30-Oct-1996 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<H2>Using the Code for AIMA</H2>
+
+<H2>Starting Up</H2>
+
+Ask whoever performed the <A HREF="install.html">installation procedure</A>
+which of the following applies to your installation:
+<OL>
+<LI> You have a specialized Common Lisp system that contains all the code for the book pre-loaded.  In that case, you just type the name (or click on the icon) of that program to get started.
+<P><LI>You have a Common Lisp system without the code loaded.  Start up the Common Lisp and enter the following two forms:
+<PRE>
+        (load "aima.lisp")
+        (aima-load '<I>name</I>)
+</PRE>
+
+Where <I>name</I> is the name of a system you want to work with.  The
+systems that are currently defined are:
+
+<PRE>
+        utilities       (Automatically loaded when you load aima.lisp)
+        agents          (Part I:   Agents and Environments)
+        search          (Part II:  Problem Solving and Search)
+        logic           (Part III: Logic, Inference, and Knowledge Rep.)
+        planning        (Part IV:  Planning and Acting)
+        uncertainty     (PART V:   Uncertain Knowledge and Reasoning)
+        learning        (Part VI:  Learning)
+        language        (Part VII, Chapters 22-23: Natural Language)
+        all             (All the above, except utilities)
+</PRE>
+Not all Lisps are clever enough to figure out when to load binary (compiled) 
+files,
+and when to load lisp (source) files.  If your Lisp has trouble with this, and you
+want to load the binary files, then instead of 
+<TT>(aima-load '<I>name</I>)</TT> you can do <TT> (aima-load-binary '<I>name</I>) </TT>
+</OL>
+
+<H2>Exploring the Code</H2>
+
+Here are some suggestions for how you can get familiar with the code,
+experiment with it, and extend it to do more things.
+
+<OL>
+
+<P><LI> There is an <A HREF="overview.html">overview</A> of every
+file, and every definition in every file.  This is a good place to
+start browsing.
+
+<P><LI> There is an alphabetical <A HREF="entries.html">index</A> of
+every definition in the code (with links to the <A
+HREF="overview.html">overview</A>), and every pre-defined Common Lisp
+symbol (with links to the <A
+HREF="http://www.harlequin.com/books/HyperSpec//documents/ansi-standard/index.html">official
+documentation</A>).
+
+<P><LI> You can browse the <A HREF="../">source code</A> directly.
+
+<P><LI> You can run the test cases that we have defined for each of the
+systems.  For example, try this:
+<PRE>
+        (test 'agents)
+</PRE>
+
+<P>This will print a transcript of various operations from the agent code.
+Besides printing the transcript, it also counts up the number of unexpected
+answers, and returns the total at the end.  If this is not 0, it means
+something is wrong.   The most recent run of <tt>(test 'all)</tt>
+on a Sparc-10 took about a minute total.  But it may take longer if you have
+a slower machine, if you have not compiled the files first, or if you just
+have bad luck: many of the tests involve generating random environments, and
+there is a chance that a particularly difficult environment will be
+generated, and the agents will perform slowly on it.  If you have to wait
+more than a minute or two for any one environment, you might want to abort
+out of the test and try again. 
+
+<P><LI> Once you see what is in the tests, you will get an idea of what
+functions you can run on your own.
+ 
+</OL>
+
+<A NAME=organization><H2>Organization of the Code</H2></A>
+
+To write new code, you need a good understanding of the code that is
+there, and how it is organized.  Note that most of the systems are
+divided into four subdirectories:
+
+<UL>
+
+<LI><B>algorithms</B> Here you will find general-purpose algorithms
+such as the <A HREF="overview.html#A*-search">A*-search</A> algorithm
+in <A
+HREF="../search/agorithms/repeated.lisp">search/agorithms/repeated.lisp</A>
+This code is similar to the code you will find associated with other
+AI textbooks.
+
+<P><LI><B>domains</B> Here you will find implementations of specific problem
+areas or domains, such as the <A HREF="../search/domains/tsp.lisp">travelling salesperson
+problem</A>.  Again, this is similar to other AI code.
+
+<P><LI><B>environments</B> In this directory we define simulated
+environments in which agents can execute (via the <A
+HREF="overview.html#run-environment"><TT>run-environment</TT></A>
+function).  The difference between the <B>domains</B> and
+<B>environments</B> directories is that <B>domains</B> is about what
+an agent does in analyzing a problem, while <B>environments</B> is
+about actually running a simulation.  (Of course there may be some
+overlap, in the sense that, say, knowing the legal moves in the wumpus world
+is useful both for deciding what to do and for running the
+simulation.)
+
+<P><LI><B>agents</B> Here we define the agents that will run in the
+simulated environments.  This is where we show one of the major points
+of the book: that AI can be seen as the science of agent design.
+
+</UL>
+
+Each system contains a <B>README.html</B> file that explains what is
+in the system, and a <b>test-<i>system</i>.lisp</b> file. You can just browse
+through this file to get an idea of what the system offers, or you can
+evaluate the expression <tt>(test '<i>name</i>)</tt> to see some
+actual output (and get a report if your Lisp gives an answer that we
+did not expect).
+
+<H2>Extending the Code</H2>
+
+Here are some types of programming projects you might want to take on,
+with advice on how to do them:
+
+<UL>
+
+<LI> Optimize or otherwise modify existing algorithms.  For example,
+in <A
+HREF="../language/algorithms/chart-parse.lisp"><TT>chart-parse.lisp</TT></A>,
+there are some comments suggesting how to speed up the algorithm.  This
+is just like any other programming task: use your knowledge of data structures
+and algorithms, and make sure you meter or profile the code to know what to
+change.
+
+<P><LI> Define a new agent for an existing environment.
+
+<P><LI> Define a new environment.  Create a structure type which inherits
+from <A HREF="overview.html#environment"><TT>environment</TT></A> (or
+from one of its subtypes).  Then define methods for the generic
+functions mentioned in <A
+HREF="overview.html#agents/environments/basic-env.lisp">basic-env.lisp</A>.
+An example of defining a new environment is shown in <A HREF="../agents/environments/vacuum.lisp"><TT>agents/environments/vacuum.lisp</TT></A>.
+</UL>
+
+
+<H2>Problems?</H2>
+
+Have fun with the code.  If you find bugs or have suggestions, write
+to <A
+HREF="mailto:peter@norvig.com">peter@norvig.com</A>.
+Include a transcript of what you have loaded and executed, a backtrace
+of the calling stack if there is an error, and the value of the
+variable <tt>*aima-version*</tt>.
+
+<H2>Version History</H2>
+
+<DL>
+<DT> 0.98 AIMA Code, Thelonious Monk Birthday Version, 10-Oct-2001
+<DD> Line 190 of agents/environments/grid-env.lisp changed to
+<br><tt>   ((xy-p where)        (parse-whats env where whats))</tt>
+<br>Previously it had the parameter order confused. Thanks to
+Yoshihiro Ota.
+<DT> 0.97 AIMA Code, Shot Heard 'Round the World Day Version, 03-Oct-2001
+<DD> Removed support of Lispworks from the documentation.  Lispworks appears
+to have a bug with the treatment of special variables (it shows up in
+logic/algorithims/tell-ask.lisp).  If someone sends me a workaround I'll
+add it.  For now, I'll just limit official support to Allegro and MCL
+(although you certainly can get the code to work in other Lisps).
+<p>
+<DT> 0.96 AIMA Code, Palindrome Day Version, 10-02-2001
+<DD> Replaced <tt>get-setf-method</tt> with <tt>get-setf-expansion</tt>,
+as per the ANSI standard.  Updated documentation.  The
+biggest error was that I didn't mention that you need to do a
+<tt>aima-load</tt> before the <tt>aima-compile</tt>. Tested code
+with Allegro, Lispworks, and MCL.  It loads, compiles, and tests out
+ok in all three Lisps.
+
+<p><DT> 0.95 AIMA Code, Patriots Day Version, 21-Apr-1997
+<DD> Four main changes:
+First, modified much of the code to use an object-oriented
+approach using <tt>defmethod</tt>.  We limited this to single-inheritance,
+and single dispatch (on the first argument).  This is both because
+we wanted it to work even in old Lisps that don't have a CLOS (Common Lisp
+Object System) implementation, and because we wanted it to be familiar
+to programmers who are used to object-oriented approaches in other languages
+such as Java or Smalltalk.  Second, added extensive machine-generated
+HTML documentation, of which this mpage is part. Third, the directory structure
+was re-organized. Fourth, completed the code for a chart parser and grammar
+in the language directory. There were also some 
+minor bug fixes, e.g.
+David Palmer pointed out that the wumpus agent can pick up the 
+        wumpus when it is trying to pick up the gold.
+<P><DT>0.94 AIMA Code, Ground Hog Day Version, 2-Feb-1995
+<DD>    Ray Liere and David Palmer pointed out that non-square
+        grid-environments were incorrectly initialized in grid-env.lisp.
+        Roger Kirchner pointed out that the precedence of the | operator in
+        infix.lisp was wrong.  John Sterling discovered some files where we
+        still referenced the USER package, and suggested removing the
+        (declare (ignore contained?)) from DEFSETF GRID-CONTENTS to avoid a
+        warning in MCL.  The infix reader was enhanced to turn lowercase
+        symbols into variables, i.e. "F(x,C)" turns into (F ?X C).  Some code
+        that answers exercises from the book was moved out of the code
+        repository and into the soon-to-be-released instructor's manual.
+        Added file "index.txt", which lists all functions, types, and
+        variables, the page they appear on in the book, and the file they
+        appear in.
+
+<P><DT>0.93 AIMA Code, Oral Roberts' Birthday Version, 24-Jan-1995
+<DD>
+        There were problems with older Common Lisps stemming from the
+        difference between the USER and CL-USER packages, so I just decided to
+        eliminate all code that deals with packages.  There were a few other
+        changes to fix problems in Clisp.  When compiling under Clisp, if you
+        get an error message that says a macro is being redefined, just type
+        "continue".  After you've compiled once, you won't get the message
+        again when you load.  The code has now been tested in Harlequin, Lucid,
+        Franz, AKCL and Clisp.
+
+<P><DT>0.92 AIMA Code, Martin Luther King Day Version, 16-Jan-1995
+<DD>
+        Added new game-playing and logic code, and new systems for learning and
+        uncertainty.  Added some documentation and minor changes to agents and
+        search code.
+
+<P><DT>0.91 AIMA Code, Newer Years Version, 5-Jan-1995
+<DD>
+        Fixed a few minor bugs that resulted from too-quickly merging two
+        versions of the code, and added some (declare (ignore variable))s.
+        Tested in several implementations of Common Lisp: Harlequin, Lucid,
+        Franz, and AKCL.
+
+<P><DT>0.9  AIMA Code, New Years Version, 4-Jan-1995
+<DD>
+        A preliminary version, released because several instructors were
+        starting courses this week.  Only the AGENTS and SEARCH systems are
+        supported, although unsupported code for other systems is included.
+</DL>
+
+
+<HR>
+<table border=0 cellpadding=4 cellspacing=4>
+<tr>
+<td bgcolor=cccccc><b><a href="../../aima.html">AIMA Home</a></b>
+<td bgcolor=cccccc><A HREF="../../contact.html"><b>Contact Russell &amp; Norvig</b></A>
+<td bgcolor=cccccc><A HREF="../../new.html"><b>What's new</b></A> 
+<td><font size="-2">Changed 10/02/2001</font>
+</TABLE></BODY></HTML>

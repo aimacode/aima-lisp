@@ -1,0 +1,110 @@
+<TITLE>Downloading and Installing Lisp Code for AIMA</TITLE>
+<!-- Changed by: Peter Norvig, 24-Jul-1996 -->
+<BODY bgcolor=#ffffff>
+<H1>Downloading and Installing Lisp Code for AIMA</H1>
+
+This page gives instructions for retrieving the code for the book, and
+installing it on your local system.  This installation procedure need
+only be followed once.  If you are using the book in a course, your
+instructor (or an assistant) will probably do this for you, and you
+can move on to <A HREF="user.html">using the code</A>.
+
+<H2>Downloading the Code</H1>
+
+To download the code, follow these steps:
+
+<OL> 
+
+<LI> <b>Create a directory</b> where you want the code to reside, and change to that directory.
+On Unix, this might be "<tt>mkdir aima; cd aima</tt>".
+
+<li> </b>Download the source code</b>. The easiest way is to click on
+this link to get <a href="../code.tar">code.tar</a> (973KB).  If you
+are on a very slow connection to the Internet, you can get
+<a href="../code.tar.gz">code.tar.gz</a>
+(188KB) instead and then on Unix do <tt>gunzip code.tar.gz</tt> or on Windows
+drag the file to the WinZip icon, or similar archiving tool (e.g. PKunzip).
+Make sure you download the file to the
+correct directory (in most browsers, this is done by clicking the right mouse
+button and choosing the "save as file" option).  
+
+<li> Execute the command <tt>tar xf code.tar</tt> to unpack the
+archive of files.  (Or drag the code.tar file to a program such as
+WinZip, Stuffit Expander or PKunzip.)
+</OL>
+
+<H2>Installing a Lisp Interpreter/Compiler</H2>
+
+There are many available Lisp compilers that you can use.  We
+have tested the code and know it works on the following:
+<ul>
+<li> <a href="http://www.franz.com/downloads/">Franz
+Allegro Common Lisp</a> for Linux or Windows.
+<li> <a href="http://www.digitool.com/download.html">Digitool Macintosh
+Common Lisp</a> for Macintosh.
+</ul>
+Both of these products are available in a no-cost demo version and
+a more powerful commercial version.  You should be able to do the
+exercises in the book with the demo versions.  So if you are about
+to install a Lisp, we recommend one of these.  If you already have 
+a Lisp installed, chances are you can get the code to run, but you
+may have to make some minor changes.
+
+<H2>Installing the Code</H1>
+
+<OL>
+<LI> Make sure you have both read-permission and write-permission for
+the directory where the code is kept.
+
+<P><LI> Edit the file "aima.lisp" and change the value of the
+parameter *aima-root* on line 9 to reflect the location of the files.
+Make sure to use the proper syntax for a directory, not a regular
+file.  For example, on a Unix file system, you want something like
+"/usr/local/aima/", or "/home/yourname/aima/", where the final "/"
+indicates that /usr/local/aima is a directory.  For a Windows file
+system, you'd have something like "c:\\aima\\".  Note that you have to
+use double backslashes, because backslashes are treated specially in
+Common Lisp strings.  In most versions of Windows you can also use
+forward slashes: "c:/aima/", but check to see if this works on your
+system before you try it.  For most installations, this will be the
+only edit you need to make.
+
+<P><LI> For some unusual Lisp compilers, you may need to edit the parameter
+*aima-binary-type* to indicate the type of files created by your Lisp
+compiler.  If the compiler creates files of the form "name.bin", then set
+this parameter to "bin".  Do include the double-quote marks.
+
+<P><LI>Start up your Common Lisp, and enter the following four forms:
+<PRE>
+    (load "aima.lisp")
+    (aima-load 'all)
+    (aima-compile)
+    (test 'all)
+</PRE>
+
+The compiler will compile all the files, and the test mechanism
+will test the resulting code.  Look for "0 errors" in the output
+and a 0 as the return value.
+
+<P><LI> Most versions of Lisp provide a way to dump out an image -- an
+executable file that contains all the code that has been loaded so far.  If
+your Lisp has this feature, it might be a good idea to create such an image
+at this point, and save it for later use.
+</ol>
+
+<h2>Running the Code</h2>
+
+The steps above need be done only once;
+you  are now ready for the easier process of
+<A HREF="user.html">using the code</A>.
+
+<P>
+
+<HR>
+<table border=0 cellpadding=4 cellspacing=4>
+<tr>
+<td bgcolor=cccccc><b><a href="../../aima.html">AIMA Home</a></b>
+<td bgcolor=cccccc><A HREF="../../contact.html"><b>Contact Russell &amp; Norvig</b></A>
+<td bgcolor=cccccc><A HREF="../../new.html"><b>What's new</b></A> 
+<td><font size="-2">Changed 3/13/97</font>
+</TABLE></BODY></HTML>

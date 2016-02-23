@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>Language (Subsystem of AIMA Code)</TITLE> 
+<!-- Changed by: Peter Norvig, 30-Oct-1996 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<h1>Language (Subsystem of AIMA Code)</h1>
+
+The <b>language</b> subsystem covers the natural language processing
+code from Chapters 22 and 23 of the book.  The main parsing function
+is <tt>chart-parse</tt>, but it returns a chart, which is not very
+useful in itself, so most of the <A HREF="test-language.lisp">test
+examples</A> call <tt>chart-parses</tt>, which returns a list of
+parses for the complete input string, or <tt>meanings</tt> which pulls
+out the semantic component of each parse.<P>
+
+Several sample <A HREF="domains/grammars.lisp">grammars</A> are shown.
+For the most part, they follow the notation from the book.  The
+differences are:
+<ul>
+<li> Obviously, the grammars are in Lisp notation.
+<li> The symbol <tt>$w</tt> on the left-hand side of a lexical rule stands
+for the word itself on the right-hand side.  This allows you to put multiple
+lexical entries on one line.
+<li> The grammar can specify a list of <tt>:unknown-word-cats</tt>.  That means
+that when an unknown word is encountered in the input, it is assumed to be
+one of these categories.
+</ul>
+
+<P><HR size=3></UL><A HREF="../language/"><B>language/</B></A>:
+<UL> <LI><A HREF="#language/test-language.lisp"><B>test-language.lisp</B></A> </UL><A HREF="../language/algorithms/"><B>language/algorithms/</B></A>:
+<UL> <LI><A HREF="#language/algorithms/chart-parse.lisp"><B>chart-parse.lisp</B></A>  Chart Parser with Unification Augmentation</UL><A HREF="../language/domains/"><B>language/domains/</B></A>:
+<UL> <LI><A HREF="#language/domains/grammars.lisp"><B>grammars.lisp</B></A>  Definition of Lexicons and Grammars: E0, E1, E2</UL>
+
+<A NAME="language/test-language.lisp"><HR>
+<H2>File <A HREF="../language/test-language.lisp">language/test-language.lisp</A></H2></A>
+<A NAME="language/algorithms/chart-parse.lisp"><HR>
+<H2>File <A HREF="../language/algorithms/chart-parse.lisp">language/algorithms/chart-parse.lisp</A></H2></A>
+<H2><I> Chart Parser with Unification Augmentation</I>
+</H2>
+<A NAME="grammar"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>grammar</B></A></A> <I>type</I> (lexicon
+                                                                                                           rules
+                                                                                                           start-symbol
+                                                                                                           categories-for
+                                                                                                           rewrites-for
+                                                                                                           unknown-word-cats)
+  <blockquote>A grammar for a chart parser has rules indexed by word and LHS.</blockquote>
+<A NAME="*grammar*"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>*grammar*</B></A></A> <I>variable</I> 
+  <blockquote>The currently used grammar.  Defining a new grammar changes this, or you
+  can set it yourself.</blockquote>
+<A NAME="rule-lhs"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>rule-lhs</B></A></A> <I>function</I> (rule)
+  <blockquote>The left hand side.</blockquote>
+<A NAME="rule-rhs"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>rule-rhs</B></A></A> <I>function</I> (rule)
+  <blockquote>The right-hand side.</blockquote>
+<A NAME="chart"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>chart</B></A></A> <I>type</I> (ends-at)
+  <blockquote>A chart has a vector that holds the edges that end at vertex i.</blockquote>
+<A NAME="edge"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>edge</B></A></A> <I>type</I> (start
+                                                                                                     end
+                                                                                                     lhs
+                                                                                                     found
+                                                                                                     remains
+                                                                                                     bindings)
+  <blockquote>An edge represents a dotted rule instance. In the edge [i, j, L -> F . R],
+  i is the start, j is the end, L is the lhs, (F) is found, and (R) remains.</blockquote>
+<H2><I> Chart Parsing Algorithm</I>
+</H2>
+<A NAME="chart-parse"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>chart-parse</B></A></A> <I>function</I> (words
+                                                                                                                       &optional
+                                                                                                                       *grammar*)
+  <blockquote>See if the string of words can be parsed by the grammar.  (See page 702.)</blockquote>
+<A NAME="scanner"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>scanner</B></A></A> <I>function</I> (j
+                                                                                                               word
+                                                                                                               chart)
+  <blockquote>Add edges everywhere WORD is expected.</blockquote>
+<A NAME="predictor"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>predictor</B></A></A> <I>function</I> (edge
+                                                                                                                   chart)
+  <blockquote>Add edges saying what we expect to see here.</blockquote>
+<A NAME="completer"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>completer</B></A></A> <I>function</I> (edge
+                                                                                                                   chart)
+  <blockquote>Use this edge to extend any edges in the chart.</blockquote>
+<A NAME="add-edge"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>add-edge</B></A></A> <I>function</I> (edge
+                                                                                                                 chart
+                                                                                                                 &optional
+                                                                                                                 reason)
+  <blockquote>Put edge into chart, and complete or predict as appropriate.</blockquote>
+<H2><I> Other Top-Level Functions</I>
+</H2>
+<A NAME="chart-parses"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>chart-parses</B></A></A> <I>function</I> (words
+                                                                                                                         &optional
+                                                                                                                         *grammar*)
+  <blockquote>See if the string of words can be parsed by the grammar.  If it can, look 
+  into the chart and pull out complete spanning strings.</blockquote>
+<A NAME="meanings"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>meanings</B></A></A> <I>function</I> (words
+                                                                                                                 &optional
+                                                                                                                 *grammar*)
+  <blockquote>Parse words, then pick out the semantics of each parse.
+  Assumes the semantics will be the last element of the LHS.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="spanning-edges"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>spanning-edges</B></A></A> <I>function</I> (chart)
+  <blockquote>Find the edges that span the chart and form the start symbol.</blockquote>
+<A NAME="edge->tree"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>edge->tree</B></A></A> <I>function</I> (edge)
+  <blockquote>Convert an edge into a parse tree by including its FOUND parts.</blockquote>
+<A NAME="edge"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>edge</B></A></A> <I>function</I> (start
+                                                                                                         end
+                                                                                                         lhs
+                                                                                                         found
+                                                                                                         remains
+                                                                                                         &optional
+                                                                                                         bindings)
+  <blockquote>Construct a new edge.</blockquote>
+<A NAME="grammar"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>grammar</B></A></A> <I>function</I> (&rest
+                                                                                                               args)
+  <blockquote>Take a list of rules, index them to form a grammar for chart-parse.</blockquote>
+<A NAME="rewrites-for"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>rewrites-for</B></A></A> <I>function</I> (lhs
+                                                                                                                         grammar)
+  <blockquote>Find the rules in grammar with LHS as the left hand side.</blockquote>
+<A NAME="categories-for"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>categories-for</B></A></A> <I>function</I> (word
+                                                                                                                             grammar)
+  <blockquote>Find what categories this word can be.
+  For unknown words, use the grammar's unknown-word-cats field</blockquote>
+<A NAME="edge-expects"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>edge-expects</B></A></A> <I>function</I> (edge)
+  <blockquote>What does the edge expect next in order to be extended?</blockquote>
+<A NAME="lhs-op"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>lhs-op</B></A></A> <I>function</I> (edge)
+  <blockquote>Left hand side of an edge's category</blockquote>
+<A NAME="complete?"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>complete?</B></A></A> <I>function</I> (edge)
+  <blockquote>An edge is complete if it has no remaining constituents.</blockquote>
+<A NAME="edge-equal"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>edge-equal</B></A></A> <I>function</I> (edge1
+                                                                                                                     edge2)
+  <blockquote>Are two edges the same, up to renaming of the parts with variables?</blockquote>
+<A NAME="handle-augmentation:grammar"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>handle-augmentation</B></A></A> <I>method</I> ((grammar
+                                                                                                                                              grammar)
+                                                                                                                                             edge)
+  <blockquote>There are two things to do: (1) When we start a new edge, rename vars.
+  (2) When an edge is complete, substitute the bindings into the lhs.</blockquote>
+<A NAME="print-structure:edge"><P><A HREF="../language/algorithms/chart-parse.lisp"><B>print-structure</B></A></A> <I>method</I> ((e
+                                                                                                                                   edge)
+                                                                                                                                  stream)
+  <P>
+<A NAME="language/domains/grammars.lisp"><HR>
+<H2>File <A HREF="../language/domains/grammars.lisp">language/domains/grammars.lisp</A></H2></A>
+<H2><I> Definition of Lexicons and Grammars: E0, E1, E2</I>
+</H2>
+<A NAME="*e0*"><P><A HREF="../language/domains/grammars.lisp"><B>*e0*</B></A></A> <I>variable</I> 
+  <blockquote>Lexicon and grammar for E<sub>0</sub> in Figures 22.5, 22.6, page 665.</blockquote>
+<A NAME="*e1*"><P><A HREF="../language/domains/grammars.lisp"><B>*e1*</B></A></A> <I>variable</I> 
+  <blockquote>Lexicon and grammar for E<sub>1</sub> in Figure 22.10, page 670.</blockquote>
+<A NAME="*e2*"><P><A HREF="../language/domains/grammars.lisp"><B>*e2*</B></A></A> <I>variable</I> 
+  <blockquote>Lexicon and grammar for E<sub>2</sub> in Figure 22.19, page 680.</blockquote>
+<H2><I> Other grammars: Arithmetic, Trivial</I>
+</H2>
+<A NAME="*arithmetic-grammar*"><P><A HREF="../language/domains/grammars.lisp"><B>*arithmetic-grammar*</B></A></A> <I>variable</I> 
+  <blockquote>A grammar of arithmetic expressions, with semantics, from Figure 22.13, 
+ page 673.</blockquote>
+<A NAME="*figure23.4*"><P><A HREF="../language/domains/grammars.lisp"><B>*figure23.4*</B></A></A> <I>variable</I> 
+  <blockquote>A grammar that, with debugging on, produces output similar to that
+  on page 700, Figure 23.4.  The differences are: (1) Scanner does two
+  steps in the book; here those steps are broken into Scanner and Completer. 
+  (2) Some 'irrelevant' edges were ommitted from Figure 23.4</blockquote>
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="../../aima.html">AIMA Home</A>
+<td> <A HREF="../../contact.html">Authors</A>
+<td> <A HREF="overview.html">Lisp Code</A>
+<td> <A HREF="../../prog.html">AI Programming</A>
+<td> <A HREF="../../instructors.html">Instructors Pages</A>
+</TABLE>
+</BODY> 
+</HTML>
