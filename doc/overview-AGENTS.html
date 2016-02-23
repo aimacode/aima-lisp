@@ -1,0 +1,486 @@
+<HTML>
+<HEAD>
+<TITLE>Agents (Subsystem of AIMA Code)</TITLE> 
+<!-- Changed by: Peter Norvig, 30-Oct-1996 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<H1>Agents (Subsystem of AIMA Code)</H1>
+
+The <b>agents</b> subsystem covers the code in Part I of the book: the
+basic environment simulator <tt>run-environment</tt>; simulations for
+the vacuum and wumpus worlds, and some simple agents for those worlds.
+It also includes the abstract class <tt>grid-environment</tt>, which
+is an environment that supports physical objects located in a
+two-dimensional rectangular grid of spaces.  It serves as the basis
+for the vacuum and wumpus worlds, as well as for more complex
+environments like the shopping world of Chapter 8.
+
+<P><HR size=3></UL><A HREF="../agents/"><B>agents/</B></A>:
+<UL> <LI><A HREF="#agents/test-agents.lisp"><B>test-agents.lisp</B></A> </UL><A HREF="../agents/environments/"><B>agents/environments/</B></A>:
+<UL> <LI><A HREF="#agents/environments/basic-env.lisp"><B>basic-env.lisp</B></A>  The basic environment simulator code<LI><A HREF="#agents/environments/grid-env.lisp"><B>grid-env.lisp</B></A>  Environments with a two-dimensional grid layout occupied by objects<LI><A HREF="#agents/environments/vacuum.lisp"><B>vacuum.lisp</B></A>  The Vacuum World: cleaning up dirt in a grid<LI><A HREF="#agents/environments/wumpus.lisp"><B>wumpus.lisp</B></A>  The Wumpus World Environment</UL><A HREF="../agents/agents/"><B>agents/agents/</B></A>:
+<UL> <LI><A HREF="#agents/agents/agent.lisp"><B>agent.lisp</B></A>  Definition of basic AGENT functions<LI><A HREF="#agents/agents/vacuum.lisp"><B>vacuum.lisp</B></A>  Some simple agents for the vacuum world<LI><A HREF="#agents/agents/wumpus.lisp"><B>wumpus.lisp</B></A>  Agents for the wumpus world</UL><A HREF="../agents/algorithms/"><B>agents/algorithms/</B></A>:
+<UL> <LI><A HREF="#agents/algorithms/grid.lisp"><B>grid.lisp</B></A>  Algorithms for manipulating objects in a grid</UL>
+
+<A NAME="agents/test-agents.lisp"><HR>
+<H2>File <A HREF="../agents/test-agents.lisp">agents/test-agents.lisp</A></H2></A>
+<A NAME="agents/environments/basic-env.lisp"><HR>
+<H2>File <A HREF="../agents/environments/basic-env.lisp">agents/environments/basic-env.lisp</A></H2></A>
+<H2><I> The basic environment simulator code</I>
+</H2>
+<I> This file defines the environment simulator function: RUN-ENVIRONMENT.  It</I>
+<I> is a little different from the pseudo-code in the book: to make it easier</I>
+<I> to write new environments, we used an object-oriented approach. Rather</I>
+<I> than requiring the caller to pass in a bunch of functions to</I>
+<I> RUN-ENVIRONMENT, you will define methods for the functions for each</I>
+<I> subtype of environment.  We added a DISPLAY parameter to control whether</I>
+<I> intermediate results are displayed. As an example, the following</I>
+<I> expression builds an environment and runs an agent in it, displaying the</I>
+<I> results:</I>
+<P>
+<I> (run-environment (make-vacuum-world :aspec '(random-vacuum-agent)))</I>
+<P>
+<I> We also define AGENT-TRIALS to compare the performance of several</I>
+<I> different agents in a series of random environments, all drawn from an</I>
+<I> environment subtype.  For example to run 2 agents in 20 environments each:</I>
+<P>
+<I> (agent-trials 'vacuum-world</I>
+<I>   '(random-vacuum-agent reactive-vacuum-agent) :n 20)</I>
+<A NAME="environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>environment</B></A></A> <I>type</I> (agents
+                                                                                                                 step
+                                                                                                                 max-steps
+                                                                                                                 stream
+                                                                                                                 initialized
+                                                                                                                 state)
+  <blockquote>The world in which agents exist.</blockquote>
+<I> An agent is something that perceives and acts.  As such, each agent has a</I>
+<I> slot to hold its current percept, and its current action.  The action</I>
+<I> will be handed back to the environment simulator to perform (if legal).</I>
+<I> Each agent also has a slot for the agent program, and one for its score</I>
+<I> as determined by the performance measure.</I>
+<A NAME="agent"><P><A HREF="../agents/environments/basic-env.lisp"><B>agent</B></A></A> <I>type</I> (program
+                                                                                                     body
+                                                                                                     score
+                                                                                                     percept
+                                                                                                     action
+                                                                                                     name)
+  <blockquote>Agents take actions (based on percepts and the agent program) and receive
+  a score (based on the performance measure).  An agent has a body which can
+  take action, and a program to choose the actions, based on percepts.</blockquote>
+<H2><I> Top level functions</I>
+</H2>
+<A NAME="run-environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>run-environment</B></A></A> <I>function</I> (env)
+  <blockquote>Basic environment simulator.  It gives each agent its percept, gets an
+  action from each agent, and updates the environment. It also keeps score
+  for each agent, and optionally displays intermediate results. [p 48]</blockquote>
+<A NAME="agent-trials"><P><A HREF="../agents/environments/basic-env.lisp"><B>agent-trials</B></A></A> <I>function</I> (environment-fn
+                                                                                                                       agent-types
+                                                                                                                       &key
+                                                                                                                       n)
+  <blockquote>Report how well a single agent does in a set of N similar environments,
+  and compare that to other agents in the same set of environments.
+  Environment-fn takes a :agents keyword argument, and returns an environment.
+  Agent-types is a list of names of functions that each create an agent.</blockquote>
+<H2><I> Generic Functions that must be defined for each environment</I>
+</H2>
+<I> For each new type of environment you want to define, you will need a</I>
+<I> defstructure that inherits from (includes) ENVIRONMENT, and you will need</I>
+<I> to write new methods (or inherit existing methods) for each of the</I>
+<I> following eight functions.  Here are the ones that will change for each</I>
+<I> new environment:</I>
+<A NAME="get-percept:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                                environment)
+                                                                                                                               agent)
+  <blockquote>Return the percept for this agent.</blockquote>
+<A NAME="update-fn:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>update-fn</B></A></A> <I>method</I> ((env
+                                                                                                                            environment))
+  <blockquote>Modify the environment, based on agents actions, etc.</blockquote>
+<A NAME="legal-actions:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>legal-actions</B></A></A> <I>method</I> ((env
+                                                                                                                                    environment))
+  <blockquote>A list of the action operators that an agent can do.</blockquote>
+<A NAME="performance-measure:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>performance-measure</B></A></A> <I>method</I> ((env
+                                                                                                                                                environment)
+                                                                                                                                               agent)
+  <blockquote>Return a number saying how well this agent is doing.</blockquote>
+<I> Here are the ones that can usually be inherited:</I>
+<A NAME="initialize:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>initialize</B></A></A> <I>method</I> ((env
+                                                                                                                              environment))
+  <blockquote>Called once to do whatever is necessary to set up the environment
+  for running the simulation.</blockquote>
+<A NAME="termination?:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>termination?</B></A></A> <I>method</I> ((env
+                                                                                                                                  environment))
+  <blockquote>Return true if the simulation should end now.</blockquote>
+<A NAME="display-environment:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>display-environment</B></A></A> <I>method</I> ((env
+                                                                                                                                                environment))
+  <blockquote>Display the current state of the environment.</blockquote>
+<A NAME="display-environment-snapshot:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>display-environment-snapshot</B></A></A> <I>method</I> ((env
+                                                                                                                                                                  environment))
+  <blockquote>Display a 'picture' of the current state of the environment.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="run-eval-environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>run-eval-environment</B></A></A> <I>function</I> (env)
+  <blockquote>Basic environment simulator; the same as run-environment. [p 48]
+  We decided it was silly to run the environment and NOT eval the agents,
+  so in this code, and in future editions of the book, we will only have
+  RUN-ENVIRONMENT, and it will evaluate the agents.</blockquote>
+<A NAME="agent-trial"><P><A HREF="../agents/environments/basic-env.lisp"><B>agent-trial</B></A></A> <I>function</I> (environment-fn
+                                                                                                                     agent-type
+                                                                                                                     env-gen-random-state
+                                                                                                                     n)
+  <blockquote>Run n environments with an identical agent in each, and average the scores.</blockquote>
+<A NAME="execute-agent-actions"><P><A HREF="../agents/environments/basic-env.lisp"><B>execute-agent-actions</B></A></A> <I>function</I> (env)
+  <blockquote>Each agent (if the agent is alive and has specified a legal action)
+  takes the action.</blockquote>
+<A NAME="print-structure:environment"><P><A HREF="../agents/environments/basic-env.lisp"><B>print-structure</B></A></A> <I>method</I> ((env
+                                                                                                                                        environment)
+                                                                                                                                       stream)
+  <P>
+<A NAME="agents/environments/grid-env.lisp"><HR>
+<H2>File <A HREF="../agents/environments/grid-env.lisp">agents/environments/grid-env.lisp</A></H2></A>
+<H2><I> Environments with a two-dimensional grid layout occupied by objects</I>
+</H2>
+<I> This file defines a GRID-ENVIRONMENT, a kind of environment where there is</I>
+<I> a rectangular grid of spaces, each potentially containing objects.</I>
+<I> (Notice that the ENVIRONMENT makes no mention of space or objects.)  You</I>
+<I> won't be creating instances of grid-environment directly, but it is the</I>
+<I> key structure that is inherited by the Vacuum, Wumpus, Shopping and</I>
+<I> Elevator worlds.</I>
+<A NAME="grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>grid-environment</B></A></A> <I>type</I> (size
+                                                                                                                          grid
+                                                                                                                          objects
+                                                                                                                          start
+                                                                                                                          aspec
+                                                                                                                          bspec
+                                                                                                                          cspec)
+  <P>
+<A NAME="object"><P><A HREF="../agents/environments/grid-env.lisp"><B>object</B></A></A> <I>type</I> (name
+                                                                                                      alive?
+                                                                                                      loc
+                                                                                                      bump
+                                                                                                      size
+                                                                                                      color
+                                                                                                      shape
+                                                                                                      sound
+                                                                                                      contents
+                                                                                                      max-contents
+                                                                                                      container
+                                                                                                      heading)
+  <blockquote>An object is anything that occupies space.  Some objects are 'alive'.</blockquote>
+<A NAME="obstacle"><P><A HREF="../agents/environments/grid-env.lisp"><B>obstacle</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="wall"><P><A HREF="../agents/environments/grid-env.lisp"><B>wall</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="agent-body"><P><A HREF="../agents/environments/grid-env.lisp"><B>agent-body</B></A></A> <I>type</I> (holding)
+  <blockquote>An agent body is an object; some bodies have a hand that can hold 1 thing.</blockquote>
+<H2><I> Generic Functions</I>
+</H2>
+<A NAME="update-fn:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>update-fn</B></A></A> <I>method</I> ((env
+                                                                                                                                grid-environment))
+  <blockquote>Execute the actions and do bookkeeping on the bump sensor.</blockquote>
+<A NAME="legal-actions:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>legal-actions</B></A></A> <I>method</I> ((env
+                                                                                                                                        grid-environment))
+  <P>
+<A NAME="initialize:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>initialize</B></A></A> <I>method</I> ((env
+                                                                                                                                  grid-environment))
+  <blockquote>Build a new environment with all the agents and objects in place.
+  This gets passed an environment which may need to have the objects placed.
+  See PARSE-SPECS below in this file for more on initialization.</blockquote>
+<A NAME="termination?:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>termination?</B></A></A> <I>method</I> ((env
+                                                                                                                                      grid-environment))
+  <blockquote>By default, we stop when there are no live agents.</blockquote>
+<A NAME="display-environment-snapshot:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>display-environment-snapshot</B></A></A> <I>method</I> ((env
+                                                                                                                                                                      grid-environment))
+  <blockquote>Show what is in each location in the environment.</blockquote>
+<A NAME="print-structure:object"><P><A HREF="../agents/environments/grid-env.lisp"><B>print-structure</B></A></A> <I>method</I> ((object
+                                                                                                                                  object)
+                                                                                                                                 stream)
+  <blockquote>Show an object's name, and if it is alive, the direction it faces.</blockquote>
+<H2><I> Actions </I>
+</H2>
+<A NAME="speak:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>speak</B></A></A> <I>method</I> ((env
+                                                                                                                        grid-environment)
+                                                                                                                       agent-body
+                                                                                                                       sound)
+  <blockquote>The agent emits a sound.</blockquote>
+<A NAME="turn:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>turn</B></A></A> <I>method</I> ((env
+                                                                                                                      grid-environment)
+                                                                                                                     agent-body
+                                                                                                                     direction)
+  <blockquote>The agent changes its heading by turning right or left.</blockquote>
+<A NAME="forward:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>forward</B></A></A> <I>method</I> ((env
+                                                                                                                            grid-environment)
+                                                                                                                           agent-body)
+  <blockquote>Move the object to the location that is one step directly ahead of it.</blockquote>
+<A NAME="grab:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>grab</B></A></A> <I>method</I> ((env
+                                                                                                                      grid-environment)
+                                                                                                                     agent-body
+                                                                                                                     &optional
+                                                                                                                     args)
+  <blockquote>Grab an object at the specified location.  Assumes a one-handed agent.</blockquote>
+<A NAME="grabable?"><P><A HREF="../agents/environments/grid-env.lisp"><B>grabable?</B></A></A> <I>function</I> (object)
+  <P>
+<A NAME="release:grid-environment"><P><A HREF="../agents/environments/grid-env.lisp"><B>release</B></A></A> <I>method</I> ((env
+                                                                                                                            grid-environment)
+                                                                                                                           agent-body
+                                                                                                                           &optional
+                                                                                                                           args)
+  <blockquote>Release an object that is in the hand, putting it at the specified loc.</blockquote>
+<H2><I> Initializing Environments</I>
+</H2>
+<I> The grammar for the object-specs language is as follows:             </I>
+<I><PRE></I>
+<I>   specs  =>  (spec...)</I>
+<I>   spec   =>  (AT where what...) | (* n spec...) | what</I>
+<I>   where  =>  EDGE | ALL | FREE? | START | (x y) | (AND where...)</I>
+<I>   what   =>  object | type | (type arg...) | (* n what...)  | (P x what...)</I>
+<I>   n      =>  integer | (+- integer integer)</I>
+<I> </I>
+<I> The location FREE? means a randomly chosen free loc, ALL means every loc.</I>
+<I> If no location is specified, the default is START for agents, FREE?</I>
+<I> otherwise.  </I>
+<I> </I>
+<I> Examples of spec:</I>
+<I> </I>
+<I>  (at edge wall)                  1 wall in every perimeter location</I>
+<I>  (at free? wumpus)               1 wumpus in some random free location</I>
+<I>  wumpus                          Same as above </I>
+<I>  ask-user-agent                  1 ask-user-agent in the start cell</I>
+<I>  (* 2 apple)                     An apple in each of 2 random locations</I>
+<I>  (* 2 (apple :color green))      A green apple in each of 2 random locs</I>
+<I>  (at all (p 0.25 dirt))          All free locations have 1/4 chance of dirt</I>
+<I>  (at (2 3) (* 8 apple) sign)     Location (2 3) has 8 apples and a sign</I>
+<I>  (* (+- 10 4) apple)             10 plus or minus 4 (at random) apples</I>
+<I>  (at (and (1 2) (1 4)) cashier)  These two locations each get a cashier</I>
+<I>  (* 2 smoke fire)                2 random locs get both smoke and fire</I>
+<I></PRE></I>
+<A NAME="parse-specs"><P><A HREF="../agents/environments/grid-env.lisp"><B>parse-specs</B></A></A> <I>function</I> (env
+                                                                                                                    specs)
+  <blockquote>Place objects, defined by specs, in the environment.</blockquote>
+<A NAME="parse-spec"><P><A HREF="../agents/environments/grid-env.lisp"><B>parse-spec</B></A></A> <I>function</I> (env
+                                                                                                                  spec)
+  <P>
+<A NAME="parse-where"><P><A HREF="../agents/environments/grid-env.lisp"><B>parse-where</B></A></A> <I>function</I> (env
+                                                                                                                    where
+                                                                                                                    whats)
+  <P>
+<A NAME="parse-whats"><P><A HREF="../agents/environments/grid-env.lisp"><B>parse-whats</B></A></A> <I>function</I> (env
+                                                                                                                    loc
+                                                                                                                    what-list)
+  <P>
+<A NAME="parse-what"><P><A HREF="../agents/environments/grid-env.lisp"><B>parse-what</B></A></A> <I>function</I> (env
+                                                                                                                  loc
+                                                                                                                  what)
+  <blockquote>Place the objects specified by WHAT-LIST at the given location
+  The default location is START for an agent, random otherwise.
+  The notation (P 0.5 what...) means 50% chance of placing each what,
+  and (* n what...) means place n copies of each what.</blockquote>
+<A NAME="parse-n"><P><A HREF="../agents/environments/grid-env.lisp"><B>parse-n</B></A></A> <I>function</I> (n)
+  <P>
+<A NAME="make"><P><A HREF="../agents/environments/grid-env.lisp"><B>make</B></A></A> <I>function</I> (type
+                                                                                                      &rest
+                                                                                                      args)
+  <blockquote>Make an instance of the specified type by calling make-TYPE.</blockquote>
+<A NAME="random-loc"><P><A HREF="../agents/environments/grid-env.lisp"><B>random-loc</B></A></A> <I>function</I> (env
+                                                                                                                  &key
+                                                                                                                  if
+                                                                                                                  tries)
+  <blockquote>Return a random loc, somewhere in the environment.
+  The loc must satisfy the :IF predicate.  If it can't find such a location
+  after a number of TRIES, it signals an error.</blockquote>
+<A NAME="free-loc?"><P><A HREF="../agents/environments/grid-env.lisp"><B>free-loc?</B></A></A> <I>function</I> (loc
+                                                                                                                env)
+  <blockquote>A location is free if there is no obstacle there and it is not the start.</blockquote>
+<A NAME="agents/environments/vacuum.lisp"><HR>
+<H2>File <A HREF="../agents/environments/vacuum.lisp">agents/environments/vacuum.lisp</A></H2></A>
+<H2><I> The Vacuum World: cleaning up dirt in a grid</I>
+</H2>
+<A NAME="dirt"><P><A HREF="../agents/environments/vacuum.lisp"><B>dirt</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="vacuum-world"><P><A HREF="../agents/environments/vacuum.lisp"><B>vacuum-world</B></A></A> <I>type</I> nil
+  <blockquote>A grid with some dirt in it, and by default a reactive vacuum agent.</blockquote>
+<H2><I> Defining the generic functions</I>
+</H2>
+<A NAME="performance-measure:vacuum-world"><P><A HREF="../agents/environments/vacuum.lisp"><B>performance-measure</B></A></A> <I>method</I> ((env
+                                                                                                                                              vacuum-world)
+                                                                                                                                             agent)
+  <blockquote>100 points for each piece of dirt vacuumed up, -1 point for each 
+  step taken, and -1000 points if the agent does not return home.</blockquote>
+<A NAME="get-percept:vacuum-world"><P><A HREF="../agents/environments/vacuum.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                              vacuum-world)
+                                                                                                                             agent)
+  <blockquote>Percept is a three-element sequence: bump, dirt and home.</blockquote>
+<A NAME="legal-actions:vacuum-world"><P><A HREF="../agents/environments/vacuum.lisp"><B>legal-actions</B></A></A> <I>method</I> ((env
+                                                                                                                                  vacuum-world))
+  <P>
+<H2><I> Actions (other than the basic grid actions of forward and turn)</I>
+</H2>
+<A NAME="suck:vacuum-world"><P><A HREF="../agents/environments/vacuum.lisp"><B>suck</B></A></A> <I>method</I> ((env
+                                                                                                                vacuum-world)
+                                                                                                               agent-body)
+  <P>
+<A NAME="shut-off:environment"><P><A HREF="../agents/environments/vacuum.lisp"><B>shut-off</B></A></A> <I>method</I> ((env
+                                                                                                                       environment)
+                                                                                                                      agent-body)
+  <P>
+<A NAME="agents/environments/wumpus.lisp"><HR>
+<H2>File <A HREF="../agents/environments/wumpus.lisp">agents/environments/wumpus.lisp</A></H2></A>
+<H2><I> The Wumpus World Environment</I>
+</H2>
+<A NAME="wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>wumpus-world</B></A></A> <I>type</I> nil
+  <blockquote>A dangerous world with pits and wumpuses, and some gold.</blockquote>
+<A NAME="wumpus-agent-body"><P><A HREF="../agents/environments/wumpus.lisp"><B>wumpus-agent-body</B></A></A> <I>type</I> nil
+  <blockquote>The default wumpus agent body is given an arrow.</blockquote>
+<A NAME="gold"><P><A HREF="../agents/environments/wumpus.lisp"><B>gold</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="pit"><P><A HREF="../agents/environments/wumpus.lisp"><B>pit</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="arrow"><P><A HREF="../agents/environments/wumpus.lisp"><B>arrow</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="wumpus"><P><A HREF="../agents/environments/wumpus.lisp"><B>wumpus</B></A></A> <I>type</I> nil
+  <P>
+<H2><I> Defining the generic functions</I>
+</H2>
+<A NAME="update-fn:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>update-fn</B></A></A> <I>method</I> ((env
+                                                                                                                          wumpus-world))
+  <P>
+<A NAME="termination?:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>termination?</B></A></A> <I>method</I> ((env
+                                                                                                                                wumpus-world))
+  <blockquote>End when some agent climbs out, or for the default reason (everyone dead).</blockquote>
+<A NAME="performance-measure:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>performance-measure</B></A></A> <I>method</I> ((env
+                                                                                                                                              wumpus-world)
+                                                                                                                                             agent)
+  <blockquote>Score 1000 for getting the gold, with penalty of 10000 if dead
+  and penalty of 1 for each step taken.</blockquote>
+<A NAME="get-percept:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                              wumpus-world)
+                                                                                                                             agent)
+  <blockquote>Perceive stench, breeze, glitter, bump, and sound.</blockquote>
+<A NAME="legal-actions:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>legal-actions</B></A></A> <I>method</I> ((env
+                                                                                                                                  wumpus-world))
+  <blockquote>In the wumpus world, agents can move around, grab gold and shoot arrows.</blockquote>
+<A NAME="deadly?"><P><A HREF="../agents/environments/wumpus.lisp"><B>deadly?</B></A></A> <I>function</I> (object)
+  <blockquote>Pits and live wumpuses are deadly.</blockquote>
+<H2><I> Actions</I>
+</H2>
+<A NAME="climb:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>climb</B></A></A> <I>method</I> ((env
+                                                                                                                  wumpus-world)
+                                                                                                                 agent-body)
+  <blockquote>Climb out of the cave.</blockquote>
+<A NAME="shoot:wumpus-world"><P><A HREF="../agents/environments/wumpus.lisp"><B>shoot</B></A></A> <I>method</I> ((env
+                                                                                                                  wumpus-world)
+                                                                                                                 agent-body)
+  <P>
+<A NAME="propagate-arrow"><P><A HREF="../agents/environments/wumpus.lisp"><B>propagate-arrow</B></A></A> <I>function</I> (loc
+                                                                                                                          heading
+                                                                                                                          env)
+  <blockquote>An arrow keeps going until it kills something or hits a wall.</blockquote>
+<A NAME="kill"><P><A HREF="../agents/environments/wumpus.lisp"><B>kill</B></A></A> <I>function</I> (object)
+  <blockquote>Make the object no longer alive.</blockquote>
+<A NAME="agents/agents/agent.lisp"><HR>
+<H2>File <A HREF="../agents/agents/agent.lisp">agents/agents/agent.lisp</A></H2></A>
+<H2><I> Definition of basic AGENT functions</I>
+</H2>
+<A NAME="ask-user-agent"><P><A HREF="../agents/agents/agent.lisp"><B>ask-user-agent</B></A></A> <I>type</I> nil
+  <blockquote>An agent that asks the user to type in an action.</blockquote>
+<A NAME="ask-user"><P><A HREF="../agents/agents/agent.lisp"><B>ask-user</B></A></A> <I>function</I> (percept)
+  <blockquote>Ask the user what action to take.</blockquote>
+<A NAME="print-structure:agent"><P><A HREF="../agents/agents/agent.lisp"><B>print-structure</B></A></A> <I>method</I> ((agent
+                                                                                                                        agent)
+                                                                                                                       stream)
+  <blockquote>Agents are printed by showing their name (or body) and score.</blockquote>
+<A NAME="initialize-agent-names"><P><A HREF="../agents/agents/agent.lisp"><B>initialize-agent-names</B></A></A> <I>function</I> (env)
+  <blockquote>Name the agents 1, 2, ... if they don't yet have a name.</blockquote>
+<A NAME="agents/agents/vacuum.lisp"><HR>
+<H2>File <A HREF="../agents/agents/vacuum.lisp">agents/agents/vacuum.lisp</A></H2></A>
+<H2><I> Some simple agents for the vacuum world</I>
+</H2>
+<A NAME="random-vacuum-agent"><P><A HREF="../agents/agents/vacuum.lisp"><B>random-vacuum-agent</B></A></A> <I>type</I> nil
+  <blockquote>A very stupid agent: ignore percept and choose a random action.</blockquote>
+<A NAME="reactive-vacuum-agent"><P><A HREF="../agents/agents/vacuum.lisp"><B>reactive-vacuum-agent</B></A></A> <I>type</I> nil
+  <blockquote>When you bump, turn randomly; otherwise mostly go forward, but
+  occasionally turn.  Always suck when there is dirt.</blockquote>
+<A NAME="agents/agents/wumpus.lisp"><HR>
+<H2>File <A HREF="../agents/agents/wumpus.lisp">agents/agents/wumpus.lisp</A></H2></A>
+<H2><I> Agents for the wumpus world</I>
+</H2>
+<A NAME="wumpus-agent"><P><A HREF="../agents/agents/wumpus.lisp"><B>wumpus-agent</B></A></A> <I>type</I> nil
+  <blockquote>The default wumpus agent gets an arrow.</blockquote>
+<A NAME="random-wumpus-agent"><P><A HREF="../agents/agents/wumpus.lisp"><B>random-wumpus-agent</B></A></A> <I>type</I> nil
+  <P>
+<A NAME="aimless-wumpus-agent"><P><A HREF="../agents/agents/wumpus.lisp"><B>aimless-wumpus-agent</B></A></A> <I>type</I> nil
+  <blockquote>This agent does the obvious reactive things: grab when there's a glitter,
+  and turn and move when there's a bump.  If the wumpus is alive and
+  there's a stench, it turns and moves.  Otherwise it wanders aimlessly.</blockquote>
+<A NAME="agents/algorithms/grid.lisp"><HR>
+<H2>File <A HREF="../agents/algorithms/grid.lisp">agents/algorithms/grid.lisp</A></H2></A>
+<H2><I> Algorithms for manipulating objects in a grid</I>
+</H2>
+<A NAME="grid-contents"><P><A HREF="../agents/algorithms/grid.lisp"><B>grid-contents</B></A></A> <I>function</I> (env
+                                                                                                                  loc)
+  <blockquote>Return a list of objects in this location, optionally including
+  objects that are contained within containers here.</blockquote>
+<A NAME="move-object-to"><P><A HREF="../agents/algorithms/grid.lisp"><B>move-object-to</B></A></A> <I>function</I> (object
+                                                                                                                    loc
+                                                                                                                    env)
+  <blockquote>Move an object to an absolute location and return that location.  However,
+  attempting to move into a location with an obstacle fails (returns nil)
+  and the object receives a bump.</blockquote>
+<A NAME="place-object"><P><A HREF="../agents/algorithms/grid.lisp"><B>place-object</B></A></A> <I>function</I> (object
+                                                                                                                loc
+                                                                                                                env
+                                                                                                                &optional
+                                                                                                                initial?)
+  <blockquote>Put the object in its initial position or a new position in environment.</blockquote>
+<A NAME="place-in-container"><P><A HREF="../agents/algorithms/grid.lisp"><B>place-in-container</B></A></A> <I>function</I> (object
+                                                                                                                            container
+                                                                                                                            env)
+  <blockquote>Put the object inside the container, if there is room.</blockquote>
+<A NAME="remove-object"><P><A HREF="../agents/algorithms/grid.lisp"><B>remove-object</B></A></A> <I>function</I> (object
+                                                                                                                  env)
+  <blockquote>Remove the object from its current location.</blockquote>
+<A NAME="find-object-if"><P><A HREF="../agents/algorithms/grid.lisp"><B>find-object-if</B></A></A> <I>function</I> (predicate
+                                                                                                                    loc
+                                                                                                                    env)
+  <blockquote>Return an object in this location that satisfies this predicate.</blockquote>
+<A NAME="find-neighbor-if"><P><A HREF="../agents/algorithms/grid.lisp"><B>find-neighbor-if</B></A></A> <I>function</I> (predicate
+                                                                                                                        loc
+                                                                                                                        env)
+  <blockquote>Return an object in a neighboring square that satisfies the predicate.</blockquote>
+<A NAME="find-object-or-neighbor-if"><P><A HREF="../agents/algorithms/grid.lisp"><B>find-object-or-neighbor-if</B></A></A> <I>function</I> (predicate
+                                                                                                                                            loc
+                                                                                                                                            env)
+  <blockquote>Return an object either in loc or a neighboring square that satisfies
+  the predicate.</blockquote>
+<A NAME="near?"><P><A HREF="../agents/algorithms/grid.lisp"><B>near?</B></A></A> <I>function</I> (loc1
+                                                                                                  loc2
+                                                                                                  &optional
+                                                                                                  tolerance)
+  <blockquote>Are the two locations nearby each other?</blockquote>
+<H2><I> Maintaining and manipulating orientation</I>
+</H2>
+<A NAME="add-locs"><P><A HREF="../agents/algorithms/grid.lisp"><B>add-locs</B></A></A> <I>function</I> (&rest
+                                                                                                        locations)
+  <blockquote>Coordinate-wise addition of locations: (add-locs '(1 2) '(10 20)) = (11 22)</blockquote>
+<A NAME="subtract-locs"><P><A HREF="../agents/algorithms/grid.lisp"><B>subtract-locs</B></A></A> <I>function</I> (&rest
+                                                                                                                  locations)
+  <blockquote>Coordinate-wise subtraction of locations.</blockquote>
+<A NAME="heading->string"><P><A HREF="../agents/algorithms/grid.lisp"><B>heading->string</B></A></A> <I>function</I> (heading)
+  <blockquote>Convert a heading like (0 1) to a depictive string like ^.</blockquote>
+<A NAME="absolute-loc"><P><A HREF="../agents/algorithms/grid.lisp"><B>absolute-loc</B></A></A> <I>function</I> (agent-body
+                                                                                                                offset)
+  <blockquote>Return an absolute location given an offset from an agent, taking the
+  agent's orientation into account.  An offset of (1 2) means 1 square to
+  the right and two ahead of the agent, given its present orientation.</blockquote>
+<A NAME="offset-loc"><P><A HREF="../agents/algorithms/grid.lisp"><B>offset-loc</B></A></A> <I>function</I> (agent-body
+                                                                                                            loc)
+  <blockquote>Return an offset from an agent that corresponds to the absolute loc.</blockquote>
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="../../aima.html">AIMA Home</A>
+<td> <A HREF="../../contact.html">Authors</A>
+<td> <A HREF="overview.html">Lisp Code</A>
+<td> <A HREF="../../prog.html">AI Programming</A>
+<td> <A HREF="../../instructors.html">Instructors Pages</A>
+</TABLE>
+</BODY> 
+</HTML>

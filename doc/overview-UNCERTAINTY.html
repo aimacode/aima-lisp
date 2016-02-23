@@ -1,0 +1,257 @@
+<HTML>
+<HEAD>
+<TITLE>Uncertainty (Subsystem of AIMA Code)</TITLE> 
+<!-- Changed by: Peter Norvig, 30-Oct-1996 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<h1>Uncertainty (Subsystem of AIMA Code)</h1>
+
+We provide code for working with Markov Decision Processes (MDPs), but
+the rest of the code remains to be written.
+
+
+<P><HR size=3></UL><A HREF="../uncertainty/"><B>uncertainty/</B></A>:
+<UL> <LI><A HREF="#uncertainty/test-uncertainty.lisp"><B>test-uncertainty.lisp</B></A> </UL><A HREF="../uncertainty/agents/"><B>uncertainty/agents/</B></A>:
+<UL> <LI><A HREF="#uncertainty/agents/mdp-agent.lisp"><B>mdp-agent.lisp</B></A>  A simple policy agent for Markov decision processes (MDPs).</UL><A HREF="../uncertainty/domains/"><B>uncertainty/domains/</B></A>:
+<UL> <LI><A HREF="#uncertainty/domains/mdp.lisp"><B>mdp.lisp</B></A> <LI><A HREF="#uncertainty/domains/4x3-mdp.lisp"><B>4x3-mdp.lisp</B></A>  Stochastic active 4x3 world for chapters 17, 20.</UL><A HREF="../uncertainty/environments/"><B>uncertainty/environments/</B></A>:
+<UL> <LI><A HREF="#uncertainty/environments/mdp.lisp"><B>mdp.lisp</B></A>  Definitions for Markov Decision Problems and Reinforcement Learning</UL><A HREF="../uncertainty/algorithms/"><B>uncertainty/algorithms/</B></A>:
+<UL> <LI><A HREF="#uncertainty/algorithms/dp.lisp"><B>dp.lisp</B></A>  Basic dynamic programming routines for MDPs (Markov decision processes)<LI><A HREF="#uncertainty/algorithms/stats.lisp"><B>stats.lisp</B></A>  Code for performance assessment of DP and RL algorithms.</UL>
+
+<A NAME="uncertainty/test-uncertainty.lisp"><HR>
+<H2>File <A HREF="../uncertainty/test-uncertainty.lisp">uncertainty/test-uncertainty.lisp</A></H2></A>
+<A NAME="uncertainty/agents/mdp-agent.lisp"><HR>
+<H2>File <A HREF="../uncertainty/agents/mdp-agent.lisp">uncertainty/agents/mdp-agent.lisp</A></H2></A>
+<H2><I> A simple policy agent for Markov decision processes (MDPs).</I>
+</H2>
+<A NAME="make-mdp-agent"><P><A HREF="../uncertainty/agents/mdp-agent.lisp"><B>make-mdp-agent</B></A></A> <I>function</I> (&key
+                                                                                                                          body
+                                                                                                                          name
+                                                                                                                          mdp
+                                                                                                                          program
+                                                                                                                          algorithm)
+  <blockquote>An MDP agent constructs a policy from the MDP once, and then uses that
+  policy repeatedly to take action.  The ALGORITHM keyword specifies the
+  algorithm that is used to create the policy; don't confuse it with the
+  PROGRAM keyword, which decides what actions to take.</blockquote>
+<A NAME="mdp-agent"><P><A HREF="../uncertainty/agents/mdp-agent.lisp"><B>mdp-agent</B></A></A> <I>type</I> (total-reward)
+  <P>
+<A NAME="uncertainty/domains/mdp.lisp"><HR>
+<H2>File <A HREF="../uncertainty/domains/mdp.lisp">uncertainty/domains/mdp.lisp</A></H2></A>
+<I> Definitions for Markov decision processes (MDPs).</I>
+<I> An MDP is defined by initial state, transition model, rewards, and</I>
+<I> distinguished terminal states. Model and rewards are hash tables</I>
+<I> index by state (after application of hash-key function).</I>
+<I> The entries in the model are alists keyed by action; each action is</I>
+<I> associated with an action model: basically a list of transitions.</I>
+<I> Markov chains (i.e., stochastic processes with no distinct agent)</I>
+<I> can be defined by allowing only a no-op action in the MDP.</I>
+<A NAME="mdp"><P><A HREF="../uncertainty/domains/mdp.lisp"><B>mdp</B></A></A> <I>type</I> (initial-state
+                                                                                           model
+                                                                                           rewards
+                                                                                           terminal-states
+                                                                                           hash-key
+                                                                                           name)
+  <P>
+<A NAME="mdp-action-model"><P><A HREF="../uncertainty/domains/mdp.lisp"><B>mdp-action-model</B></A></A> <I>type</I> (transitions
+                                                                                                                     times-executed)
+  <P>
+<A NAME="transition"><P><A HREF="../uncertainty/domains/mdp.lisp"><B>transition</B></A></A> <I>type</I> (destination
+                                                                                                         probability
+                                                                                                         times-achieved)
+  <P>
+<A NAME="action-model"><P><A HREF="../uncertainty/domains/mdp.lisp"><B>action-model</B></A></A> <I>function</I> (a
+                                                                                                                 s
+                                                                                                                 m)
+  <P>
+<A NAME="transitions"><P><A HREF="../uncertainty/domains/mdp.lisp"><B>transitions</B></A></A> <I>function</I> (a
+                                                                                                               s
+                                                                                                               m)
+  <blockquote>Returns the transitions resulting from executing
+  action a in state s according to model M.</blockquote>
+<A NAME="actions"><P><A HREF="../uncertainty/domains/mdp.lisp"><B>actions</B></A></A> <I>function</I> (s
+                                                                                                       m)
+  <blockquote>Returns the list of actions feasible in state s according to model M.</blockquote>
+<A NAME="uncertainty/domains/4x3-mdp.lisp"><HR>
+<H2>File <A HREF="../uncertainty/domains/4x3-mdp.lisp">uncertainty/domains/4x3-mdp.lisp</A></H2></A>
+<H2><I> Stochastic active 4x3 world for chapters 17, 20.</I>
+</H2>
+<I> Each action achieves the intended effect with probability 0.8, but the</I>
+<I> rest of the time, the action moves the agent at right angles to the</I>
+<I> intended direction.  For example, from the start square (1,1), the</I>
+<I> action North moves the agent to (1,2) with probability 0.8, but with</I>
+<I> probability 0.1, it moves East to (2,1), and with probability 0.1,</I>
+<I> it moves West, bumps into the wall, and stays in (1,1).</I>
+<A NAME="*4x3-mdp*"><P><A HREF="../uncertainty/domains/4x3-mdp.lisp"><B>*4x3-mdp*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*4x3-m-data*"><P><A HREF="../uncertainty/domains/4x3-mdp.lisp"><B>*4x3-m-data*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*4x3-r-data*"><P><A HREF="../uncertainty/domains/4x3-mdp.lisp"><B>*4x3-r-data*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="uncertainty/environments/mdp.lisp"><HR>
+<H2>File <A HREF="../uncertainty/environments/mdp.lisp">uncertainty/environments/mdp.lisp</A></H2></A>
+<H2><I> Definitions for Markov Decision Problems and Reinforcement Learning</I>
+</H2>
+<A NAME="mdp-environment"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>mdp-environment</B></A></A> <I>type</I> (<i> to make an mdp into an environment, we basically just keep track of the</i>
+
+                                                                                                                        <i> current state, and then ask the mdp model to determine the new state.</i>
+
+                                                                                                                        <i> this makes sense for the case of a single agent in the environment.</i>
+
+                                                                                                                        mdp
+                                                                                                                        epochs-left)
+  <blockquote>An MDP-environment is driven by an MDP (Markov Decision Process),
+  which (probabilistically) says what state to transition to for each action.</blockquote>
+<A NAME="mdp-percept"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>mdp-percept</B></A></A> <I>type</I> (state
+                                                                                                                reward
+                                                                                                                terminalp)
+  <blockquote>A percept gives the current state, the reward received, and whether it is
+  a terminal state.</blockquote>
+<H2><I> Generic Functions for MDP-Environments</I>
+</H2>
+<A NAME="initialize:mdp-environment"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>initialize</B></A></A> <I>method</I> ((env
+                                                                                                                                 mdp-environment))
+  <P>
+<A NAME="get-percept:mdp-environment"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                                   mdp-environment)
+                                                                                                                                  agent)
+  <blockquote>The percept is the current state, the reward, and whether this is terminal.</blockquote>
+<A NAME="update-fn:mdp-environment"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>update-fn</B></A></A> <I>method</I> ((env
+                                                                                                                               mdp-environment))
+  <blockquote>We update by transitioning to a new state.  When we hit a terminal state,
+  we restart in the initial state (until there are no more epochs left).</blockquote>
+<A NAME="performance-measure:mdp-environment"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>performance-measure</B></A></A> <I>method</I> ((env
+                                                                                                                                                   mdp-environment)
+                                                                                                                                                  agent)
+  <blockquote>Return a number saying how well this agent is doing.</blockquote>
+<A NAME="termination?:mdp-environment"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>termination?</B></A></A> <I>method</I> ((env
+                                                                                                                                     mdp-environment))
+  <P>
+<H2><I> Utility Functions</I>
+</H2>
+<A NAME="mdp-next-state"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>mdp-next-state</B></A></A> <I>function</I> (action
+                                                                                                                          state
+                                                                                                                          mdp)
+  <P>
+<A NAME="mdp-transitions"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>mdp-transitions</B></A></A> <I>function</I> (action
+                                                                                                                            state-model)
+  <P>
+<A NAME="random-transition"><P><A HREF="../uncertainty/environments/mdp.lisp"><B>random-transition</B></A></A> <I>function</I> (transitions)
+  <P>
+<A NAME="uncertainty/algorithms/dp.lisp"><HR>
+<H2>File <A HREF="../uncertainty/algorithms/dp.lisp">uncertainty/algorithms/dp.lisp</A></H2></A>
+<H2><I> Basic dynamic programming routines for MDPs (Markov decision processes)</I>
+</H2>
+<I> Value iteration, value determination, and policy iteration. </I>
+<I> MDP agents pass in an mdp and expect a policy in return.</I>
+<A NAME="value-iteration-policy"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>value-iteration-policy</B></A></A> <I>function</I> (mdp)
+  <P>
+<I> Given an environment model M, value iteration</I>
+<I> determine the values of states U.</I>
+<I> Basic equation is U(i) <- r(i) + max_a sum_j  M(a,i,j)U(j)</I>
+<I> where U(j) MUST be the old value not the new.</I>
+<A NAME="value-iteration"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>value-iteration</B></A></A> <I>function</I> (mdp
+                                                                                                                         &optional
+                                                                                                                         uold
+                                                                                                                         &key
+                                                                                                                         epsilon)
+  <P>
+<I> A state is a sink if there are no actions that can lead to another state.</I>
+<I> Sinks can arise by accident during reinforcement learning of an environment</I>
+<I> model. Because they cause infinite loops, they must be detected.</I>
+<A NAME="sink?"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>sink?</B></A></A> <I>function</I> (s
+                                                                                                     m)
+  <P>
+<I> Given an initial policy P and initial utilities U, calculate the optimal</I>
+<I> policy. Do this by value determination alternating with policy update.</I>
+<A NAME="policy-iteration"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>policy-iteration</B></A></A> <I>function</I> (mdp
+                                                                                                                           &optional
+                                                                                                                           u)
+  <P>
+<I> Given a fixed policy and a model, calculate the value of each state.</I>
+<I> This version does it by an iterative process similar to value iteration.</I>
+<I> Basic equation is U(i) <- r(i) + sum_j  M(P(i),i,j)U(j)</I>
+<I> where U(j) MUST be the old value not the new.</I>
+<I> A better alternative is to set up the value equations and solve them</I>
+<I> using matrix methods.</I>
+<A NAME="value-determination"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>value-determination</B></A></A> <I>function</I> (p
+                                                                                                                                 uold
+                                                                                                                                 m
+                                                                                                                                 r
+                                                                                                                                 &key
+                                                                                                                                 epsilon)
+  <P>
+<I> Compute optimal policy given U and M</I>
+<A NAME="optimal-policy"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>optimal-policy</B></A></A> <I>function</I> (u
+                                                                                                                       m
+                                                                                                                       r)
+  <P>
+<I> The following functions select actions in particular states</I>
+<I> Pick a random action</I>
+<A NAME="policy-choice"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>policy-choice</B></A></A> <I>function</I> (state
+                                                                                                                     p)
+  <P>
+<A NAME="random-choice"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>random-choice</B></A></A> <I>function</I> (state
+                                                                                                                     u
+                                                                                                                     m
+                                                                                                                     r)
+  <P>
+<I> Pick the currently best action with tie-breaking</I>
+<A NAME="max-choice"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>max-choice</B></A></A> <I>function</I> (state
+                                                                                                               u
+                                                                                                               m
+                                                                                                               r)
+  <P>
+<I> Simply pick a currently best action deterministically</I>
+<A NAME="dmax-choice"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>dmax-choice</B></A></A> <I>function</I> (state
+                                                                                                                 u
+                                                                                                                 m
+                                                                                                                 r)
+  <P>
+<I> Q(a,s) is the value of doing a in s, calculated by averaging over the</I>
+<I> utilities of the possible outcomes. Used in several update equations.</I>
+<A NAME="q-value"><P><A HREF="../uncertainty/algorithms/dp.lisp"><B>q-value</B></A></A> <I>function</I> (action
+                                                                                                         state
+                                                                                                         u
+                                                                                                         m
+                                                                                                         r)
+  <P>
+<A NAME="uncertainty/algorithms/stats.lisp"><HR>
+<H2>File <A HREF="../uncertainty/algorithms/stats.lisp">uncertainty/algorithms/stats.lisp</A></H2></A>
+<H2><I> Code for performance assessment of DP and RL algorithms.</I>
+</H2>
+<I> Makes extensive use of global variables to minimize interference with the</I>
+<I> algorithms themselves.</I>
+<A NAME="*policy-fn*"><P><A HREF="../uncertainty/algorithms/stats.lisp"><B>*policy-fn*</B></A></A> <I>variable</I> 
+  <P>
+<I> the policy used by the agent in acting</I>
+<A NAME="*correct-u*"><P><A HREF="../uncertainty/algorithms/stats.lisp"><B>*correct-u*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*correct-m*"><P><A HREF="../uncertainty/algorithms/stats.lisp"><B>*correct-m*</B></A></A> <I>variable</I> 
+  <P>
+<A NAME="*correct-r*"><P><A HREF="../uncertainty/algorithms/stats.lisp"><B>*correct-r*</B></A></A> <I>variable</I> 
+  <P>
+<H2><I> U2 is the correct utility table</I>
+</H2>
+<H2><I> assume U1, U2 have the same states</I>
+</H2>
+<A NAME="u-rms-error"><P><A HREF="../uncertainty/algorithms/stats.lisp"><B>u-rms-error</B></A></A> <I>function</I> (u1
+                                                                                                                    u2)
+  <P>
+<I> The policy loss of a utility function U for an mdp is defined as the</I>
+<I> difference in utility between the corresponding policy and the optimal</I>
+<I> policy, for the agent's current state. Calculate using</I>
+<I> value determination wrt the current policy </I>
+<A NAME="loss"><P><A HREF="../uncertainty/algorithms/stats.lisp"><B>loss</B></A></A> <I>function</I> (mdp
+                                                                                                      u)
+  <P>
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="../../aima.html">AIMA Home</A>
+<td> <A HREF="../../contact.html">Authors</A>
+<td> <A HREF="overview.html">Lisp Code</A>
+<td> <A HREF="../../prog.html">AI Programming</A>
+<td> <A HREF="../../instructors.html">Instructors Pages</A>
+</TABLE>
+</BODY> 
+</HTML>

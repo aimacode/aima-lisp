@@ -1,0 +1,1152 @@
+<HTML>
+<HEAD>
+<TITLE>Search (Subsystem of AIMA Code)</TITLE> 
+<!-- Changed by: Peter Norvig, 30-Oct-1996 -->
+</HEAD> 
+<BODY bgcolor="#ffffff"> 
+
+<H1>Search (Subsystem of AIMA Code)</H1>
+
+The <b>search</b> subsystem contains code from part II on problem
+solving, search, and game-playing.  The main data type is the
+<tt>problem</tt>.  each new type of problem needs a representation for
+states, a successor function, and a goal test.  You can find examples
+of this in the <b>domains</b> subdirectory.
+
+
+<P><HR size=3></UL><A HREF="../search/"><B>search/</B></A>:
+<UL> <LI><A HREF="#search/test-search.lisp"><B>test-search.lisp</B></A>  Test Cases for Search</UL><A HREF="../search/algorithms/"><B>search/algorithms/</B></A>:
+<UL> <LI><A HREF="#search/algorithms/problems.lisp"><B>problems.lisp</B></A>  Defining Problems<LI><A HREF="#search/algorithms/simple.lisp"><B>simple.lisp</B></A>  Simple Search Algorithms<LI><A HREF="#search/algorithms/repeated.lisp"><B>repeated.lisp</B></A>  Search Algorithms That Avoid Repeated States<LI><A HREF="#search/algorithms/csp.lisp"><B>csp.lisp</B></A>  Definition of CSPs (Constraint Satisfaction Problems).<LI><A HREF="#search/algorithms/ida.lisp"><B>ida.lisp</B></A>  Iterative Deepening A* (IDA*) Search<LI><A HREF="#search/algorithms/iterative.lisp"><B>iterative.lisp</B></A>  Iterative Improvement Search Algorithms<LI><A HREF="#search/algorithms/sma.lisp"><B>sma.lisp</B></A> <LI><A HREF="#search/algorithms/minimax.lisp"><B>minimax.lisp</B></A>  Deciding What Move to Make in a Game by Minimax or Alpha-Beta Search</UL><A HREF="../search/environments/"><B>search/environments/</B></A>:
+<UL> <LI><A HREF="#search/environments/games.lisp"><B>games.lisp</B></A>  Game-Playing<LI><A HREF="#search/environments/prob-solve.lisp"><B>prob-solve.lisp</B></A>  Problem-Solving Environments</UL><A HREF="../search/domains/"><B>search/domains/</B></A>:
+<UL> <LI><A HREF="#search/domains/cannibals.lisp"><B>cannibals.lisp</B></A>  The Missionaries and Cannibals Domain<LI><A HREF="#search/domains/ttt.lisp"><B>ttt.lisp</B></A>  The Game of Tic-Tac-Toe<LI><A HREF="#search/domains/cognac.lisp"><B>cognac.lisp</B></A>  The Game of Cognac<LI><A HREF="#search/domains/nqueens.lisp"><B>nqueens.lisp</B></A>  The N-Queens Puzzle as a Constraint Satisfaction Problem<LI><A HREF="#search/domains/path-planning.lisp"><B>path-planning.lisp</B></A>  Path Planning in 2 Dimensions with Convex Polygonal Obstacles<LI><A HREF="#search/domains/puzzle8.lisp"><B>puzzle8.lisp</B></A>  The 8-Puzzle Problem<LI><A HREF="#search/domains/route-finding.lisp"><B>route-finding.lisp</B></A>  Find a Route Between Cities on a Map<LI><A HREF="#search/domains/tsp.lisp"><B>tsp.lisp</B></A>  The Travelling Salesperson Problem (TSP)<LI><A HREF="#search/domains/vacuum.lisp"><B>vacuum.lisp</B></A>  Definitions for Searching in the Vacuum-World Domain</UL><A HREF="../search/agents/"><B>search/agents/</B></A>:
+<UL> <LI><A HREF="#search/agents/ps-agents.lisp"><B>ps-agents.lisp</B></A>  Problem-Solving Agents<LI><A HREF="#search/agents/ttt-agent.lisp"><B>ttt-agent.lisp</B></A>  An  Agent for Playing Tic-Tac-Toe</UL>
+
+<A NAME="search/test-search.lisp"><HR>
+<H2>File <A HREF="../search/test-search.lisp">search/test-search.lisp</A></H2></A>
+<H2><I> Test Cases for Search</I>
+</H2>
+<A NAME="search/algorithms/problems.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/problems.lisp">search/algorithms/problems.lisp</A></H2></A>
+<H2><I> Defining Problems</I>
+</H2>
+<A NAME="problem"><P><A HREF="../search/algorithms/problems.lisp"><B>problem</B></A></A> <I>type</I> (initial-state
+                                                                                                      goal
+                                                                                                      num-expanded
+                                                                                                      iterative?)
+  <blockquote>A problem is defined by the initial state, and the type of problem it is.
+  We will be defining subtypes of PROBLEM later on.  For bookkeeping, we
+  count the number of nodes expanded.  Note that the three other fields from
+  the book's definition [p 60] have become generic functions; see below.</blockquote>
+<I> When we define a new subtype of problem, we need to define a SUCCESSORS</I>
+<I> method. We may need to define methods for GOAL-TEST, H-COST, and</I>
+<I> EDGE-COST, but they have default methods which may be appropriate.</I>
+<A NAME="successors:problem"><P><A HREF="../search/algorithms/problems.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                       problem)
+                                                                                                                      state)
+  <blockquote>Return an alist of (action . state) pairs, reachable from this state.</blockquote>
+<A NAME="goal-test:problem"><P><A HREF="../search/algorithms/problems.lisp"><B>goal-test</B></A></A> <I>method</I> ((problem
+                                                                                                                     problem)
+                                                                                                                    state)
+  <blockquote>Return true or false: is this state a goal state?  This default method
+  checks if the state is equal to the state stored in the problem-goal slot.
+  You will need to define your own method if there are multiple goals, or if
+  you need to compare them with something other than EQUAL.</blockquote>
+<A NAME="h-cost:problem"><P><A HREF="../search/algorithms/problems.lisp"><B>h-cost</B></A></A> <I>method</I> ((problem
+                                                                                                               problem)
+                                                                                                              state)
+  <blockquote>The estimated cost from state to a goal for this problem.  
+  If you don't overestimate, then A* will always find optimal solutions.
+  The default estimate is always 0, which certainly doesn't overestimate.</blockquote>
+<A NAME="edge-cost:problem"><P><A HREF="../search/algorithms/problems.lisp"><B>edge-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                     problem)
+                                                                                                                    node
+                                                                                                                    action
+                                                                                                                    state)
+  <blockquote>The cost of going from one node to the next state by taking action.
+  This default method counts 1 for every action.  Provide a method for this if 
+  your subtype of problem has a different idea of the cost of a step.</blockquote>
+<H2><I> Manipulating Nodes</I>
+</H2>
+<A NAME="node"><P><A HREF="../search/algorithms/problems.lisp"><B>node</B></A></A> <I>type</I> (state
+                                                                                                parent
+                                                                                                action
+                                                                                                successors
+                                                                                                unexpanded
+                                                                                                depth
+                                                                                                g-cost
+                                                                                                h-cost
+                                                                                                f-cost
+                                                                                                expanded?
+                                                                                                completed?)
+  <blockquote>Node for generic search.  A node contains a state, a domain-specific
+  representation of a point in the search space.  A node also contains 
+  bookkeeping information such as the cost so far (g-cost) and estimated cost 
+  to go (h-cost). [p 72]</blockquote>
+<A NAME="expand"><P><A HREF="../search/algorithms/problems.lisp"><B>expand</B></A></A> <I>function</I> (node
+                                                                                                        problem)
+  <blockquote>Generate a list of all the nodes that can be reached from a node.</blockquote>
+<A NAME="create-start-node"><P><A HREF="../search/algorithms/problems.lisp"><B>create-start-node</B></A></A> <I>function</I> (problem)
+  <blockquote>Make the starting node, corresponding to the problem's initial state.</blockquote>
+<H2><I> Manipulating Solutions</I>
+</H2>
+<I> Solutions are represented just by the node at the end of the path.  The</I>
+<I> function SOLUTION-ACTIONS returns a list of actions that get there.  It</I>
+<I> would be problematic to represent solutions directly by this list of</I>
+<I> actions, because then we couldn't tell a solution with no actions from a</I>
+<I> failure to find a solution. </I>
+<A NAME="solution-actions"><P><A HREF="../search/algorithms/problems.lisp"><B>solution-actions</B></A></A> <I>function</I> (node
+                                                                                                                            &optional
+                                                                                                                            actions-so-far)
+  <blockquote>Return a list of actions that will lead to the node's state.</blockquote>
+<A NAME="solution-nodes"><P><A HREF="../search/algorithms/problems.lisp"><B>solution-nodes</B></A></A> <I>function</I> (node
+                                                                                                                        &optional
+                                                                                                                        nodes-so-far)
+  <blockquote>Return a list of the nodes along the path to the solution.</blockquote>
+<A NAME="solve"><P><A HREF="../search/algorithms/problems.lisp"><B>solve</B></A></A> <I>function</I> (problem
+                                                                                                      &optional
+                                                                                                      algorithm)
+  <blockquote>Print a list of actions that will solve the problem (if possible).
+  Return the node that solves the problem, or nil.</blockquote>
+<A NAME="print-solution"><P><A HREF="../search/algorithms/problems.lisp"><B>print-solution</B></A></A> <I>function</I> (problem
+                                                                                                                        node)
+  <blockquote>Print a table of the actions and states leading up to a solution.</blockquote>
+<H2><I> Comparing Algorithms</I>
+</H2>
+<A NAME="compare-search-algorithms"><P><A HREF="../search/algorithms/problems.lisp"><B>compare-search-algorithms</B></A></A> <I>function</I> (problem-fn
+                                                                                                                                              algorithms
+                                                                                                                                              &key
+                                                                                                                                              n)
+  <blockquote>Run each algorithm on N problems (as generated by problem-fn)
+  and compare the results for nodes expanded and for path cost.</blockquote>
+<H2><I> Printing</I>
+</H2>
+<A NAME="print-structure:node"><P><A HREF="../search/algorithms/problems.lisp"><B>print-structure</B></A></A> <I>method</I> ((node
+                                                                                                                              node)
+                                                                                                                             stream)
+  <P>
+<A NAME="display-expand:problem"><P><A HREF="../search/algorithms/problems.lisp"><B>display-expand</B></A></A> <I>method</I> ((problem
+                                                                                                                               problem)
+                                                                                                                              node)
+  <blockquote>Possibly print information when a node is expanded.</blockquote>
+<A NAME="search/algorithms/simple.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/simple.lisp">search/algorithms/simple.lisp</A></H2></A>
+<H2><I> Simple Search Algorithms</I>
+</H2>
+<I> Here we define the GENERAL-SEARCH function, and then a set of</I>
+<I> search functions that follow specific search strategies.  None of</I>
+<I> these algorithms worries about repeated states in the search.</I>
+<A NAME="general-search"><P><A HREF="../search/algorithms/simple.lisp"><B>general-search</B></A></A> <I>function</I> (problem
+                                                                                                                      queuing-fn)
+  <blockquote>Expand nodes according to the specification of PROBLEM until we find
+  a solution or run out of nodes to expand.  The QUEUING-FN decides which
+  nodes to look at first. [p 73]</blockquote>
+<A NAME="breadth-first-search"><P><A HREF="../search/algorithms/simple.lisp"><B>breadth-first-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Search the shallowest nodes in the search tree first. [p 74]</blockquote>
+<A NAME="depth-first-search"><P><A HREF="../search/algorithms/simple.lisp"><B>depth-first-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Search the deepest nodes in the search tree first. [p 78]</blockquote>
+<A NAME="iterative-deepening-search"><P><A HREF="../search/algorithms/simple.lisp"><B>iterative-deepening-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Do a series of depth-limited searches, increasing depth each time. [p 79]</blockquote>
+<A NAME="depth-limited-search"><P><A HREF="../search/algorithms/simple.lisp"><B>depth-limited-search</B></A></A> <I>function</I> (problem
+                                                                                                                                  &optional
+                                                                                                                                  limit
+                                                                                                                                  node)
+  <blockquote>Search depth-first, but only up to LIMIT branches deep in the tree.</blockquote>
+<H2><I> Search Algorithms That Use Heuristic Information</I>
+</H2>
+<A NAME="best-first-search"><P><A HREF="../search/algorithms/simple.lisp"><B>best-first-search</B></A></A> <I>function</I> (problem
+                                                                                                                            eval-fn)
+  <blockquote>Search the nodes with the best evaluation first. [p 93]</blockquote>
+<A NAME="greedy-search"><P><A HREF="../search/algorithms/simple.lisp"><B>greedy-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Best-first search using H (heuristic distance to goal). [p 93]</blockquote>
+<A NAME="tree-a*-search"><P><A HREF="../search/algorithms/simple.lisp"><B>tree-a*-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Best-first search using estimated total cost, or (F = G + H). [p 97]</blockquote>
+<A NAME="uniform-cost-search"><P><A HREF="../search/algorithms/simple.lisp"><B>uniform-cost-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Best-first search using the node's depth as its cost.  Discussion on [p 75]</blockquote>
+<H2><I> Utility Function</I>
+</H2>
+<A NAME="make-initial-queue"><P><A HREF="../search/algorithms/simple.lisp"><B>make-initial-queue</B></A></A> <I>function</I> (problem
+                                                                                                                              queuing-fn)
+  <P>
+<A NAME="search/algorithms/repeated.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/repeated.lisp">search/algorithms/repeated.lisp</A></H2></A>
+<H2><I> Search Algorithms That Avoid Repeated States</I>
+</H2>
+<I> In this file we show algorithms that worry about repeated states.</I>
+<I> Here are the three ways to deal with repeated states, from [p 82]:</I>
+<A NAME="eliminate-returns"><P><A HREF="../search/algorithms/repeated.lisp"><B>eliminate-returns</B></A></A> <I>function</I> (nodes)
+  <blockquote>Get rid of nodes that return to the state they just came from,
+  i.e., where the last two actions just undo each other.</blockquote>
+<A NAME="eliminate-cycles"><P><A HREF="../search/algorithms/repeated.lisp"><B>eliminate-cycles</B></A></A> <I>function</I> (nodes)
+  <blockquote>Get rid of nodes that end in a state that has appeared before in the path.</blockquote>
+<A NAME="eliminate-all-duplicates"><P><A HREF="../search/algorithms/repeated.lisp"><B>eliminate-all-duplicates</B></A></A> <I>function</I> (nodes
+                                                                                                                                            node-table)
+  <blockquote>Get rid of all nodes that have been seen before in any path.</blockquote>
+<I> Here are examples of search algorithms that use these methods.  In</I>
+<I> retrospect, a better organization would have been to have GENERAL-SEARCH</I>
+<I> take two arguments, a problem and a strategy, where the strategy would</I>
+<I> have a queueing function and an expansion function as components.  That</I>
+<I> way, we wouldn't have EXPAND generate nodes that we are just going to</I>
+<I> throw away anyway.</I>
+<A NAME="no-cycles-depth-first-search"><P><A HREF="../search/algorithms/repeated.lisp"><B>no-cycles-depth-first-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Do depth-first search, but eliminate paths with repeated states.</blockquote>
+<A NAME="no-returns-breadth-first-search"><P><A HREF="../search/algorithms/repeated.lisp"><B>no-returns-breadth-first-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Do breadth-first search, but eliminate immediate returns to a prior state.</blockquote>
+<A NAME="no-duplicates-breadth-first-search"><P><A HREF="../search/algorithms/repeated.lisp"><B>no-duplicates-breadth-first-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Do breadth-first search, but eliminate all duplicate states.</blockquote>
+<A NAME="a*-search"><P><A HREF="../search/algorithms/repeated.lisp"><B>a*-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Search the nodes with the best f cost first.  If a node is ever reached by
+  two different paths, keep only the better path.</blockquote>
+<A NAME="make-eliminating-queuing-fn"><P><A HREF="../search/algorithms/repeated.lisp"><B>make-eliminating-queuing-fn</B></A></A> <I>function</I> (eval-fn)
+  <P>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="looping-node?"><P><A HREF="../search/algorithms/repeated.lisp"><B>looping-node?</B></A></A> <I>function</I> (node
+                                                                                                                      &optional
+                                                                                                                      depth)
+  <blockquote>Did this node's state appear previously in the path?</blockquote>
+<A NAME="return-node?"><P><A HREF="../search/algorithms/repeated.lisp"><B>return-node?</B></A></A> <I>function</I> (node)
+  <blockquote>Is this a node that returns to the state it just came from?</blockquote>
+<A NAME="search/algorithms/csp.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/csp.lisp">search/algorithms/csp.lisp</A></H2></A>
+<H2><I> Definition of CSPs (Constraint Satisfaction Problems).</I>
+</H2>
+<A NAME="csp-problem"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-problem</B></A></A> <I>type</I> (forward-checking?
+                                                                                                         legality-checking?
+                                                                                                         variable-selector)
+  <blockquote>A Constraint Satisfaction Problem involves filling in values for variables.
+  We will use a CSP-state structure to represent this.</blockquote>
+<I> All CSPs use integers as names for both variables and their values.</I>
+<I> Constraints on variables var1, var2 are represented by a table,</I>
+<I> indexed by var1, var2, with each entry a list of all allowable pairs</I>
+<I> of values for var1, var2.</I>
+<A NAME="csp-state"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-state</B></A></A> <I>type</I> (unassigned
+                                                                                                     assigned
+                                                                                                     constraint-fn
+                                                                                                     modified)
+  <P>
+<A NAME="csp-var"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-var</B></A></A> <I>type</I> (name
+                                                                                                 domain
+                                                                                                 value
+                                                                                                 conflicts)
+  <P>
+<H2><I> Generic Functions for CSP Problems</I>
+</H2>
+<A NAME="goal-test:csp-problem"><P><A HREF="../search/algorithms/csp.lisp"><B>goal-test</B></A></A> <I>method</I> ((problem
+                                                                                                                    csp-problem)
+                                                                                                                   node-or-state)
+  <blockquote>STATE is a goal if all variables are assigned legally.</blockquote>
+<A NAME="successors:csp-problem"><P><A HREF="../search/algorithms/csp.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                      csp-problem)
+                                                                                                                     s)
+  <P>
+<H2><I> Algorithms for Solving Constraint Satisfaction Problems</I>
+</H2>
+<A NAME="csp-backtracking-search"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-backtracking-search</B></A></A> <I>function</I> (problem
+                                                                                                                                     &optional
+                                                                                                                                     queuing-fn)
+  <P>
+<A NAME="csp-forward-checking-search"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-forward-checking-search</B></A></A> <I>function</I> (problem
+                                                                                                                                             &optional
+                                                                                                                                             queuing-fn)
+  <P>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="print-structure:csp-state"><P><A HREF="../search/algorithms/csp.lisp"><B>print-structure</B></A></A> <I>method</I> ((state
+                                                                                                                              csp-state)
+                                                                                                                             stream)
+  <P>
+<A NAME="csp-legal-statep"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-legal-statep</B></A></A> <I>function</I> (s)
+  <P>
+<A NAME="filter-domains"><P><A HREF="../search/algorithms/csp.lisp"><B>filter-domains</B></A></A> <I>function</I> (name
+                                                                                                                   value
+                                                                                                                   unassigned
+                                                                                                                   constraint-fn)
+  <P>
+<A NAME="csp-modifications"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-modifications</B></A></A> <I>function</I> (s
+                                                                                                                         &optional
+                                                                                                                         variable-selector-fn)
+  <P>
+<A NAME="modify-assignment"><P><A HREF="../search/algorithms/csp.lisp"><B>modify-assignment</B></A></A> <I>function</I> (s
+                                                                                                                         var
+                                                                                                                         name
+                                                                                                                         new
+                                                                                                                         assigned
+                                                                                                                         constraint-fn)
+  <P>
+<A NAME="most-constrained-variable"><P><A HREF="../search/algorithms/csp.lisp"><B>most-constrained-variable</B></A></A> <I>function</I> (vars)
+  <P>
+<A NAME="random-conflicted-variable"><P><A HREF="../search/algorithms/csp.lisp"><B>random-conflicted-variable</B></A></A> <I>function</I> (vars)
+  <P>
+<A NAME="min-conflicts-value"><P><A HREF="../search/algorithms/csp.lisp"><B>min-conflicts-value</B></A></A> <I>function</I> (s)
+  <P>
+<A NAME="csp-empty-domainp"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-empty-domainp</B></A></A> <I>function</I> (s)
+  <P>
+<A NAME="csp-legal-values"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-legal-values</B></A></A> <I>function</I> (name
+                                                                                                                       values
+                                                                                                                       assigned
+                                                                                                                       constraint-fn)
+  <P>
+<A NAME="csp-legal-assignmentp"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-legal-assignmentp</B></A></A> <I>function</I> (name
+                                                                                                                                 value
+                                                                                                                                 assigned
+                                                                                                                                 constraint-fn)
+  <P>
+<A NAME="csp-explicit-check"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-explicit-check</B></A></A> <I>function</I> (name1
+                                                                                                                           value1
+                                                                                                                           name2
+                                                                                                                           value2
+                                                                                                                           constraints)
+  <P>
+<A NAME="csp-random-completion"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-random-completion</B></A></A> <I>function</I> (s)
+  <P>
+<A NAME="csp-conflicts"><P><A HREF="../search/algorithms/csp.lisp"><B>csp-conflicts</B></A></A> <I>function</I> (var
+                                                                                                                 vars
+                                                                                                                 constraint-fn)
+  <P>
+<A NAME="search/algorithms/ida.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/ida.lisp">search/algorithms/ida.lisp</A></H2></A>
+<I> ida.lisp</I>
+<H2><I> Iterative Deepening A* (IDA*) Search</I>
+</H2>
+<A NAME="tree-ida*-search"><P><A HREF="../search/algorithms/ida.lisp"><B>tree-ida*-search</B></A></A> <I>function</I> (problem)
+  <blockquote>Iterative Deepening Tree-A* Search [p 107].</blockquote>
+<A NAME="dfs-contour"><P><A HREF="../search/algorithms/ida.lisp"><B>dfs-contour</B></A></A> <I>function</I> (node
+                                                                                                             problem
+                                                                                                             f-limit)
+  <blockquote>Return a solution and a new f-cost limit.</blockquote>
+<A NAME="search/algorithms/iterative.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/iterative.lisp">search/algorithms/iterative.lisp</A></H2></A>
+<H2><I> Iterative Improvement Search Algorithms</I>
+</H2>
+<I> Currently these do not do repeated-state checking.  Each takes a problem</I>
+<I> and returns two values: like all search algorithms, the first is a</I>
+<I> solution node or nil, but the second value will be the best node found</I>
+<I> so far, even if it is not a solution.  We will assume that all</I>
+<I> evaluations are costs (i.e., we're seeking minima).</I>
+<H2><I> Top Level Functions</I>
+</H2>
+<A NAME="hill-climbing-search"><P><A HREF="../search/algorithms/iterative.lisp"><B>hill-climbing-search</B></A></A> <I>function</I> (problem
+                                                                                                                                     &optional
+                                                                                                                                     stopping-criterion)
+  <blockquote>Search by picking the best successor according to heuristic h.
+  Stops according to stopping-criterion.</blockquote>
+<A NAME="simulated-annealing-search"><P><A HREF="../search/algorithms/iterative.lisp"><B>simulated-annealing-search</B></A></A> <I>function</I> (problem
+                                                                                                                                                 &optional
+                                                                                                                                                 schedule)
+  <blockquote>Like hill-climbing-search, except that we pick a next node randomly;
+  if it is better, or if the badness of the next node is small and the
+  'temperature' is large, then we accpet it, otherwise we ignore it.
+  We halt when the temperature, TEMP, hits zero [p 113].</blockquote>
+<A NAME="random-restart-search"><P><A HREF="../search/algorithms/iterative.lisp"><B>random-restart-search</B></A></A> <I>function</I> (problem-fn
+                                                                                                                                       &optional
+                                                                                                                                       n)
+  <blockquote>Random-restart hill-climbing repeatedly calls hill-climbing-search.
+  PROBLEM-FN should return a problem with a random initial state.
+  We look at N different initial states, and keep the best solution found.</blockquote>
+<A NAME="hill-climbing-until-flat-n-times-search"><P><A HREF="../search/algorithms/iterative.lisp"><B>hill-climbing-until-flat-n-times-search</B></A></A> <I>function</I> (problem
+                                                                                                                                                                           &optional
+                                                                                                                                                                           n)
+  <blockquote>Do hill climbing, but stop after no improvement N times in a row.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="local-minimum"><P><A HREF="../search/algorithms/iterative.lisp"><B>local-minimum</B></A></A> <I>function</I> (current
+                                                                                                                       next)
+  <blockquote>Stop when the next state is worse than the current.</blockquote>
+<A NAME="minimum-or-flat"><P><A HREF="../search/algorithms/iterative.lisp"><B>minimum-or-flat</B></A></A> <I>function</I> (current
+                                                                                                                           next)
+  <blockquote>Stop when the next state is no better than the current.</blockquote>
+<A NAME="minimum-or-flat-n-times"><P><A HREF="../search/algorithms/iterative.lisp"><B>minimum-or-flat-n-times</B></A></A> <I>function</I> (n)
+  <blockquote>Return a function that stops when no improvement is made N times in a row.</blockquote>
+<A NAME="csp-termination"><P><A HREF="../search/algorithms/iterative.lisp"><B>csp-termination</B></A></A> <I>function</I> (current
+                                                                                                                           next)
+  <P>
+<A NAME="make-exp-schedule"><P><A HREF="../search/algorithms/iterative.lisp"><B>make-exp-schedule</B></A></A> <I>function</I> (&key
+                                                                                                                               k
+                                                                                                                               lambda
+                                                                                                                               limit)
+  <blockquote>Return an exponential schedule function with time limit.</blockquote>
+<A NAME="search/algorithms/sma.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/sma.lisp">search/algorithms/sma.lisp</A></H2></A>
+<I> sma.lisp</I>
+<I> Currently contains definition for a version of SMA* that operates on</I>
+<I> search trees (i.e., no repeated-state checking).</I>
+<I> [[Need to update to eliminate looping when memory is too small</I>
+<I> and to signal suboptimal solutions when appropriate.]]</I>
+<I> Although the basic algorithm is quite simple, the bookkeeping is not.</I>
+<A NAME="tree-sma"><P><A HREF="../search/algorithms/sma.lisp"><B>tree-sma</B></A></A> <I>function</I> (problem
+                                                                                                       &optional
+                                                                                                       memory-size)
+  <P>
+<I> tree-get-next-successor returns the next successor of n, if any (else nil)</I>
+<A NAME="tree-get-next-successor"><P><A HREF="../search/algorithms/sma.lisp"><B>tree-get-next-successor</B></A></A> <I>function</I> (n
+                                                                                                                                     q
+                                                                                                                                     memory-size
+                                                                                                                                     problem)
+  <P>
+<I> tree-backup-f-cost updates the f-cost for a node's ancestors as needed</I>
+<A NAME="tree-backup-f-cost"><P><A HREF="../search/algorithms/sma.lisp"><B>tree-backup-f-cost</B></A></A> <I>function</I> (node
+                                                                                                                           q
+                                                                                                                           &optional
+                                                                                                                           was-open?)
+  <P>
+<I> tree-prune-open removes the worst node from the open list.</I>
+<I> The node is discarded from the open list, and its successors are</I>
+<I> dumped to recycle memory. If the parent was closed, it must be</I>
+<I> re-opened, with an updated f-cost (no need to do this until now</I>
+<I> because it wasn't on the open list anyway). Closed parent or not,</I>
+<I> the worstnode becomes an unexpanded successor of the parent. </I>
+<A NAME="tree-prune-open"><P><A HREF="../search/algorithms/sma.lisp"><B>tree-prune-open</B></A></A> <I>function</I> (q)
+  <P>
+<A NAME="tree-unexpand-successor"><P><A HREF="../search/algorithms/sma.lisp"><B>tree-unexpand-successor</B></A></A> <I>function</I> (successor
+                                                                                                                                     parent)
+  <P>
+<A NAME="deepest-least-leaf"><P><A HREF="../search/algorithms/sma.lisp"><B>deepest-least-leaf</B></A></A> <I>function</I> (q)
+  <P>
+<A NAME="shallowest-largest-leaf"><P><A HREF="../search/algorithms/sma.lisp"><B>shallowest-largest-leaf</B></A></A> <I>function</I> (q)
+  <P>
+<A NAME="find-leaf"><P><A HREF="../search/algorithms/sma.lisp"><B>find-leaf</B></A></A> <I>function</I> (node)
+  <P>
+<A NAME="leafp"><P><A HREF="../search/algorithms/sma.lisp"><B>leafp</B></A></A> <I>function</I> (n)
+  <P>
+<A NAME="openp"><P><A HREF="../search/algorithms/sma.lisp"><B>openp</B></A></A> <I>function</I> (n)
+  <P>
+<A NAME="search/algorithms/minimax.lisp"><HR>
+<H2>File <A HREF="../search/algorithms/minimax.lisp">search/algorithms/minimax.lisp</A></H2></A>
+<H2><I> Deciding What Move to Make in a Game by Minimax or Alpha-Beta Search</I>
+</H2>
+<I> The minimax decision procedure returns the optimal move in the game</I>
+<I> using exhaustive generation of the entire game tree.  Implementation</I>
+<I> uses the fact that the evaluation and utility functions return a list of</I>
+<I> values from the point of view of each player, with the "current" player</I>
+<I> first. Hence, rather than using #'min, we always use #'max for the</I>
+<I> current player.  A successor value is passed up the tree using</I>
+<I> right-rotation.  This works for any number of players.</I>
+<I> The notation "a+s" means an (action . state) pair.</I>
+<H2><I> Minimax</I>
+</H2>
+<A NAME="minimax-decision"><P><A HREF="../search/algorithms/minimax.lisp"><B>minimax-decision</B></A></A> <I>function</I> (state
+                                                                                                                           game)
+  <blockquote>Return the best action, according to backed-up evaluation.
+  Searches the whole game tree, all the way down to the leaves.
+  This takes too much time for all but the simplest games,
+  but it is guaranteed to produce the best action.</blockquote>
+<A NAME="minimax-value"><P><A HREF="../search/algorithms/minimax.lisp"><B>minimax-value</B></A></A> <I>function</I> (state
+                                                                                                                     game)
+  <P>
+<H2><I> Minimax with Cutoff</I>
+</H2>
+<A NAME="minimax-cutoff-decision"><P><A HREF="../search/algorithms/minimax.lisp"><B>minimax-cutoff-decision</B></A></A> <I>function</I> (state
+                                                                                                                                         game
+                                                                                                                                         eval-fn
+                                                                                                                                         limit)
+  <blockquote>Return the best action, according to backed-up evaluation down to LIMIT.
+  After we search LIMIT levels seep, we use EVAL-FN to provide an estimate
+  of the true value of a state; thus the action may not actually be best.</blockquote>
+<A NAME="minimax-cutoff-value"><P><A HREF="../search/algorithms/minimax.lisp"><B>minimax-cutoff-value</B></A></A> <I>function</I> (state
+                                                                                                                                   game
+                                                                                                                                   eval-fn
+                                                                                                                                   limit)
+  <P>
+<A NAME="game-successors"><P><A HREF="../search/algorithms/minimax.lisp"><B>game-successors</B></A></A> <I>function</I> (state
+                                                                                                                         game)
+  <blockquote>Return a list of (move . state) pairs that can be reached from this state.</blockquote>
+<A NAME="terminal-values"><P><A HREF="../search/algorithms/minimax.lisp"><B>terminal-values</B></A></A> <I>function</I> (state)
+  <blockquote>Return the values of the state for each player.</blockquote>
+<H2><I> Alpha-Beta Search</I>
+</H2>
+<I> The alpha-beta decision procedure returns the optimal move according to a</I>
+<I> limited-depth search using the evaluation function.  It returns the same</I>
+<I> action as minimax-cutoff-decision, but examines fewer nodes.  This</I>
+<I> version of alpha-beta works only for two players, and requires that the</I>
+<I> game is "zero-sum", i.e., the evaluation for one player is the opposite</I>
+<I> of the evaluation for the other.</I>
+<A NAME="alpha-beta-decision"><P><A HREF="../search/algorithms/minimax.lisp"><B>alpha-beta-decision</B></A></A> <I>function</I> (state
+                                                                                                                                 game
+                                                                                                                                 eval-fn
+                                                                                                                                 &optional
+                                                                                                                                 limit)
+  <blockquote>Return the estimated best action, searching up to LIMIT and then
+  applying the EVAL-FN.</blockquote>
+<A NAME="alpha-value"><P><A HREF="../search/algorithms/minimax.lisp"><B>alpha-value</B></A></A> <I>function</I> (state
+                                                                                                                 game
+                                                                                                                 alpha
+                                                                                                                 beta
+                                                                                                                 eval-fn
+                                                                                                                 limit)
+  <P>
+<A NAME="beta-value"><P><A HREF="../search/algorithms/minimax.lisp"><B>beta-value</B></A></A> <I>function</I> (state
+                                                                                                               game
+                                                                                                               alpha
+                                                                                                               beta
+                                                                                                               eval-fn
+                                                                                                               limit)
+  <P>
+<A NAME="search/environments/games.lisp"><HR>
+<H2>File <A HREF="../search/environments/games.lisp">search/environments/games.lisp</A></H2></A>
+<H2><I> Game-Playing</I>
+</H2>
+<I> Definitions for all n-player turn-taking games.  The idea is that</I>
+<I> each particular game we want to deal with will define a subtype of</I>
+<I> the GAME structure, with methods for LEGAL-MOVES, MAKE-MOVE, and</I>
+<I> GAME-OVER?.</I>
+<P>
+<I> In the description of a game, a player is an atomic name: X or O,</I>
+<I> or BLACK or WHITE.  The current state is kept as an instance of</I>
+<I> GAME-STATE (which we do not expect to create subtypes of).</I>
+<I> We use GAME->ENVIRONMENT to turn an instance of a game into an</I>
+<I> environment, which we can then run.  The function RUN-GAME</I>
+<I> provides a simple interface to do this. Corresponding to player X</I>
+<I> there is an agent with name X who has an agent program that</I>
+<I> chooses a move for X, given a game-state as the percept.</I>
+<A NAME="game"><P><A HREF="../search/environments/games.lisp"><B>game</B></A></A> <I>type</I> (initial-state
+                                                                                               best
+                                                                                               worst)
+  <blockquote>A game is defined in terms of the starting position (the initial-state),
+  the rewards for winning and losing, and three generic functions:
+  LEGAL-MOVES: a list of moves that can be made in this state
+  MAKE-MOVE: generate a new state
+  GAME-OVER?: are we finished?
+  You provide methods for these for each new subtype of game.</blockquote>
+<A NAME="game-state"><P><A HREF="../search/environments/games.lisp"><B>game-state</B></A></A> <I>type</I> (board
+                                                                                                           players
+                                                                                                           scores
+                                                                                                           terminal?
+                                                                                                           previous-move)
+  <blockquote>Everything you need to know about the state of the game. The players
+  are given as a list of names, with the player whose move it is
+  first.  A property list keeps the scores for each player.  In some
+  games, scores are accumulated as you go, in others a score is
+  awarded only at the end.</blockquote>
+<H2><I> Generic Functions for Games</I>
+</H2>
+<A NAME="legal-moves:game"><P><A HREF="../search/environments/games.lisp"><B>legal-moves</B></A></A> <I>method</I> ((game
+                                                                                                                     game)
+                                                                                                                    state)
+  <blockquote>Return a list of legal moves</blockquote>
+<A NAME="make-move:game"><P><A HREF="../search/environments/games.lisp"><B>make-move</B></A></A> <I>method</I> ((game
+                                                                                                                 game)
+                                                                                                                state
+                                                                                                                move)
+  <blockquote>Return the new state that results from making this move.</blockquote>
+<A NAME="game-over?:game"><P><A HREF="../search/environments/games.lisp"><B>game-over?</B></A></A> <I>method</I> ((game
+                                                                                                                   game)
+                                                                                                                  state)
+  <blockquote>Is the game finished?</blockquote>
+<H2><I> Game-playing environments</I>
+</H2>
+<A NAME="game-environment"><P><A HREF="../search/environments/games.lisp"><B>game-environment</B></A></A> <I>type</I> (game)
+  <P>
+<A NAME="game->environment"><P><A HREF="../search/environments/games.lisp"><B>game->environment</B></A></A> <I>function</I> (game
+                                                                                                                             &key
+                                                                                                                             agents)
+  <blockquote>Convert a game into an environment.
+  AGENTS can be a list of agents or agent types.</blockquote>
+<A NAME="run-game"><P><A HREF="../search/environments/games.lisp"><B>run-game</B></A></A> <I>function</I> (game
+                                                                                                           &key
+                                                                                                           agents)
+  <blockquote>Build an environment around this game, and run it.</blockquote>
+<H2><I> Implementation of Generic Functions for Game Environments</I>
+</H2>
+<A NAME="update-fn:game-environment"><P><A HREF="../search/environments/games.lisp"><B>update-fn</B></A></A> <I>method</I> ((env
+                                                                                                                             game-environment))
+  <P>
+<A NAME="performance-measure:game-environment"><P><A HREF="../search/environments/games.lisp"><B>performance-measure</B></A></A> <I>method</I> ((env
+                                                                                                                                                 game-environment)
+                                                                                                                                                agent)
+  <blockquote>Look up the agent's score in the current state.</blockquote>
+<A NAME="get-percept:game-environment"><P><A HREF="../search/environments/games.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                                 game-environment)
+                                                                                                                                agent)
+  <blockquote>We assume all agents can perceive the whole state.</blockquote>
+<A NAME="initialize:game-environment"><P><A HREF="../search/environments/games.lisp"><B>initialize</B></A></A> <I>method</I> ((env
+                                                                                                                               game-environment))
+  <blockquote>Install an agent program (based on the agent's algorithm slot) in each 
+  agent.   The program makes sure an agent only moves when it is its turn.   
+  Also initialize the name of each agent, and the environment's state.</blockquote>
+<A NAME="termination?:game-environment"><P><A HREF="../search/environments/games.lisp"><B>termination?</B></A></A> <I>method</I> ((env
+                                                                                                                                   game-environment))
+  <P>
+<A NAME="assign-agent-scores"><P><A HREF="../search/environments/games.lisp"><B>assign-agent-scores</B></A></A> <I>function</I> (state
+                                                                                                                                 env)
+  <P>
+<H2><I> Auxiliary functions</I>
+</H2>
+<A NAME="legal-move?"><P><A HREF="../search/environments/games.lisp"><B>legal-move?</B></A></A> <I>function</I> (move
+                                                                                                                 state
+                                                                                                                 game)
+  <P>
+<A NAME="current-player"><P><A HREF="../search/environments/games.lisp"><B>current-player</B></A></A> <I>function</I> (game-state)
+  <P>
+<A NAME="previous-player"><P><A HREF="../search/environments/games.lisp"><B>previous-player</B></A></A> <I>function</I> (game-state)
+  <P>
+<A NAME="game-players"><P><A HREF="../search/environments/games.lisp"><B>game-players</B></A></A> <I>function</I> (game)
+  <P>
+<A NAME="current-agent"><P><A HREF="../search/environments/games.lisp"><B>current-agent</B></A></A> <I>function</I> (env)
+  <P>
+<A NAME="agent-with-name"><P><A HREF="../search/environments/games.lisp"><B>agent-with-name</B></A></A> <I>function</I> (name
+                                                                                                                         env)
+  <P>
+<A NAME="print-structure:game"><P><A HREF="../search/environments/games.lisp"><B>print-structure</B></A></A> <I>method</I> ((game
+                                                                                                                             game)
+                                                                                                                            stream)
+  <P>
+<A NAME="print-structure:game-state"><P><A HREF="../search/environments/games.lisp"><B>print-structure</B></A></A> <I>method</I> ((state
+                                                                                                                                   game-state)
+                                                                                                                                  stream)
+  <P>
+<A NAME="display-environment:game-environment"><P><A HREF="../search/environments/games.lisp"><B>display-environment</B></A></A> <I>method</I> ((env
+                                                                                                                                                 game-environment))
+  <P>
+<A NAME="search/environments/prob-solve.lisp"><HR>
+<H2>File <A HREF="../search/environments/prob-solve.lisp">search/environments/prob-solve.lisp</A></H2></A>
+<H2><I> Problem-Solving Environments</I>
+</H2>
+<I> The basic problem-solving-environment type, and the main generic</I>
+<I> functions for it.</I>
+<A NAME="problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>problem-solving-environment</B></A></A> <I>type</I> (problem)
+  <blockquote>An environment in which to solve problems.  The state of the environment
+  is one of the states from the problem, starting with the initial state.</blockquote>
+<A NAME="get-percept:problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>get-percept</B></A></A> <I>method</I> ((env
+                                                                                                                                                 problem-solving-environment)
+                                                                                                                                                agent)
+  <blockquote>All agents can access the complete state of the environment.</blockquote>
+<A NAME="update-fn:problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>update-fn</B></A></A> <I>method</I> ((env
+                                                                                                                                             problem-solving-environment))
+  <blockquote>Set the state to the result of executing the agent's action.</blockquote>
+<A NAME="performance-measure:problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>performance-measure</B></A></A> <I>method</I> ((env
+                                                                                                                                                                 problem-solving-environment)
+                                                                                                                                                                agent)
+  <blockquote>Score of 1 for solving problem; 0 otherwise.</blockquote>
+<A NAME="initialize:problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>initialize</B></A></A> <I>method</I> ((env
+                                                                                                                                               problem-solving-environment))
+  <blockquote>Get the initial state from the problem, and supply agents with programs.</blockquote>
+<A NAME="problem-solving-program"><P><A HREF="../search/environments/prob-solve.lisp"><B>problem-solving-program</B></A></A> <I>function</I> (search-algorithm
+                                                                                                                                              problem)
+  <blockquote>Given a search algorithm, return a program that at the start searches
+  for a solution, then executes the steps of the solution, then stops.</blockquote>
+<A NAME="termination?:problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>termination?</B></A></A> <I>method</I> ((env
+                                                                                                                                                   problem-solving-environment))
+  <blockquote>Stop when the problem is solved, or when an agent says stop.</blockquote>
+<H2><I> Converting a Problem to an Environment</I>
+</H2>
+<A NAME="problem->environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>problem->environment</B></A></A> <I>function</I> (problem
+                                                                                                                                        &key
+                                                                                                                                        algorithm)
+  <blockquote>Convert a problem into an environment.  Then we can pass the environment
+  to RUN-ENVIRONMENT, and the agent will search for a solution and execute it.</blockquote>
+<A NAME="print-structure:problem-solving-environment"><P><A HREF="../search/environments/prob-solve.lisp"><B>print-structure</B></A></A> <I>method</I> ((env
+                                                                                                                                                         problem-solving-environment)
+                                                                                                                                                        stream)
+  <P>
+<A NAME="search/domains/cannibals.lisp"><HR>
+<H2>File <A HREF="../search/domains/cannibals.lisp">search/domains/cannibals.lisp</A></H2></A>
+<H2><I> The Missionaries and Cannibals Domain</I>
+</H2>
+<A NAME="cannibal-problem"><P><A HREF="../search/domains/cannibals.lisp"><B>cannibal-problem</B></A></A> <I>type</I> nil
+  <blockquote>The problem is to move M missionaries and C cannibals from one side
+ of a river to another, using B boats that holds at most two people each,
+ in such a way that the cannibals never outnumber the missionaries in
+ any one place.  See [p 68].</blockquote>
+<A NAME="goal-test:cannibal-problem"><P><A HREF="../search/domains/cannibals.lisp"><B>goal-test</B></A></A> <I>method</I> ((problem
+                                                                                                                            cannibal-problem)
+                                                                                                                           state)
+  <blockquote>The goal is to have no missionaries or cannibals left on the first side.</blockquote>
+<A NAME="successors:cannibal-problem"><P><A HREF="../search/domains/cannibals.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                              cannibal-problem)
+                                                                                                                             state)
+  <blockquote>Return a list of (action . state) pairs.  An action is a triple of the
+  form (delta-m delta-c delta-b), where a positive delta means to move from
+  side 1 to side 2; negative is the opposite.  For example, the action (1 0 1)
+  means move one missionary and 1 boat from side 1 to side 2.</blockquote>
+<A NAME="cannibal-state"><P><A HREF="../search/domains/cannibals.lisp"><B>cannibal-state</B></A></A> <I>type</I> (m1
+                                                                                                                  c1
+                                                                                                                  b1
+                                                                                                                  m2
+                                                                                                                  c2
+                                                                                                                  b2)
+  <blockquote>The state says how many missionaries, cannibals, and boats on each
+  side.  The components m1,c1,b1 stand for the number of missionaries,
+  cannibals and boats, respectively, on the first side of the river.
+  The components m2,c2,b2 are for the other side of the river.</blockquote>
+<A NAME="take-the-boat"><P><A HREF="../search/domains/cannibals.lisp"><B>take-the-boat</B></A></A> <I>function</I> (state
+                                                                                                                    action)
+  <blockquote>Move a certain number of missionaries, cannibals, and boats (if possible).</blockquote>
+<A NAME="cannibals-can-eat?"><P><A HREF="../search/domains/cannibals.lisp"><B>cannibals-can-eat?</B></A></A> <I>function</I> (state)
+  <blockquote>The cannibals feast if they outnumber the missionaries on either side.</blockquote>
+<A NAME="search/domains/ttt.lisp"><HR>
+<H2>File <A HREF="../search/domains/ttt.lisp">search/domains/ttt.lisp</A></H2></A>
+<H2><I> The Game of Tic-Tac-Toe</I>
+</H2>
+<I> Generalized Tic-Tac-Toe, in which any number of players take turns</I>
+<I> placing marks on an NxN board, trying to get K marks in a row.  There</I>
+<I> are much more efficient representations than what we have chosen here,</I>
+<I> but this suffices to run an environment quickly.  If an agent wants to</I>
+<I> search a large number of possible game states, then the agent should use</I>
+<I> its own efficient representation.  After all, an agent's internal</I>
+<I> representation is independent of what's "actually" out there in the</I>
+<I> environment.</I>
+<A NAME="ttt-game"><P><A HREF="../search/domains/ttt.lisp"><B>ttt-game</B></A></A> <I>type</I> (n
+                                                                                                k)
+  <blockquote>Define an NxN tic-tac-toe game in which the object is to get K in a row.</blockquote>
+<A NAME="make-ttt-game"><P><A HREF="../search/domains/ttt.lisp"><B>make-ttt-game</B></A></A> <I>function</I> (&key
+                                                                                                              n
+                                                                                                              k
+                                                                                                              players)
+  <blockquote>Define an NxN tic-tac-toe game in which the object is to get K in a row.</blockquote>
+<A NAME="legal-moves:ttt-game"><P><A HREF="../search/domains/ttt.lisp"><B>legal-moves</B></A></A> <I>method</I> ((game
+                                                                                                                  ttt-game)
+                                                                                                                 state)
+  <blockquote>List all possible legal moves.</blockquote>
+<A NAME="make-move:ttt-game"><P><A HREF="../search/domains/ttt.lisp"><B>make-move</B></A></A> <I>method</I> ((game
+                                                                                                              ttt-game)
+                                                                                                             state
+                                                                                                             move)
+  <blockquote>Return the new state that results from making this move.</blockquote>
+<A NAME="game-over?:ttt-game"><P><A HREF="../search/domains/ttt.lisp"><B>game-over?</B></A></A> <I>method</I> ((game
+                                                                                                                ttt-game)
+                                                                                                               state)
+  <blockquote>Checks if the last player to move made a complete row,
+   column, or diagonal of length k, or if the board is full.
+   If so, assign scores and return true; otherwise return nil.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="check-k-in-a-row"><P><A HREF="../search/domains/ttt.lisp"><B>check-k-in-a-row</B></A></A> <I>function</I> (board
+                                                                                                                    x
+                                                                                                                    y
+                                                                                                                    n
+                                                                                                                    k
+                                                                                                                    dx
+                                                                                                                    dy
+                                                                                                                    player)
+  <blockquote>Does player have k in a row, through (x y) in direction (+/-dx +/-dy)?</blockquote>
+<A NAME="count-pieces-in-direction"><P><A HREF="../search/domains/ttt.lisp"><B>count-pieces-in-direction</B></A></A> <I>function</I> (board
+                                                                                                                                      x
+                                                                                                                                      y
+                                                                                                                                      n
+                                                                                                                                      dx
+                                                                                                                                      dy
+                                                                                                                                      player)
+  <blockquote>Count player's pieces starting at (x y) going in direction (dx dy).</blockquote>
+<A NAME="search/domains/cognac.lisp"><HR>
+<H2>File <A HREF="../search/domains/cognac.lisp">search/domains/cognac.lisp</A></H2></A>
+<H2><I> The Game of Cognac</I>
+</H2>
+<I> Definitions for a game of uncertain origin reputed to be played by</I>
+<I> bored cognac-tenders in the cellars.  Similar to Tic-Tac-Toe but</I>
+<I> instead of playing anywhere, one can only play directly above an</I>
+<I> existing mark or on the bottom row. </I>
+<A NAME="cognac-game"><P><A HREF="../search/domains/cognac.lisp"><B>cognac-game</B></A></A> <I>type</I> nil
+  <blockquote>Define an NxN tic-tac-toe-like game.  The object is to get K in a row.</blockquote>
+<A NAME="make-cognac-game"><P><A HREF="../search/domains/cognac.lisp"><B>make-cognac-game</B></A></A> <I>function</I> (&key
+                                                                                                                       n
+                                                                                                                       k
+                                                                                                                       players)
+  <blockquote>Define an NxN Cognac game in which the object is to get K in a row.</blockquote>
+<A NAME="legal-moves:cognac-game"><P><A HREF="../search/domains/cognac.lisp"><B>legal-moves</B></A></A> <I>method</I> ((game
+                                                                                                                        cognac-game)
+                                                                                                                       state)
+  <blockquote>List all possible legal moves.  Like tic-tac-toe, except in each column
+  you can only move to the lowest unoccupied square.</blockquote>
+<I> Everything else is inherited from ttt-game.</I>
+<A NAME="search/domains/nqueens.lisp"><HR>
+<H2>File <A HREF="../search/domains/nqueens.lisp">search/domains/nqueens.lisp</A></H2></A>
+<H2><I> The N-Queens Puzzle as a Constraint Satisfaction Problem</I>
+</H2>
+<A NAME="nqueens-problem"><P><A HREF="../search/domains/nqueens.lisp"><B>nqueens-problem</B></A></A> <I>type</I> (n
+                                                                                                                  explicit?)
+  <P>
+<A NAME="make-nqueens-problem"><P><A HREF="../search/domains/nqueens.lisp"><B>make-nqueens-problem</B></A></A> <I>function</I> (&rest
+                                                                                                                                args
+                                                                                                                                &key
+                                                                                                                                n
+                                                                                                                                explicit?)
+  <P>
+<A NAME="nqueens-initial-state"><P><A HREF="../search/domains/nqueens.lisp"><B>nqueens-initial-state</B></A></A> <I>function</I> (n
+                                                                                                                                  &optional
+                                                                                                                                  explicit?
+                                                                                                                                  complete?)
+  <P>
+<A NAME="nqueens-constraints"><P><A HREF="../search/domains/nqueens.lisp"><B>nqueens-constraints</B></A></A> <I>function</I> (n)
+  <P>
+<A NAME="nqueens-constraint-fn"><P><A HREF="../search/domains/nqueens.lisp"><B>nqueens-constraint-fn</B></A></A> <I>function</I> (var1
+                                                                                                                                  val1
+                                                                                                                                  var2
+                                                                                                                                  val2)
+  <P>
+<A NAME="search/domains/path-planning.lisp"><HR>
+<H2>File <A HREF="../search/domains/path-planning.lisp">search/domains/path-planning.lisp</A></H2></A>
+<H2><I> Path Planning in 2 Dimensions with Convex Polygonal Obstacles</I>
+</H2>
+<A NAME="path-planning-problem"><P><A HREF="../search/domains/path-planning.lisp"><B>path-planning-problem</B></A></A> <I>type</I> (scene)
+  <blockquote>A problem involving moving among polygonal obstacles in 2D space.
+  A state is the current vertex.</blockquote>
+<A NAME="make-path-planning-problem"><P><A HREF="../search/domains/path-planning.lisp"><B>make-path-planning-problem</B></A></A> <I>function</I> (&key
+                                                                                                                                                  scene)
+  <blockquote>Define a constructor to build a problem, using the scene properly.</blockquote>
+<A NAME="successors:path-planning-problem"><P><A HREF="../search/domains/path-planning.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                                       path-planning-problem)
+                                                                                                                                      v1)
+  <blockquote>Return a list of (action . state) pairs, where the state is another
+  vertex that is visible from the current vertex v1, and the action is a 
+  delta (dx dy) from  v1 to the new one.</blockquote>
+<A NAME="edge-cost:path-planning-problem"><P><A HREF="../search/domains/path-planning.lisp"><B>edge-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                                     path-planning-problem)
+                                                                                                                                    node
+                                                                                                                                    action
+                                                                                                                                    vertex)
+  <blockquote>The cost of an action is its distance.</blockquote>
+<A NAME="h-cost:path-planning-problem"><P><A HREF="../search/domains/path-planning.lisp"><B>h-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                               path-planning-problem)
+                                                                                                                              vertex)
+  <blockquote>The heuristic cost is the straight-line distance to the goal.</blockquote>
+<H2><I> Defining the Vertex, Line, Polygon and Scene Types</I>
+</H2>
+<A NAME="vertex"><P><A HREF="../search/domains/path-planning.lisp"><B>vertex</B></A></A> <I>type</I> (xy
+                                                                                                      c-neighbor
+                                                                                                      a-neighbor
+                                                                                                      visible)
+  <P>
+<A NAME="print-structure:vertex"><P><A HREF="../search/domains/path-planning.lisp"><B>print-structure</B></A></A> <I>method</I> ((v
+                                                                                                                                  vertex)
+                                                                                                                                 stream)
+  <P>
+<A NAME="line"><P><A HREF="../search/domains/path-planning.lisp"><B>line</B></A></A> <I>type</I> (xy1
+                                                                                                  xy2)
+  <P>
+<A NAME="polygon"><P><A HREF="../search/domains/path-planning.lisp"><B>polygon</B></A></A> <I>type</I> (vertices
+                                                                                                        n)
+  <P>
+<A NAME="scene"><P><A HREF="../search/domains/path-planning.lisp"><B>scene</B></A></A> <I>type</I> (polygons
+                                                                                                    start
+                                                                                                    goal)
+  <P>
+<I> Functions for testing whether one vertex is visible from another</I>
+<A NAME="vertices-visible-from"><P><A HREF="../search/domains/path-planning.lisp"><B>vertices-visible-from</B></A></A> <I>function</I> (v1
+                                                                                                                                        scene)
+  <blockquote>Find all the vertices that can be seen from this vertex.</blockquote>
+<A NAME="vertices-in-view"><P><A HREF="../search/domains/path-planning.lisp"><B>vertices-in-view</B></A></A> <I>function</I> (v
+                                                                                                                              scene)
+  <blockquote>Find all the other vertices that can be seen from v.</blockquote>
+<A NAME="visible-p"><P><A HREF="../search/domains/path-planning.lisp"><B>visible-p</B></A></A> <I>function</I> (xy1
+                                                                                                                xy2
+                                                                                                                scene)
+  <blockquote>Predicate; return t iff xy1 is visible from xy2.</blockquote>
+<A NAME="line-intersects-poly?"><P><A HREF="../search/domains/path-planning.lisp"><B>line-intersects-poly?</B></A></A> <I>function</I> (line
+                                                                                                                                        poly)
+  <blockquote>Predicate; return t iff line intersects poly.</blockquote>
+<A NAME="intersects"><P><A HREF="../search/domains/path-planning.lisp"><B>intersects</B></A></A> <I>function</I> (l1
+                                                                                                                  l2)
+  <P>
+<H2><I> Code for constructing the scene data structure</I>
+</H2>
+<A NAME="create-scene"><P><A HREF="../search/domains/path-planning.lisp"><B>create-scene</B></A></A> <I>function</I> (&key
+                                                                                                                      start
+                                                                                                                      goal
+                                                                                                                      polygons)
+  <blockquote>START and GOAL are xy points; polygons is a list of lists of vertices.</blockquote>
+<A NAME="create-polygon"><P><A HREF="../search/domains/path-planning.lisp"><B>create-polygon</B></A></A> <I>function</I> (points)
+  <P>
+<H2><I> Specific scene, shown as Figure 4.17 [p 120]</I>
+</H2>
+<A NAME="*scene-4.17*"><P><A HREF="../search/domains/path-planning.lisp"><B>*scene-4.17*</B></A></A> <I>variable</I> 
+  <blockquote>The scene in Figure 4.17 [p 120] with 8 obstacles.</blockquote>
+<A NAME="search/domains/puzzle8.lisp"><HR>
+<H2>File <A HREF="../search/domains/puzzle8.lisp">search/domains/puzzle8.lisp</A></H2></A>
+<H2><I> The 8-Puzzle Problem</I>
+</H2>
+<I> In this implementation of the 8-puzzle we have a mix of priorities</I>
+<I> between efficiency and simplicity.  We restrict ourselves to the</I>
+<I> 8-puzzle, instead of the general n-puzzle.  The representation of</I>
+<I> states is not the obvious one (a 3x3 array), but it is both</I>
+<I> efficient and fairly easy to manipulate.  We represent each tile</I>
+<I> as an integer from 0 to 8 (0 for the blank).  We also represent</I>
+<I> each square as an integer from 0 to 8, arranged as follows:</I>
+<I> <PRE></I>
+<I>     0 1 2</I>
+<I>     3 4 5</I>
+<I>     6 7 8</I>
+<I> </PRE></I>
+<I> Finally, we represent a state (i.e., a complete puzzle) as the sum</I>
+<I> of the tile numbers times 9 to the power of the tile's square number.</I>
+<I> For example, the goal state from page 63:</I>
+<I> <PRE> </I>
+<I>     1 2 3                          1*9^0 + 2*9^1 + 3*9^2</I>
+<I>     8 . 4  is represented by:    + 8*9^3 + 0*9^4 + 4*9^5</I>
+<I>     7 6 5                        + 7*9^6 + 6*9^7 + 5*9^8 = 247893796</I>
+<I> </PRE></I>
+<I> We represent actions with the four symbols <, >, ^, V to stand for</I>
+<I> moving the blank tile left, right, up and down, respectively.  The</I>
+<I> heuristic functions implicitly refer to the goal, *8-puzzle-goal*.</I>
+<I> Call the function USE-8-PUZZLE-GOAL to change the goal state if</I>
+<I> you wish.</I>
+<A NAME="*8-puzzle-goal*"><P><A HREF="../search/domains/puzzle8.lisp"><B>*8-puzzle-goal*</B></A></A> <I>variable</I> 
+  <blockquote>To be defined later</blockquote>
+<A NAME="8-puzzle-problem"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-problem</B></A></A> <I>type</I> nil
+  <blockquote>The sliding tile problem known as the 8-puzzle.</blockquote>
+<A NAME="successors:8-puzzle-problem"><P><A HREF="../search/domains/puzzle8.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                            8-puzzle-problem)
+                                                                                                                           state)
+  <blockquote>Generate the possible moves from an 8-puzzle state.</blockquote>
+<A NAME="h-cost:8-puzzle-problem"><P><A HREF="../search/domains/puzzle8.lisp"><B>h-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                    8-puzzle-problem)
+                                                                                                                   state)
+  <blockquote>Manhatten, or sum of city block distances.  This is h_2 on [p 102].</blockquote>
+<A NAME="move-blank"><P><A HREF="../search/domains/puzzle8.lisp"><B>move-blank</B></A></A> <I>function</I> (state
+                                                                                                            from
+                                                                                                            to)
+  <blockquote>Move the blank from one square to another and return the resulting state.
+  The FROM square must contain the blank; this is not checked.</blockquote>
+<A NAME="blank-square"><P><A HREF="../search/domains/puzzle8.lisp"><B>blank-square</B></A></A> <I>function</I> (state)
+  <blockquote>Find the number of the square where the blank is.</blockquote>
+<A NAME="random-8-puzzle-state"><P><A HREF="../search/domains/puzzle8.lisp"><B>random-8-puzzle-state</B></A></A> <I>function</I> (&optional
+                                                                                                                                  num-moves
+                                                                                                                                  state)
+  <blockquote>Return a random state of the 8 puzzle.</blockquote>
+<A NAME="random-move-blank"><P><A HREF="../search/domains/puzzle8.lisp"><B>random-move-blank</B></A></A> <I>function</I> (state)
+  <blockquote>Return a state derived from this one by a random move.</blockquote>
+<H2><I> Representing the Board</I>
+</H2>
+<A NAME="neighbors"><P><A HREF="../search/domains/puzzle8.lisp"><B>neighbors</B></A></A> <I>function</I> (square)
+  <blockquote>The squares that can be reached from a given square.</blockquote>
+<A NAME="8-puzzle-legal-moves"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-legal-moves</B></A></A> <I>function</I> (square)
+  <blockquote>The moves that can be made when the blank is in a given square.
+  This is a list of (direction destination-square) pairs.</blockquote>
+<A NAME="8-puzzle-location"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-location</B></A></A> <I>function</I> (square)
+  <blockquote>Return the (x y) location of a square number.</blockquote>
+<H2><I> Representing States</I>
+</H2>
+<A NAME="8-puzzle-state"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-state</B></A></A> <I>function</I> (&rest
+                                                                                                                    pieces)
+  <blockquote>Define a new state with the specified tiles.</blockquote>
+<A NAME="8-puzzle-ref"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-ref</B></A></A> <I>function</I> (state
+                                                                                                                square)
+  <blockquote>Return the tile that occupies the given square.</blockquote>
+<A NAME="8-puzzle-print"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-print</B></A></A> <I>function</I> (state
+                                                                                                                    &optional
+                                                                                                                    stream)
+  <P>
+<A NAME="8-puzzle-display-fn"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-display-fn</B></A></A> <I>function</I> (node
+                                                                                                                              problem)
+  <P>
+<H2><I> Setting Up the Goal</I>
+</H2>
+<A NAME="*8-puzzle-goal-locations*"><P><A HREF="../search/domains/puzzle8.lisp"><B>*8-puzzle-goal-locations*</B></A></A> <I>variable</I> 
+  <blockquote>A vector indexed by tile numbers, saying where the tile should be.</blockquote>
+<A NAME="use-8-puzzle-goal"><P><A HREF="../search/domains/puzzle8.lisp"><B>use-8-puzzle-goal</B></A></A> <I>function</I> (goal)
+  <blockquote>Define a new goal for the 8 puzzle.</blockquote>
+<A NAME="8-puzzle-goal-location"><P><A HREF="../search/domains/puzzle8.lisp"><B>8-puzzle-goal-location</B></A></A> <I>function</I> (tile)
+  <blockquote>Return the location where the tile should go.</blockquote>
+<A NAME="9-power"><P><A HREF="../search/domains/puzzle8.lisp"><B>9-power</B></A></A> <I>function</I> (n)
+  <blockquote>Raise 9 to the nth power, 0 <= n <= 9.</blockquote>
+<H2><I> Alternative Heuristic Function</I>
+</H2>
+<A NAME="misplaced-tiles"><P><A HREF="../search/domains/puzzle8.lisp"><B>misplaced-tiles</B></A></A> <I>function</I> (state)
+  <blockquote>Number of misplaced tiles.  This is h_1 on [p 102].</blockquote>
+<A NAME="misplaced-tile?"><P><A HREF="../search/domains/puzzle8.lisp"><B>misplaced-tile?</B></A></A> <I>function</I> (state
+                                                                                                                      square)
+  <blockquote>Is the tile in SQUARE different from the corresponding goal tile?  
+  Don't count the blank.</blockquote>
+<A NAME="search/domains/route-finding.lisp"><HR>
+<H2>File <A HREF="../search/domains/route-finding.lisp">search/domains/route-finding.lisp</A></H2></A>
+<H2><I> Find a Route Between Cities on a Map</I>
+</H2>
+<A NAME="route-finding-problem"><P><A HREF="../search/domains/route-finding.lisp"><B>route-finding-problem</B></A></A> <I>type</I> (map)
+  <blockquote>The problem of finding a route from one city to another on a map.
+  By default it is a random map.  A state in a route-finding problem is just 
+  the name of the current city. Note that a more complicated version of this
+  problem would augment the state with considerations of time, gas
+  used, wear on car, tolls to pay, etc.</blockquote>
+<A NAME="successors:route-finding-problem"><P><A HREF="../search/domains/route-finding.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                                       route-finding-problem)
+                                                                                                                                      city-name)
+  <blockquote>Return a list of (action . new-state) pairs.
+  In this case, the action and the new state are both the name of the city.</blockquote>
+<A NAME="edge-cost:route-finding-problem"><P><A HREF="../search/domains/route-finding.lisp"><B>edge-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                                     route-finding-problem)
+                                                                                                                                    node
+                                                                                                                                    action
+                                                                                                                                    city)
+  <blockquote>The edge-cost is the road distance to the next city.</blockquote>
+<A NAME="h-cost:route-finding-problem"><P><A HREF="../search/domains/route-finding.lisp"><B>h-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                               route-finding-problem)
+                                                                                                                              city-name)
+  <blockquote>The heuristic cost is the straight-line distance to the goal.</blockquote>
+<H2><I> The City and Map data structures</I>
+</H2>
+<A NAME="city"><P><A HREF="../search/domains/route-finding.lisp"><B>city</B></A></A> <I>type</I> (name
+                                                                                                  loc
+                                                                                                  neighbors)
+  <blockquote>A city's loc (location) is an (x y) pair.  The neighbors slot holds
+  a list of (city-name . distance-along-road) pairs.  Be careful to 
+  distinguish between a city name and a city structure.</blockquote>
+<A NAME="road-distance"><P><A HREF="../search/domains/route-finding.lisp"><B>road-distance</B></A></A> <I>function</I> (city1
+                                                                                                                        city-name2)
+  <blockquote>The distance along the road between two cities.  The first is a city 
+  structure, the second just the name of the intended destination.</blockquote>
+<A NAME="straight-distance"><P><A HREF="../search/domains/route-finding.lisp"><B>straight-distance</B></A></A> <I>function</I> (city1
+                                                                                                                                city2)
+  <blockquote>Distance between two cities on a straight line (as the crow flies).</blockquote>
+<A NAME="find-city"><P><A HREF="../search/domains/route-finding.lisp"><B>find-city</B></A></A> <I>function</I> (name
+                                                                                                                map)
+  <blockquote>Look up the city on the map, and return its information.</blockquote>
+<A NAME="random-route-map"><P><A HREF="../search/domains/route-finding.lisp"><B>random-route-map</B></A></A> <I>function</I> (&key
+                                                                                                                              n-cities
+                                                                                                                              width
+                                                                                                                              height
+                                                                                                                              min-roads
+                                                                                                                              max-roads)
+  <blockquote>Return a random map with n-cities in it, and some roads between them.
+  Each city is connected to between MIN-ROADS and MAX-ROADS other cities.
+  The default is from 2 to 5.  The road between any two cities has a length 
+  of 1 to 1.5 times the straight-line distance between them.</blockquote>
+<A NAME="build-road"><P><A HREF="../search/domains/route-finding.lisp"><B>build-road</B></A></A> <I>function</I> (city1
+                                                                                                                  city2)
+  <blockquote>Construct a road between two cities.</blockquote>
+<A NAME="number->name"><P><A HREF="../search/domains/route-finding.lisp"><B>number->name</B></A></A> <I>function</I> (i)
+  <blockquote>Turn an integer into a symbol.  1-26 go to A-Z; beyond that use Ci</blockquote>
+<H2><I> The Romanian Map</I>
+</H2>
+<A NAME="*romania-map*"><P><A HREF="../search/domains/route-finding.lisp"><B>*romania-map*</B></A></A> <I>variable</I> 
+  <blockquote>A representation of the map in Figure 4.2 [p 95].
+  But note that the straight-line distances to Bucharest are NOT the same.</blockquote>
+<A NAME="romanian-problem"><P><A HREF="../search/domains/route-finding.lisp"><B>romanian-problem</B></A></A> <I>type</I> nil
+  <blockquote>A route-finding problem on the Romania map, with random start and goal.</blockquote>
+<A NAME="search/domains/tsp.lisp"><HR>
+<H2>File <A HREF="../search/domains/tsp.lisp">search/domains/tsp.lisp</A></H2></A>
+<H2><I> The Travelling Salesperson Problem (TSP)</I>
+</H2>
+<I> Find a tour: a path that visits every city exactly once, and returns to</I>
+<I> the starting city.  The shorter the total distance, the better.  This</I>
+<I> builds on the map data structure defined in route-finding.lisp.  It</I>
+<I> assumes that the map is a complete graph: there is a path from every city</I>
+<I> to every other city.</I>
+<P>
+<I> Note: the TSP is NP complete in the general case, but there are some good</I>
+<I> algorithms for finding approximate solutions, particularly when the</I>
+<I> triangle inequality is satisfied (that the path from A->C is always</I>
+<I> shorter than A->B->C).  Many of these algorithms are based on the idea of</I>
+<I> building a minimum spanning tree, converting it into a tour, and perhaps</I>
+<I> modifying it.  We don't go into that here (because we are more interested</I>
+<I> in hooking up to the general search procedures than in special-purpose</I>
+<I> algorithms), but note that our tsp-h heuristic function is a relaxed</I>
+<I> version of a minimum spanning tree.</I>
+<A NAME="tsp-problem"><P><A HREF="../search/domains/tsp.lisp"><B>tsp-problem</B></A></A> <I>type</I> (map)
+  <P>
+<A NAME="make-tsp-problem"><P><A HREF="../search/domains/tsp.lisp"><B>make-tsp-problem</B></A></A> <I>function</I> (&key
+                                                                                                                    map
+                                                                                                                    start)
+  <blockquote>Constructor for TSP problems.  The map must be a complete graph.</blockquote>
+<A NAME="edge-cost:tsp-problem"><P><A HREF="../search/domains/tsp.lisp"><B>edge-cost</B></A></A> <I>method</I> ((problem
+                                                                                                                 tsp-problem)
+                                                                                                                node
+                                                                                                                action
+                                                                                                                state)
+  <P>
+<A NAME="h-cost:tsp-problem"><P><A HREF="../search/domains/tsp.lisp"><B>h-cost</B></A></A> <I>method</I> ((problem
+                                                                                                           tsp-problem)
+                                                                                                          state)
+  <blockquote>A lower bound on the cost is the distance to ???</blockquote>
+<A NAME="successors:tsp-problem"><P><A HREF="../search/domains/tsp.lisp"><B>successors</B></A></A> <I>method</I> ((problem
+                                                                                                                   tsp-problem)
+                                                                                                                  state)
+  <blockquote>Return a list of (action . state) pairs.  Actions are just the name of
+  the city to go to.  You can only go to a city you haven't visited yet,
+  unless you've visited them all, in which case you can only go back home.</blockquote>
+<A NAME="goal-test:tsp-problem"><P><A HREF="../search/domains/tsp.lisp"><B>goal-test</B></A></A> <I>method</I> ((problem
+                                                                                                                 tsp-problem)
+                                                                                                                state)
+  <blockquote>The goal is to leave no unvisited cities and get back to start.</blockquote>
+<A NAME="tsp"><P><A HREF="../search/domains/tsp.lisp"><B>tsp</B></A></A> <I>type</I> (visited
+                                                                                      to-visit)
+  <blockquote>A state for a TSP problem lists cities visited, and remaining to see.</blockquote>
+<H2><I> Auxiliary Functions</I>
+</H2>
+<A NAME="nearest-neighbor-distance"><P><A HREF="../search/domains/tsp.lisp"><B>nearest-neighbor-distance</B></A></A> <I>function</I> (name
+                                                                                                                                      candidate-names
+                                                                                                                                      map)
+  <blockquote>Find among the CANDIDATE-NAMES of cities, the one that is closest to
+  city NAME, and return the distance to it.</blockquote>
+<A NAME="path-lower-bound"><P><A HREF="../search/domains/tsp.lisp"><B>path-lower-bound</B></A></A> <I>function</I> (city-names
+                                                                                                                    map)
+  <blockquote>Find a lower bound for a path through these cities.</blockquote>
+<A NAME="random-tsp-map"><P><A HREF="../search/domains/tsp.lisp"><B>random-tsp-map</B></A></A> <I>function</I> (&key
+                                                                                                                n-cities)
+  <P>
+<A NAME="check-tsp-map?"><P><A HREF="../search/domains/tsp.lisp"><B>check-tsp-map?</B></A></A> <I>function</I> (map)
+  <P>
+<A NAME="tsp-city-name"><P><A HREF="../search/domains/tsp.lisp"><B>tsp-city-name</B></A></A> <I>function</I> (tsp-state)
+  <blockquote>The current city: the last one visited.</blockquote>
+<A NAME="tsp-start"><P><A HREF="../search/domains/tsp.lisp"><B>tsp-start</B></A></A> <I>function</I> (tsp-state)
+  <P>
+<A NAME="search/domains/vacuum.lisp"><HR>
+<H2>File <A HREF="../search/domains/vacuum.lisp">search/domains/vacuum.lisp</A></H2></A>
+<I> File: search/domains/vacuum.lisp</I>
+<H2><I> Definitions for Searching in the Vacuum-World Domain</I>
+</H2>
+<A NAME="vacuum-state"><P><A HREF="../search/domains/vacuum.lisp"><B>vacuum-state</B></A></A> <I>type</I> (orientation
+                                                                                                           dirt
+                                                                                                           m
+                                                                                                           n
+                                                                                                           on
+                                                                                                           location)
+  <P>
+<A NAME="*vacuum-home*"><P><A HREF="../search/domains/vacuum.lisp"><B>*vacuum-home*</B></A></A> <I>variable</I> 
+  <P>
+<H2><I>  Vacuum problem generator, and vacuum domain functions</I>
+</H2>
+<A NAME="vacuum-problem"><P><A HREF="../search/domains/vacuum.lisp"><B>vacuum-problem</B></A></A> <I>function</I> (m
+                                                                                                                   n
+                                                                                                                   &optional
+                                                                                                                   dirt
+                                                                                                                   dirt-probability)
+  <blockquote>Create a Vacuum World problem.</blockquote>
+<A NAME="vacuum-initial-state"><P><A HREF="../search/domains/vacuum.lisp"><B>vacuum-initial-state</B></A></A> <I>function</I> (m
+                                                                                                                               n
+                                                                                                                               dirt
+                                                                                                                               dirt-probability)
+  <P>
+<A NAME="vacuum-goalp"><P><A HREF="../search/domains/vacuum.lisp"><B>vacuum-goalp</B></A></A> <I>function</I> (state)
+  <blockquote>Is this a goal state?</blockquote>
+<A NAME="vacuum-successors"><P><A HREF="../search/domains/vacuum.lisp"><B>vacuum-successors</B></A></A> <I>function</I> (state)
+  <blockquote>Return a list of (action . state) pairs.</blockquote>
+<A NAME="search/agents/ps-agents.lisp"><HR>
+<H2>File <A HREF="../search/agents/ps-agents.lisp">search/agents/ps-agents.lisp</A></H2></A>
+<H2><I> Problem-Solving Agents</I>
+</H2>
+<A NAME="problem-solving-agent"><P><A HREF="../search/agents/ps-agents.lisp"><B>problem-solving-agent</B></A></A> <I>type</I> (algorithm)
+  <blockquote>An agent that applies a search algorithm to a problem to find a solution,
+  and then follows the steps of the solution, one at a time, and then stops.</blockquote>
+<H2><I> Game-Playing Agents</I>
+</H2>
+<A NAME="game-agent"><P><A HREF="../search/agents/ps-agents.lisp"><B>game-agent</B></A></A> <I>type</I> (algorithm)
+  <blockquote>An agent that plays n-player games.  The ALGORITHM slot is filled by
+  a function that takes state and game arguments, and returns a move.</blockquote>
+<A NAME="random-game-agent"><P><A HREF="../search/agents/ps-agents.lisp"><B>random-game-agent</B></A></A> <I>type</I> nil
+  <blockquote>A game-playing agent that picks randomly from the legal moves.</blockquote>
+<A NAME="human-game-agent"><P><A HREF="../search/agents/ps-agents.lisp"><B>human-game-agent</B></A></A> <I>type</I> nil
+  <blockquote>A game-playing agent that asks the human user what to do.</blockquote>
+<A NAME="pick-random-move"><P><A HREF="../search/agents/ps-agents.lisp"><B>pick-random-move</B></A></A> <I>function</I> (state
+                                                                                                                         game)
+  <P>
+<A NAME="ask-game-user"><P><A HREF="../search/agents/ps-agents.lisp"><B>ask-game-user</B></A></A> <I>function</I> (state
+                                                                                                                   game)
+  <P>
+<A NAME="search/agents/ttt-agent.lisp"><HR>
+<H2>File <A HREF="../search/agents/ttt-agent.lisp">search/agents/ttt-agent.lisp</A></H2></A>
+<H2><I> An  Agent for Playing Tic-Tac-Toe</I>
+</H2>
+<A NAME="alpha-beta-ttt-agent"><P><A HREF="../search/agents/ttt-agent.lisp"><B>alpha-beta-ttt-agent</B></A></A> <I>type</I> nil
+  <blockquote>A game-playing agent that uses ttt-eval to do alpha-beta search.</blockquote>
+<A NAME="ttt-eval"><P><A HREF="../search/agents/ttt-agent.lisp"><B>ttt-eval</B></A></A> <I>function</I> (state)
+  <blockquote>Evaluate a TTT board on a scale from -1 to +1.</blockquote>
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="../../aima.html">AIMA Home</A>
+<td> <A HREF="../../contact.html">Authors</A>
+<td> <A HREF="overview.html">Lisp Code</A>
+<td> <A HREF="../../prog.html">AI Programming</A>
+<td> <A HREF="../../instructors.html">Instructors Pages</A>
+</TABLE>
+
+</BODY> 
+</HTML>

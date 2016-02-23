@@ -1,0 +1,99 @@
+<TITLE>Downloading and Installing Lisp Code for AIMA</TITLE>
+<!-- Changed by: Peter Norvig, 24-Jul-1996 -->
+<BODY bgcolor=#ffffff>
+<H1>Downloading and Installing Lisp Code for AIMA</H1>
+
+This page gives instructions for retrieving the code for the book, and
+installing it on your local system.  This installation procedure need
+only be followed once.  If you are using the book in a course, your
+instructor (or an assistant) will probably do this for you, and you
+can move on to <A HREF="user.html">using the code</A>.
+
+<H2>Downloading the Code</H1>
+
+The Lisp source code (and documentation) that accompanies the book is packaged 
+up in the file <A HREF="ftp://ftp.cs.berkeley.edu/ucb/people/russell/aima/code.tar.Z">code.tar.Z</A> in the directory <A
+HREF="ftp://ftp.cs.berkeley.edu/ucb/people/russell/aima">/ucb/people/russell/aima</A> on the machine ftp.cs.berkeley.edu.  To download the code, you have four choices:
+<OL>
+<LI> Select <A HREF="ftp://ftp.cs.berkeley.edu/ucb/people/russell/aima/code.tar.Z">code.tar.Z</A> from your Web browser.
+<LI> Use ftp directly.  On a UNIX
+system, a typical ftp session looks like this: <P>
+
+<PRE>
+Computer prompts:		You type:
+================		========
+%				cd <I>where-you-want-the-code-to-be</I>
+%				ftp ftp.cs.berkeley.edu
+Name:				anonymous
+Password:			<I>your-login-name@your.mail.address</I>
+ftp>				cd ucb/people/russell/aima
+250 CWD command successful.	
+ftp>				binary
+200 Type set to I.
+ftp>				get code.tar.Z
+150 Opening ASCII connection
+226 Transfer complete.
+ftp> 				quit
+221 Goodbye.
+%				zcat code.tar.Z | tar xvf -
+%				rm code.tar.Z
+</PRE>
+<LI>  If you don't have the zcat (or uncompress) and tar programs, or another
+suitable unpacking utility, you can get the files one at a time from the ftp site, or by using a web browser to the <A HREF="code/">code directory</A>.
+
+<LI>If you don't have access to ftp, but do have an email account, you can
+retrieve the files by sending a message to <A HREF="mailto:ftpmail@decwrl.dec.com">ftpmail@decwrl.dec.com</A> with
+the following body (or send a message with the body <I>help</I> to see all
+your options):
+
+<PRE>
+	connect ftp.cs.berkeley.edu
+	binary
+	uuencode
+	get README
+	get code.tar.Z
+	quit
+</PRE>
+</OL>
+
+<H2>Installing the Code</H1>
+
+<OL>
+<LI> Make sure you have both read-permission and write-permission for
+the directory where the code is kept.
+
+<P><LI> Edit the file "aima.lisp" and change the value of the parameter
+*aima-root* to reflect the location of the files.  Make sure to use the
+proper syntax for a directory, not a regular file.  For example, on a Unix
+file system, you want something like "/usr/local/aima/", where the final "/"
+indicates that /usr/local/aima is a directory.
+
+<P><LI> Depending on your version of Lisp, you may need to edit the parameter
+*aima-binary-type* to indicate the type of files created by your Lisp
+compiler.  If the compiler creates files of the form "name.bin", then set
+this parameter to "bin".  Do include the double-quote marks.
+
+<P><LI>Start up your Common Lisp, and enter the following two forms:
+<PRE>
+	(load "aima.lisp")
+	(aima-compile)
+</PRE>
+
+<P><LI> Most versions of Lisp provide a way to dump out an image -- an
+executable file that contains all the code that has been loaded so far.  If
+your Lisp has this feature, it might be a good idea to create such an image
+at this point, and save it for later use.
+
+<P>Then exit from Lisp (and if you like, you can remove write-permission from
+this directory and its sub-directories).  
+</OL>
+
+
+<HR>
+<TABLE BORDER=4 CELLPADDING=4 CELLSPACING=0><tr>
+<td> <A HREF="aima.html">AIMA Home</A>
+<td> <A HREF="contact.html">Authors</A>
+<td> <B>Lisp Code</B>
+<td> <A HREF="prog.html">AI Programming</A>
+<td> <A HREF="instructors.html">Instructors Pages</A>
+</TABLE></BODY></HTML>
