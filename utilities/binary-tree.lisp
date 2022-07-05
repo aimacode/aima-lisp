@@ -17,22 +17,23 @@
   )
 
 
- 
+
 (defun make-search-tree (root-elem root-key &aux root)
   "return dummy header for binary search tree, with initial
   element root-elem whose key is root-key."
   (setq root
-	(make-search-tree-node
-	  :value nil
-	  :parent nil
-	  :rightson nil
-	  :leftson (make-search-tree-node
-		     :value (list root-elem)
-		     :num-elements 1
-		     :key root-key
-		     :leftson nil :rightson nil)))
+		(make-search-tree-node
+		 :value nil
+		 :parent nil
+		 :rightson nil
+		 :leftson (make-search-tree-node
+				   :value (list root-elem)
+				   :num-elements 1
+				   :key root-key
+				   :leftson nil :rightson nil)))
   (setf (search-tree-node-parent
-	  (search-tree-node-leftson root)) root)
+		 (search-tree-node-leftson root))
+		root)
   root)
 
 
@@ -40,16 +41,18 @@
 (defun create-sorted-tree (list-of-elems key-fun &aux root-elem root)
   "return binary search tree containing list-of-elems ordered according
   tp key-fun"
+  (when (null *print-circle* )
+	(setf *print-circle* t))
   (if (null list-of-elems)
       nil
       (progn
-	(setq root-elem (nth (random (length list-of-elems)) list-of-elems))
-	(setq list-of-elems (remove root-elem list-of-elems :test #'eq))
-	(setq root (make-search-tree root-elem
-				     (funcall key-fun root-elem)))
-	(dolist (elem list-of-elems)
-	  (insert-element elem root (funcall key-fun elem)))
-	root)))
+		(setq root-elem (nth (random (length list-of-elems)) list-of-elems))
+		(setq list-of-elems (remove root-elem list-of-elems :test #'eq))
+		(setq root (make-search-tree root-elem
+									 (funcall key-fun root-elem)))
+		(dolist (elem list-of-elems)
+		  (insert-element elem root (funcall key-fun elem)))
+		root)))
 
 
 
@@ -63,8 +66,8 @@
   "return leftmost descendant of tree-node"
   ;; used by pop-least-element and inorder-successor
   (loop (if (null (setq next (search-tree-node-leftson tree-node)))
-	    (return tree-node)
-	    (setq tree-node next))))
+			(return tree-node)
+			(setq tree-node next))))
 
 
 
@@ -74,11 +77,11 @@
   ;; recall that root of tree is leftson of header, which is a dummy
   (setq tree-node (search-tree-node-leftson header))
   (loop (if (null (setq next (search-tree-node-rightson tree-node)))
-	    (return tree-node)
-	    (setq tree-node next))))
+			(return tree-node)
+			(setq tree-node next))))
 
 
- 
+
 (defun pop-least-element (header)
   "return least element of binary search tree; delete from tree as side-effect"
   ;; Note value slots of search-tree-nodes are lists of a-star-nodes, all of
@@ -89,17 +92,17 @@
   ;; tree.  (That's why we have a pointer to the node's parent).
   ;; Node with smallest f-cost is leftmost descendant of header.
   (let* ( (place (leftmost header))
-	 (result (pop (search-tree-node-value place))) )
-      (decf (search-tree-node-num-elements place))
-      (when (null (search-tree-node-value place))
-	(when (search-tree-node-rightson place)
-	  (setf (search-tree-node-parent
-		  (search-tree-node-rightson place))
-		(search-tree-node-parent place)))
-	(setf (search-tree-node-leftson
-	        (search-tree-node-parent place))
-	      (search-tree-node-rightson place)))
-      result))
+		  (result (pop (search-tree-node-value place))) )
+    (decf (search-tree-node-num-elements place))
+    (when (null (search-tree-node-value place))
+	  (when (search-tree-node-rightson place)
+		(setf (search-tree-node-parent
+			   (search-tree-node-rightson place))
+			  (search-tree-node-parent place)))
+	  (setf (search-tree-node-leftson
+	         (search-tree-node-parent place))
+			(search-tree-node-rightson place)))
+    result))
 
 
 
@@ -116,20 +119,20 @@
   ;; will be in the leftson of the dummy header.  In all other cases,
   ;; it will be in the rightson of its parent.
   (let* ( (place (rightmost header)) 
-	 (result (pop (search-tree-node-value place))) )
-      (decf (search-tree-node-num-elements place))      
-      (when (null (search-tree-node-value place))
-	(cond ( (eq place (search-tree-node-leftson header))
-	       (setf (search-tree-node-leftson header)
-		     (search-tree-node-leftson place)) )
-	      (t (when (search-tree-node-leftson place)
-		   (setf (search-tree-node-parent
-			   (search-tree-node-leftson place))
-			 (search-tree-node-parent place)))
-		 (setf (search-tree-node-rightson
-			 (search-tree-node-parent place))
-		       (search-tree-node-leftson place)))))
-      result))
+		  (result (pop (search-tree-node-value place))) )
+    (decf (search-tree-node-num-elements place))      
+    (when (null (search-tree-node-value place))
+	  (cond ( (eq place (search-tree-node-leftson header))
+			  (setf (search-tree-node-leftson header)
+					(search-tree-node-leftson place)) )
+			(t (when (search-tree-node-leftson place)
+				 (setf (search-tree-node-parent
+						(search-tree-node-leftson place))
+					   (search-tree-node-parent place)))
+			   (setf (search-tree-node-rightson
+					  (search-tree-node-parent place))
+					 (search-tree-node-leftson place)))))
+    result))
 
 
 
@@ -146,39 +149,41 @@
 
 
 (defun insert-element (element parent key
-		       &optional (direction #'search-tree-node-leftson)
-		       &aux place)
+					   &optional (direction #'search-tree-node-leftson)
+					   &aux place)
   "insert new element at proper place in binary search tree"
   ;; See Reingold and Hansen, Data Structures, sect. 7.2.
   ;; When called initially, parent will be the header, hence go left.
   ;; Element is an a-star-node.  If tree node with key = f-cost of
   ;; element already exists, just push element onto list in that
   ;; node's value slot.  Else have to make new tree node.
-  (loop (cond ( (null (setq place (funcall direction parent)))
-	       (let ( (new-node (make-search-tree-node
-				  :value (list element) :num-elements 1
-				  :parent parent :key key
-				  :leftson nil :rightson nil)) )
-		 (if (eq direction #'search-tree-node-leftson)
-		     (setf (search-tree-node-leftson parent) new-node)
-		     (setf (search-tree-node-rightson parent) new-node)))
-	       (return t))
-	      ( (= key (search-tree-node-key place))
-	       (push element (search-tree-node-value place))
-	       (incf (search-tree-node-num-elements place))
-	       (return t))
-	      ( (< key (search-tree-node-key place))
-	       (setq parent place)
-	       (setq direction #'search-tree-node-leftson) )
-	      (t (setq parent place)
-		 (setq direction #'search-tree-node-rightson)))))
+  (loop (cond ((null (setq place (funcall direction parent)))
+			   (let ( (new-node (make-search-tree-node
+								 :value (list element) :num-elements 1
+								 :parent parent :key key
+								 :leftson nil :rightson nil)) )
+				 (if (eq direction #'search-tree-node-leftson)
+					 (setf (search-tree-node-leftson parent) new-node)
+					 (setf (search-tree-node-rightson parent) new-node)))
+			   (return t))
+			  ((= key (search-tree-node-key place))
+			   (push element (search-tree-node-value place))
+			   (incf (search-tree-node-num-elements place))
+			   (return t))
+			  ((< key (search-tree-node-key place))
+			   (setq parent place)
+			   (setq direction #'search-tree-node-leftson)
+			   )
+			  (t (setq parent place)
+				 (setq direction #'search-tree-node-rightson)
+				 ))))
 
 
 
 
 (defun randomized-insert-element (element parent key
-		       &optional (direction #'search-tree-node-leftson)
-		       &aux place)
+								  &optional (direction #'search-tree-node-leftson)
+								  &aux place)
   "insert new element at proper place in binary search tree -- break
    ties randomly"
   ;; This is just like the above, except that elements with equal keys
@@ -186,24 +191,24 @@
   ;; just to randomize whenever  an arbitrary choice is to be made.
 
   (loop (cond ( (null (setq place (funcall direction parent)))
-	       (let ( (new-node (make-search-tree-node
-				  :value (list element) :num-elements 1
-				  :parent parent :key key
-				  :leftson nil :rightson nil)) )
-		 (if (eq direction #'search-tree-node-leftson)
-		     (setf (search-tree-node-leftson parent) new-node)
-		     (setf (search-tree-node-rightson parent) new-node)))
-	       (return t))
-	      ( (= key (search-tree-node-key place))
-	       (setf (search-tree-node-value place)
-		     (randomized-push element (search-tree-node-value place)))
-	       (incf (search-tree-node-num-elements place))	       
-	       (return t))
-	      ( (< key (search-tree-node-key place))
-	       (setq parent place)
-	       (setq direction #'search-tree-node-leftson) )
-	      (t (setq parent place)
-		 (setq direction #'search-tree-node-rightson)))))
+				(let ( (new-node (make-search-tree-node
+								  :value (list element) :num-elements 1
+								  :parent parent :key key
+								  :leftson nil :rightson nil)) )
+				  (if (eq direction #'search-tree-node-leftson)
+					  (setf (search-tree-node-leftson parent) new-node)
+					  (setf (search-tree-node-rightson parent) new-node)))
+				(return t))
+			  ( (= key (search-tree-node-key place))
+				(setf (search-tree-node-value place)
+					  (randomized-push element (search-tree-node-value place)))
+				(incf (search-tree-node-num-elements place))	       
+				(return t))
+			  ( (< key (search-tree-node-key place))
+				(setq parent place)
+				(setq direction #'search-tree-node-leftson) )
+			  (t (setq parent place)
+				 (setq direction #'search-tree-node-rightson)))))
 
 
 
@@ -212,35 +217,35 @@
   "return list with element destructively inserted at random into list"
   (let ((n (random (+ 1 (length list)))) )
     (cond ((= 0 n)
-	   (cons element list))
-	  (t (push element (cdr (nthcdr (- n 1) list)))
-	     list))))
+		   (cons element list))
+		  (t (push element (cdr (nthcdr (- n 1) list)))
+			 list))))
 
 
 
 
 (defun find-element (element parent key
-		       &optional (direction #'search-tree-node-leftson)
-		       &aux place)
+					 &optional (direction #'search-tree-node-leftson)
+					 &aux place)
   "return t if element is int tree"
   (loop (cond ( (null (setq place (funcall direction parent)))
-		  (return nil) )
-		 ( (= key (search-tree-node-key place))
-		  (return (find element (search-tree-node-value place)
-				:test #'eq)) ) 
-		 ( (< key (search-tree-node-key place))
-		  (setq parent place)
-		  (setq direction #'search-tree-node-leftson) )
-		 (t (setq parent place)
-		    (setq direction #'search-tree-node-rightson)))))
+				(return nil) )
+			  ( (= key (search-tree-node-key place))
+				(return (find element (search-tree-node-value place)
+							  :test #'eq)) ) 
+			  ( (< key (search-tree-node-key place))
+				(setq parent place)
+				(setq direction #'search-tree-node-leftson) )
+			  (t (setq parent place)
+				 (setq direction #'search-tree-node-rightson)))))
 
 
 
 
 
 (defun delete-element (element parent key &optional (error-p t)
-		       &aux (direction #'search-tree-node-leftson)
-		       place)
+					   &aux (direction #'search-tree-node-leftson)
+						 place)
   "delete element from binary search tree"
   ;; When called initially, parent will be the header.
   ;; Have to search for node containing element, using key, also
@@ -250,89 +255,89 @@
   ;; if error-p is t, signals error if element not found;  else just
   ;; returns t if element found, nil otherwise.
   (loop (setq place (funcall direction parent))
-	(cond ( (null place) (if error-p
-				 (error "delete-element: element not found") 
-				 (return nil)) )
-	      ( (= key (search-tree-node-key place))
-	       (cond ( (find element (search-tree-node-value place) :test #'eq)
-		      ;; In this case we've found the right binary
-		      ;; search-tree node, so we should delete the
-		      ;; element from the list of nodes 
-		      (setf (search-tree-node-value place)
-			    (remove element (search-tree-node-value place)
-				    :test #'eq))
-		      (decf (search-tree-node-num-elements place))
-		      (when (null (search-tree-node-value place))
-			;; If we've deleted the last element, we
-			;; should delete the node from the binary search tree.
-			(cond ( (null (search-tree-node-leftson place))
-			       ;; If place has no leftson sub-tree, replace it
-			       ;; by its right sub-tree.
-			       (when (search-tree-node-rightson place)
-				 (setf (search-tree-node-parent
-					 (search-tree-node-rightson place))
-				       parent))
-			       (if (eq direction #'search-tree-node-leftson)
-				   (setf (search-tree-node-leftson parent)
-					 (search-tree-node-rightson place))
-				   (setf (search-tree-node-rightson parent)
-					 (search-tree-node-rightson place))) )
-			      ( (null (search-tree-node-rightson place) )
-			       ;; Else if place has no right sub-tree,
-			       ;; replace it by its left sub-tree.
-			       (when (search-tree-node-leftson place)
-				 (setf (search-tree-node-parent
-					 (search-tree-node-leftson place))
-				       parent))
-			       (if (eq direction #'search-tree-node-leftson)
-				   (setf (search-tree-node-leftson parent)
-					 (search-tree-node-leftson place))
-				   (setf (search-tree-node-rightson parent)
-					 (search-tree-node-leftson place))) )
-			      (t ;; Else find the "inorder-successor" of
-			       ;; place,  which must have nil leftson.
-			       ;; Let it replace place, making its left
-			       ;; sub-tree be place's current left
-			       ;; sub-tree, and replace it by its own
-			       ;; right sub-tree. (For details, see
-			       ;; Reingold & Hansen, Data Structures, p. 301.)
-			       (let ( (next (inorder-successor place)) )
-				 (setf (search-tree-node-leftson next)
-				       (search-tree-node-leftson place))
-				 (setf (search-tree-node-parent
-					 (search-tree-node-leftson next))
-				       next)
-				 (if (eq direction #'search-tree-node-leftson)
-				     (setf (search-tree-node-leftson
-					    parent) next) 
-				     (setf (search-tree-node-rightson parent)
-					   next))
-				 (unless (eq next (search-tree-node-rightson
-						    place))
-				   (setf (search-tree-node-leftson
-					   (search-tree-node-parent next))
-					 (search-tree-node-rightson next))
-				   (when (search-tree-node-rightson next)
-				     (setf (search-tree-node-parent
-					     (search-tree-node-rightson next))
-					   (search-tree-node-parent next)))
-				   (setf (search-tree-node-rightson next)
-					 (search-tree-node-rightson
-					   place))
-				   (setf (search-tree-node-parent
-					   (search-tree-node-rightson next))
-					 next))
-				 (setf (search-tree-node-parent next)
-				       (search-tree-node-parent place))))))
-		      (return t))
-		     (t (if error-p
-			    (error "delete-element:  element not found") 
-			    (return nil)))) )
-	      ( (< key (search-tree-node-key place))
-	       (setq parent place)
-	       (setq direction #'search-tree-node-leftson))
-	      (t (setq parent place)
-		 (setq direction #'search-tree-node-rightson)))))
+		(cond ( (null place) (if error-p
+								 (error "delete-element: element not found") 
+								 (return nil)) )
+			  ( (= key (search-tree-node-key place))
+				(cond ( (find element (search-tree-node-value place) :test #'eq)
+						;; In this case we've found the right binary
+						;; search-tree node, so we should delete the
+						;; element from the list of nodes 
+						(setf (search-tree-node-value place)
+							  (remove element (search-tree-node-value place)
+									  :test #'eq))
+						(decf (search-tree-node-num-elements place))
+						(when (null (search-tree-node-value place))
+						  ;; If we've deleted the last element, we
+						  ;; should delete the node from the binary search tree.
+						  (cond ( (null (search-tree-node-leftson place))
+								  ;; If place has no leftson sub-tree, replace it
+								  ;; by its right sub-tree.
+								  (when (search-tree-node-rightson place)
+									(setf (search-tree-node-parent
+										   (search-tree-node-rightson place))
+										  parent))
+								  (if (eq direction #'search-tree-node-leftson)
+									  (setf (search-tree-node-leftson parent)
+											(search-tree-node-rightson place))
+									  (setf (search-tree-node-rightson parent)
+											(search-tree-node-rightson place))) )
+								( (null (search-tree-node-rightson place) )
+								  ;; Else if place has no right sub-tree,
+								  ;; replace it by its left sub-tree.
+								  (when (search-tree-node-leftson place)
+									(setf (search-tree-node-parent
+										   (search-tree-node-leftson place))
+										  parent))
+								  (if (eq direction #'search-tree-node-leftson)
+									  (setf (search-tree-node-leftson parent)
+											(search-tree-node-leftson place))
+									  (setf (search-tree-node-rightson parent)
+											(search-tree-node-leftson place))) )
+								(t ;; Else find the "inorder-successor" of
+								 ;; place,  which must have nil leftson.
+								 ;; Let it replace place, making its left
+								 ;; sub-tree be place's current left
+								 ;; sub-tree, and replace it by its own
+								 ;; right sub-tree. (For details, see
+								 ;; Reingold & Hansen, Data Structures, p. 301.)
+								 (let ( (next (inorder-successor place)) )
+								   (setf (search-tree-node-leftson next)
+										 (search-tree-node-leftson place))
+								   (setf (search-tree-node-parent
+										  (search-tree-node-leftson next))
+										 next)
+								   (if (eq direction #'search-tree-node-leftson)
+									   (setf (search-tree-node-leftson
+											  parent) next) 
+									   (setf (search-tree-node-rightson parent)
+											 next))
+								   (unless (eq next (search-tree-node-rightson
+													 place))
+									 (setf (search-tree-node-leftson
+											(search-tree-node-parent next))
+										   (search-tree-node-rightson next))
+									 (when (search-tree-node-rightson next)
+									   (setf (search-tree-node-parent
+											  (search-tree-node-rightson next))
+											 (search-tree-node-parent next)))
+									 (setf (search-tree-node-rightson next)
+										   (search-tree-node-rightson
+											place))
+									 (setf (search-tree-node-parent
+											(search-tree-node-rightson next))
+										   next))
+								   (setf (search-tree-node-parent next)
+										 (search-tree-node-parent place))))))
+						(return t))
+					  (t (if error-p
+							 (error "delete-element:  element not found") 
+							 (return nil)))) )
+			  ( (< key (search-tree-node-key place))
+				(setq parent place)
+				(setq direction #'search-tree-node-leftson))
+			  (t (setq parent place)
+				 (setq direction #'search-tree-node-rightson)))))
 
 
 
@@ -354,3 +359,10 @@
           (search-tree-node-value parent)
           (when (setq child (search-tree-node-rightson parent))
             (list-elements child))))
+
+;; example
+;;> (defparameter *tree* (create-sorted-tree '(1 4 6 8 9 2 3 4 1 2 3 4)
+;; 										 (lambda(x) x)))
+;;> (list-elements *tree*)
+;;> (insert-element 23 *tree* 23)
+;;> (delete-element 9 *tree* 9)
