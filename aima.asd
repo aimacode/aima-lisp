@@ -1,6 +1,6 @@
 (asdf:defsystem  #:aima
   :serial t
-  :components ((:file "aima")
-			   (:file "package")))
+  :components ((:file "package")
+			   (:file "aima")))
 
    
